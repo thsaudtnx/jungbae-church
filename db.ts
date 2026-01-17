@@ -16,11 +16,16 @@ try {
             credential: admin.credential.cert(serviceAccountPath)
         });
         db = admin.firestore();
-        console.log("Firebase initialized successfully.");
+        console.log("Firebase initialized from serviceAccountKey.json");
+    } else if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+        const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+        admin.initializeApp({
+            credential: admin.credential.cert(serviceAccount)
+        });
+        db = admin.firestore();
+        console.log("Firebase initialized from environment variable");
     } else {
-        console.warn("Warning: serviceAccountKey.json not found. Firebase is NOT initialized.");
-        // We might want to allow the app to start without DB for debugging, but typically we need it.
-        // For now, we'll instantiate a dummy or throw error when used.
+        console.warn("Warning: serviceAccountKey.json not found and FIREBASE_SERVICE_ACCOUNT env var is empty.");
     }
 } catch (error) {
     console.error("Error initializing Firebase:", error);
