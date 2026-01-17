@@ -70,7 +70,8 @@ const SCHEMAS: any = {
         { name: 'title', label: '설교 제목' },
         { name: 'date', label: '날짜', type: 'date' },
         { name: 'preacher', label: '설교자' },
-        { name: 'videoId', label: '유튜브 영상 ID' }
+        { name: 'content', label: '설교 원고', type: 'textarea' },
+        { name: 'videoId', label: '유튜브 영상 ID (선택사항)' }
     ],
     meditations: [
         { name: 'title', label: '제목' },
@@ -163,6 +164,11 @@ app.get('/church/location', (req, res) => {
 app.get('/word/sermons', async (req, res) => {
     const sermons = await getCollection('sermons');
     res.render('word/sermons', { title: '주일설교 - 정배교회', page: 'word-sermons', sermons });
+});
+app.get('/word/sermons/:id', async (req, res) => {
+    const sermon = await getItem('sermons', req.params.id);
+    if (!sermon) return res.status(404).send('Sermon not found');
+    res.render('word/sermon-view', { title: sermon.title + ' - 정배교회', page: 'word-sermons', sermon });
 });
 app.get('/word/meditation', async (req, res) => {
     const meditations = await getCollection('meditations');

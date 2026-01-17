@@ -50,35 +50,99 @@
                 </div>
                 <% } %>
 
-                    <div class="sermon-list">
-                        <% if (locals.sermons) { %>
-                            <% sermons.forEach(function(sermon) { %>
-                                <div class="sermon-item">
-                                    <div>
-                                        <h3>
-                                            <%= sermon.title %>
-                                        </h3>
-                                        <p>
-                                            <%= sermon.date %> | <%= sermon.preacher %>
-                                        </p>
-                                        <% if (locals.user && user.isAdmin) { %>
-                                            <div style="margin-top: 0.5rem; font-size: 0.9rem;">
-                                                <a href="/admin/edit/sermons/<%= sermon.id %>"
-                                                    style="color: var(--color-primary);">수정</a> |
-                                                <a href="/admin/delete/sermons/<%= sermon.id %>"
-                                                    onclick="return confirm('정말 삭제하시겠습니까?')" style="color: red;">삭제</a>
+                    <style>
+                        .board-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 2rem;
+                            background: white;
+                            border-radius: 12px;
+                            overflow: hidden;
+                            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+                        }
+
+                        .board-table th {
+                            background: #f8f9fa;
+                            padding: 1.2rem;
+                            font-weight: 600;
+                            color: var(--color-text);
+                            border-bottom: 2px solid #edf2f7;
+                            text-align: left;
+                        }
+
+                        .board-table td {
+                            padding: 1.2rem;
+                            border-bottom: 1px solid #edf2f7;
+                            vertical-align: middle;
+                        }
+
+                        .board-table tr:hover {
+                            background-color: #fcfdfe;
+                        }
+
+                        .board-title {
+                            font-weight: 600;
+                            color: var(--color-primary);
+                            font-size: 1.1rem;
+                            text-decoration: none;
+                        }
+
+                        .board-meta {
+                            font-size: 0.9rem;
+                            color: #777;
+                            margin-top: 4px;
+                        }
+                    </style>
+
+                    <table class="board-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 70%;">제목</th>
+                                <th style="width: 15%;">날짜</th>
+                                <% if (locals.user && user.isAdmin) { %>
+                                    <th style="width: 15%; text-align: center;">관리</th>
+                                    <% } %>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (locals.sermons && sermons.length> 0) { %>
+                                <% sermons.forEach(function(item) { %>
+                                    <tr>
+                                        <td>
+                                            <a href="/word/sermons/<%= item.id %>" class="board-title">
+                                                <%= item.title %>
+                                            </a>
+                                            <div class="board-meta">
+                                                <%= item.preacher %>
                                             </div>
+                                        </td>
+                                        <td>
+                                            <span style="color: #666; font-size: 0.9rem;">
+                                                <%= item.date %>
+                                            </span>
+                                        </td>
+                                        <% if (locals.user && user.isAdmin) { %>
+                                            <td style="text-align: center; font-size: 0.85rem;">
+                                                <a href="/admin/edit/sermons/<%= item.id %>"
+                                                    style="color: var(--color-secondary); margin-right: 8px;"><i
+                                                        class="fas fa-edit"></i></a>
+                                                <a href="/admin/delete/sermons/<%= item.id %>"
+                                                    onclick="return confirm('정말 삭제하시겠습니까?')" style="color: #e74c3c;"><i
+                                                        class="fas fa-trash"></i></a>
+                                            </td>
                                             <% } %>
-                                    </div>
-                                    <button class="btn btn-primary"
-                                        onclick="window.open('https://youtu.be/<%= sermon.videoId %>', '_blank')">영상
-                                        보기</button>
-                                </div>
-                                <% }); %>
-                                    <% } else { %>
-                                        <p class="text-center">등록된 설교가 없습니다.</p>
-                                        <% } %>
-                    </div>
+                                    </tr>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="<%= (locals.user && user.isAdmin) ? 3 : 2 %>"
+                                                    class="text-center" style="padding: 3rem; color: #aaa;">
+                                                    등록된 설교가 없습니다.
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                        </tbody>
+                    </table>
         </div>
 
         <%- include('../partials/footer') %>
