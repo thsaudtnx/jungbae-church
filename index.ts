@@ -168,7 +168,7 @@ app.get('/word/sermons', async (req, res) => {
 app.get('/word/sermons/:id', async (req, res) => {
     const sermon = await getItem('sermons', req.params.id);
     if (!sermon) return res.status(404).send('Sermon not found');
-    res.render('word/sermon-view', { title: sermon.title + ' - 정배교회', page: 'word-sermons', sermon });
+    res.render('word/sermon-view', { title: (sermon as any).title + ' - 정배교회', page: 'word-sermons', sermon });
 });
 app.get('/word/meditation', async (req, res) => {
     const meditations = await getCollection('meditations');
