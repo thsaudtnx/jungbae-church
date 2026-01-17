@@ -27,7 +27,7 @@
 
   /* Layout */
   --container-width: 1200px;
-  --header-height: 70px;
+  --header-height: 90px;
 }
 
 * {
@@ -156,7 +156,7 @@ header .container {
 }
 
 .logo img {
-  height: 40px;
+  height: 55px;
   vertical-align: middle;
 }
 
@@ -177,7 +177,8 @@ header .container {
 }
 
 .nav-link {
-  font-weight: 500;
+  font-size: 1.15rem;
+  font-weight: 600;
   color: var(--color-text);
   padding: 0.5rem 0;
 }
