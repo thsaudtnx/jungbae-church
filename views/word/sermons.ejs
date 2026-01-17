@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <%- include('../partials/head') %>
+        <style>
+            .sermon-list {
+                display: grid;
+                gap: 20px;
+            }
+
+            .sermon-item {
+                background: #f9f9f9;
+                padding: 20px;
+                border-radius: 8px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .video-container {
+                position: relative;
+                padding-bottom: 56.25%;
+                /* 16:9 */
+                height: 0;
+                overflow: hidden;
+                margin-top: 20px;
+            }
+
+            .video-container iframe {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+</head>
+
+<body>
+    <%- include('../partials/header') %>
+
+        <div class="container" style="padding-top: 100px; padding-bottom: 50px;">
+            <h1 class="text-center">주일 설교</h1>
+            <div class="section-title"></div>
+
+            <% if (locals.user && user.isAdmin) { %>
+                <div style="text-align: right; margin-bottom: 1rem;">
+                    <a href="/admin/write/sermons" class="btn btn-primary">설교 등록</a>
+                </div>
+                <% } %>
+
+                    <div class="sermon-list">
+                        <% if (locals.sermons) { %>
+                            <% sermons.forEach(function(sermon) { %>
+                                <div class="sermon-item">
+                                    <div>
+                                        <h3>
+                                            <%= sermon.title %>
+                                        </h3>
+                                        <p>
+                                            <%= sermon.date %> | <%= sermon.preacher %>
+                                        </p>
+                                        <% if (locals.user && user.isAdmin) { %>
+                                            <div style="margin-top: 0.5rem; font-size: 0.9rem;">
+                                                <a href="/admin/edit/sermons/<%= sermon.id %>"
+                                                    style="color: var(--color-primary);">수정</a> |
+                                                <a href="/admin/delete/sermons/<%= sermon.id %>"
+                                                    onclick="return confirm('정말 삭제하시겠습니까?')" style="color: red;">삭제</a>
+                                            </div>
+                                            <% } %>
+                                    </div>
+                                    <button class="btn btn-primary"
+                                        onclick="window.open('https://youtu.be/<%= sermon.videoId %>', '_blank')">영상
+                                        보기</button>
+                                </div>
+                                <% }); %>
+                                    <% } else { %>
+                                        <p class="text-center">등록된 설교가 없습니다.</p>
+                                        <% } %>
+                    </div>
+        </div>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>

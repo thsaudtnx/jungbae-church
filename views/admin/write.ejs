@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <%- include('../partials/head') %>
+</head>
+
+<body>
+    <%- include('../partials/header') %>
+
+        <div class="container" style="padding-top: 100px; padding-bottom: 50px;">
+            <h1 class="text-center">
+                <%= action==='create' ? '글 작성' : '글 수정' %>
+            </h1>
+            <div class="section-title"></div>
+
+            <form action="/admin/<%= action %>/<%= type %>" method="POST"
+                style="max-width: 800px; margin: 0 auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+
+                <% if (action==='update' ) { %>
+                    <input type="hidden" name="id" value="<%= item.id %>">
+                    <% } %>
+
+                        <% fields.forEach(function(field) { %>
+                            <div style="margin-bottom: 1.5rem;">
+                                <label for="<%= field.name %>"
+                                    style="display: block; margin-bottom: 0.5rem; font-weight: 500;">
+                                    <%= field.label %>
+                                </label>
+
+                                <% if (field.type==='textarea' ) { %>
+                                    <textarea id="<%= field.name %>" name="<%= field.name %>" rows="10"
+                                        style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px;"><%= item ? item[field.name] : '' %></textarea>
+                                    <% } else { %>
+                                        <input type="<%= field.type || 'text' %>" id="<%= field.name %>"
+                                            name="<%= field.name %>" value="<%= item ? item[field.name] : '' %>"
+                                            style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px;">
+                                        <% } %>
+                            </div>
+                            <% }); %>
+
+                                <div style="display: flex; gap: 1rem; justify-content: center;">
+                                    <a href="javascript:history.back()" class="btn btn-outline"
+                                        style="border: 1px solid #ddd; color: #666;">취소</a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <%= action==='create' ? '등록' : '수정' %>
+                                    </button>
+                                </div>
+            </form>
+        </div>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <%- include("../partials/head") %>
+</head>
+
+<body>
+  <%- include("../partials/header") %>
+    <div class="container" style="padding-top: 100px; padding-bottom: 50px;">
+      <h1 class="text-center">교회앨범</h1>
+      <div class="section-title"></div>
+
+      <% if (locals.user && user.isAdmin) { %>
+        <div style="text-align: right; margin-bottom: 1rem;">
+          <a href="/admin/write/galleryItems" class="btn btn-primary">앨범 등록</a>
+        </div>
+        <% } %>
+
+          <div class="card-grid">
+            <% if (locals.galleryItems) { %>
+              <% galleryItems.forEach(function(item) { %>
+                <div class="card" style="padding: 0; overflow: hidden;">
+                  <div
+                    style="height: 200px; background-color: #eee; display: flex; align-items: center; justify-content: center; color: #aaa;">
+                    <!-- 이미지 Placeholder -->
+                    <i class="fas fa-image" style="font-size: 3rem;"></i>
+                  </div>
+                  <div style="padding: 1.5rem;">
+                    <h3>
+                      <%= item.title %>
+                    </h3>
+                    <p style="color: #666; margin-bottom: 0.5rem;">
+                      <%= item.date %>
+                    </p>
+                    <% if (locals.user && user.isAdmin) { %>
+                      <div style="font-size: 0.9rem;">
+                        <a href="/admin/edit/galleryItems/<%= item.id %>" style="color: var(--color-primary);">수정</a> |
+                        <a href="/admin/delete/galleryItems/<%= item.id %>" onclick="return confirm('정말 삭제하시겠습니까?')"
+                          style="color: red;">삭제</a>
+                      </div>
+                      <% } %>
+                  </div>
+                </div>
+                <% }); %>
+                  <% } else { %>
+                    <p class="text-center">등록된 사진이 없습니다.</p>
+                    <% } %>
+          </div>
+    </div>
+    <%- include("../partials/footer") %>
+      <script src="/js/main.js"></script>
+</body>
+
+</html>

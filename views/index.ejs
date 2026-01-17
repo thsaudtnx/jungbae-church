@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <%- include('partials/head') %>
+        <style>
+            /* Hero Section specific styles */
+            .hero {
+                height: 80vh;
+                background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                color: white;
+                padding-top: var(--header-height);
+            }
+
+            .hero-content h1 {
+                font-size: 3.5rem;
+                margin-bottom: 1rem;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                color: white;
+            }
+
+            .hero-content p {
+                font-size: 1.5rem;
+                margin-bottom: 2rem;
+                opacity: 0.9;
+            }
+
+            .quick-links {
+                padding: var(--spacing-xl) 0;
+                background: var(--color-bg-alt);
+            }
+
+            .card-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2rem;
+            }
+
+            .card {
+                background: white;
+                padding: 2rem;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                transition: transform 0.3s ease;
+                text-align: center;
+            }
+
+            .card:hover {
+                transform: translateY(-5px);
+            }
+
+            .card i {
+                font-size: 2.5rem;
+                color: var(--color-primary);
+                margin-bottom: 1rem;
+            }
+
+            .card h3 {
+                font-size: 1.2rem;
+                margin-bottom: 0.5rem;
+            }
+        </style>
+</head>
+
+<body>
+    <%- include('partials/header') %>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container hero-content">
+                <h1>환영합니다<br>정배교회입니다</h1>
+                <p>하나님의 사랑이 함께하는 곳</p>
+                <a href="/church/philosophy" class="btn btn-outline" style="border-color: white; color: white;">교회 소개
+                    보기</a>
+            </div>
+        </section>
+
+        <!-- Quick Links -->
+        <section class="quick-links">
+            <div class="container">
+                <div class="section-title text-center">
+                    <h2>예배 안내</h2>
+                </div>
+                <div class="card-grid">
+                    <div class="card">
+                        <i class="fas fa-church"></i>
+                        <h3>주일 예배</h3>
+                        <p>오전 11:00</p>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-video"></i>
+                        <h3>온라인 예배</h3>
+                        <p>유튜브 실시간 송출</p>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h3>오시는 길</h3>
+                        <p>경기도 양평군 서종면 정배리</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <%- include('partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>

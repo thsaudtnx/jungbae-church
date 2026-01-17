@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <%- include("../partials/head") %>
+</head>
+
+<body>
+  <%- include("../partials/header") %>
+    <div class="container" style="padding-top: 100px; padding-bottom: 50px;">
+      <h1 class="text-center">새벽묵상</h1>
+      <div class="section-title"></div>
+
+      <% if (locals.user && user.isAdmin) { %>
+        <div style="text-align: right; margin-bottom: 1rem;">
+          <a href="/admin/write/meditations" class="btn btn-primary">묵상 등록</a>
+        </div>
+        <% } %>
+
+          <style>
+            .meditation-table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 2rem;
+              background: white;
+              border-radius: 12px;
+              overflow: hidden;
+              box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            }
+
+            .meditation-table th {
+              background: #f8f9fa;
+              padding: 1.2rem;
+              font-weight: 600;
+              color: var(--color-text);
+              border-bottom: 2px solid #edf2f7;
+              text-align: left;
+            }
+
+            .meditation-table td {
+              padding: 1.2rem;
+              border-bottom: 1px solid #edf2f7;
+              vertical-align: middle;
+            }
+
+            .meditation-table tr:hover {
+              background-color: #fcfdfe;
+            }
+
+            .date-badge {
+              font-size: 0.85rem;
+              color: var(--color-text-light);
+              background: #f1f3f5;
+              padding: 4px 10px;
+              border-radius: 20px;
+            }
+
+            .meditation-title {
+              font-weight: 600;
+              color: var(--color-primary);
+              font-size: 1.05rem;
+              display: block;
+              margin-bottom: 4px;
+            }
+
+            .meditation-summary {
+              font-size: 0.9rem;
+              color: #666;
+              display: -webkit-box;
+              -webkit-line-clamp: 1;
+              -webkit-box-orient: vertical;
+              overflow: hidden;
+            }
+
+            @media (max-width: 600px) {
+
+              .meditation-table th:nth-child(2),
+              .meditation-table td:nth-child(2) {
+                display: none;
+              }
+            }
+          </style>
+
+          <table class="meditation-table">
+            <thead>
+              <tr>
+                <th style="width: 60%;">주제</th>
+                <th style="width: 25%;">날짜</th>
+                <% if (locals.user && user.isAdmin) { %>
+                  <th style="width: 15%; text-align: center;">관리</th>
+                  <% } %>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (locals.meditations && meditations.length> 0) { %>
+                <% meditations.forEach(function(item) { %>
+                  <tr>
+                    <td>
+                      <a href="#" class="meditation-title">
+                        <%= item.title %>
+                      </a>
+                      <div class="meditation-summary">
+                        <%= item.summary %>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="date-badge">
+                        <%= item.date %>
+                      </span>
+                    </td>
+                    <% if (locals.user && user.isAdmin) { %>
+                      <td style="text-align: center; font-size: 0.85rem;">
+                        <a href="/admin/edit/meditations/<%= item.id %>"
+                          style="color: var(--color-secondary); margin-right: 8px;"><i class="fas fa-edit"></i></a>
+                        <a href="/admin/delete/meditations/<%= item.id %>" onclick="return confirm('정말 삭제하시겠습니까?')"
+                          style="color: #e74c3c;"><i class="fas fa-trash"></i></a>
+                      </td>
+                      <% } %>
+                  </tr>
+                  <% }); %>
+                    <% } else { %>
+                      <tr>
+                        <td colspan="<%= (locals.user && user.isAdmin) ? 3 : 2 %>" class="text-center"
+                          style="padding: 3rem; color: #aaa;">
+                          등록된 묵상이 없습니다.
+                        </td>
+                      </tr>
+                      <% } %>
+            </tbody>
+          </table>
+    </div>
+    <%- include("../partials/footer") %>
+      <script src="/js/main.js"></script>
+</body>
+
+</html>

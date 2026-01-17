@@ -1,0 +1,22 @@
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-info">
+                <h3>정배교회</h3>
+                <p>경기도 양평군 서종면 정배리 ...</p>
+                <p>Tel: 031-000-0000 | Email: contact@jungbaechurch.org</p>
+            </div>
+            <div class="footer-links">
+                <p>&copy; 2025 Jungbae Church. All Rights Reserved.</p>
+                <div style="margin-top: 1rem; font-size: 0.8rem;">
+                    <% if (locals.user && user.isAdmin) { %>
+                        <span style="color: var(--color-primary); margin-right: 10px;">관리자 모드</span>
+                        <a href="/logout" style="color: #666;">로그아웃</a>
+                        <% } else { %>
+                            <a href="/login" style="color: #aaa;">관리자 로그인</a>
+                            <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

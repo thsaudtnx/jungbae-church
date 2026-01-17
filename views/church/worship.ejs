@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <%- include('../partials/head') %>
+</head>
+
+<body>
+    <%- include('../partials/header') %>
+
+        <div class="container" style="padding-top: 100px; padding-bottom: 50px;">
+            <h1 class="text-center">예배 안내</h1>
+            <div class="section-title"></div>
+
+            <div style="max-width: 800px; margin: 0 auto;">
+                <% if (locals.user && user.isAdmin) { %>
+                    <div style="text-align: right; margin-bottom: 1rem;">
+                        <a href="/admin/write/worshipServices" class="btn btn-primary">예배 추가</a>
+                    </div>
+                    <% } %>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr
+                                    style="background: var(--color-bg-alt); border-bottom: 2px solid var(--color-primary);">
+                                    <th style="padding: 1rem;">예배명</th>
+                                    <th style="padding: 1rem;">시간</th>
+                                    <th style="padding: 1rem;">장소</th>
+                                    <% if (locals.user && user.isAdmin) { %>
+                                        <th style="padding: 1rem; width: 100px;">관리</th>
+                                        <% } %>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (locals.services && services.length> 0) { %>
+                                    <% services.forEach(function(item) { %>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <td style="padding: 1rem; text-align: center;">
+                                                <%= item.name %>
+                                            </td>
+                                            <td style="padding: 1rem; text-align: center;">
+                                                <%= item.time %>
+                                            </td>
+                                            <td style="padding: 1rem; text-align: center;">
+                                                <%= item.place %>
+                                            </td>
+                                            <% if (locals.user && user.isAdmin) { %>
+                                                <td style="padding: 1rem; text-align: center;">
+                                                    <a href="/admin/edit/worshipServices/<%= item.id %>"
+                                                        style="color: var(--color-primary); margin-right: 5px;">수정</a>
+                                                    <a href="/admin/delete/worshipServices/<%= item.id %>"
+                                                        onclick="return confirm('정말 삭제하시겠습니까?')"
+                                                        style="color: red;">삭제</a>
+                                                </td>
+                                                <% } %>
+                                        </tr>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="3" class="text-center" style="padding: 2rem;">등록된 예배가
+                                                        없습니다.</td>
+                                                </tr>
+                                                <% } %>
+                            </tbody>
+                        </table>
+            </div>
+        </div>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>

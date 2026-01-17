@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <%- include("../partials/head") %>
+</head>
+
+<body>
+  <%- include("../partials/header") %>
+    <div class="container" style="padding-top: 100px; padding-bottom: 50px;">
+      <h1 class="text-center">주보</h1>
+      <div class="section-title"></div>
+
+      <% if (locals.user && user.isAdmin) { %>
+        <div style="text-align: right; margin-bottom: 1rem;">
+          <a href="/admin/write/bulletins" class="btn btn-primary">주보 등록</a>
+        </div>
+        <% } %>
+
+          <div class="card-grid">
+            <% if (locals.bulletins) { %>
+              <% bulletins.forEach(function(item) { %>
+                <div class="card" style="text-align: center; padding: 3rem 2rem;">
+                  <div style="font-size: 3rem; color: var(--color-primary); margin-bottom: 1rem;">
+                    <i class="far fa-file-pdf"></i>
+                  </div>
+                  <h3>
+                    <%= item.title %>
+                  </h3>
+                  <p style="color: #666; margin-bottom: 1.5rem;">
+                    <%= item.date %>
+                  </p>
+                  <% if (locals.user && user.isAdmin) { %>
+                    <div style="font-size: 0.9rem; margin-bottom: 1rem;">
+                      <a href="/admin/edit/bulletins/<%= item.id %>" style="color: var(--color-primary);">수정</a> |
+                      <a href="/admin/delete/bulletins/<%= item.id %>" onclick="return confirm('정말 삭제하시겠습니까?')"
+                        style="color: red;">삭제</a>
+                    </div>
+                    <% } %>
+                      <a href="#" class="btn btn-outline">다운로드</a>
+                </div>
+                <% }); %>
+                  <% } else { %>
+                    <p class="text-center">등록된 주보가 없습니다.</p>
+                    <% } %>
+          </div>
+    </div>
+    <%- include("../partials/footer") %>
+      <script src="/js/main.js"></script>
+</body>
+
+</html>
