@@ -13,9 +13,27 @@
       </div>
 
       <div style="max-width: 900px; margin: 0 auto; margin-top: 2rem;">
+        <!-- Interactive Map Container -->
         <div
           style="background: white; padding: 1rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 2rem; border: 1px solid #eee;">
-          <img src="/images/map.jpg" alt="정배교회 오시는 길 지도" style="width: 100%; border-radius: 10px; display: block;">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3164.7431777274043!2d127.35825367635671!3d37.51399422745347!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x356396e9527f0507%3A0xe5f992c6b39d10e!2z6rK96riw64-EIOeykeyPreq1sCDshJzsobzrqbQg7KSR66-47IKw66GcIDc3Mw!5e0!3m2!1sko!2skr!4v1710000000000!5m2!1sko!2skr"
+            width="100%" height="450" style="border:0; border-radius: 10px;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+
+        <!-- Shortcut Buttons -->
+        <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 3rem; flex-wrap: wrap;">
+          <a href="https://naver.me/5jBJuuQh" target="_blank" class="btn"
+            style="background-color: #03C75A; color: white; border: none; display: flex; align-items: center; gap: 8px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Naver_Logotype.svg" alt="Naver"
+              style="height: 14px; filter: brightness(0) invert(1);"> 네이버 지도로 보기
+          </a>
+          <a href="https://map.kakao.com/link/search/경기도 양평군 서종면 중미산로 773" target="_blank" class="btn"
+            style="background-color: #FFCD00; color: #3C1E1E; border: none; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-comment" style="font-size: 1.2rem;"></i> 카카오맵으로 보기
+          </a>
         </div>
 
         <div
@@ -25,6 +43,9 @@
             <h3 style="margin-bottom: 1rem; color: var(--color-text);"><i class="fas fa-map-marker-alt"
                 style="color: var(--color-primary); margin-right: 10px;"></i> 주소</h3>
             <p style="font-size: 1.1rem; line-height: 1.6; color: #555;">경기도 양평군 서종면 중미산로 773</p>
+            <button onclick="copyAddress()"
+              style="margin-top: 10px; background: none; border: 1px solid #ddd; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; color: #666;"><i
+                class="far fa-copy"></i> 주소 복사하기</button>
           </div>
           <div
             style="background: white; padding: 2rem; border-radius: 15px; border-top: 4px solid var(--color-secondary); box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
@@ -35,6 +56,15 @@
           </div>
         </div>
       </div>
+
+      <script>
+        function copyAddress() {
+          const addr = '경기도 양평군 서종면 중미산로 773';
+          navigator.clipboard.writeText(addr).then(() => {
+            alert('주소가 복사되었습니다.');
+          });
+        }
+      </script>
     </div>
     <%- include("../partials/footer") %>
       <script src="/js/main.js"></script>
