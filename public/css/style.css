@@ -257,7 +257,7 @@ footer {
     top: var(--header-height);
     right: 0;
     background: #fff;
-    width: 250px;
+    width: 210px;
     height: calc(100vh - var(--header-height));
     flex-direction: column;
     padding: 2rem;
