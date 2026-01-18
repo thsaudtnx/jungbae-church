@@ -15,53 +15,105 @@
             <div style="max-width: 800px; margin: 0 auto;">
                 <% if (locals.user && user.isAdmin) { %>
                     <div style="text-align: right; margin-bottom: 1rem;">
-                        <a href="/admin/write/worshipServices" class="btn btn-primary">예배 추가</a>
+                        <a href="/admin/write/worshipServices" class="btn btn-primary"
+                            style="font-size: 0.9rem; padding: 0.5rem 1rem;">예배 추가</a>
                     </div>
                     <% } %>
-                        <table style="width: 100%; border-collapse: collapse;">
-                            <thead>
-                                <tr
-                                    style="background: var(--color-bg-alt); border-bottom: 2px solid var(--color-primary);">
-                                    <th style="padding: 1rem;">예배명</th>
-                                    <th style="padding: 1rem;">시간</th>
-                                    <th style="padding: 1rem;">장소</th>
-                                    <% if (locals.user && user.isAdmin) { %>
-                                        <th style="padding: 1rem; width: 100px;">관리</th>
-                                        <% } %>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% if (locals.services && services.length> 0) { %>
-                                    <% services.forEach(function(item) { %>
-                                        <tr style="border-bottom: 1px solid #ddd;">
-                                            <td style="padding: 1rem; text-align: center;">
-                                                <%= item.name %>
-                                            </td>
-                                            <td style="padding: 1rem; text-align: center;">
-                                                <%= item.time %>
-                                            </td>
-                                            <td style="padding: 1rem; text-align: center;">
-                                                <%= item.place %>
-                                            </td>
-                                            <% if (locals.user && user.isAdmin) { %>
-                                                <td style="padding: 1rem; text-align: center;">
-                                                    <a href="/admin/edit/worshipServices/<%= item.id %>"
-                                                        style="color: var(--color-primary); margin-right: 5px;">수정</a>
-                                                    <a href="/admin/delete/worshipServices/<%= item.id %>"
-                                                        onclick="return confirm('정말 삭제하시겠습니까?')"
-                                                        style="color: red;">삭제</a>
+                        <div
+                            style="background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #eee; margin-bottom: 4rem;">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr
+                                        style="background: var(--color-bg-alt); border-bottom: 2px solid var(--color-primary);">
+                                        <th style="padding: 1.2rem; color: var(--color-text);">예배명</th>
+                                        <th style="padding: 1.2rem; color: var(--color-text);">시간</th>
+                                        <th style="padding: 1.2rem; color: var(--color-text);">장소</th>
+                                        <% if (locals.user && user.isAdmin) { %>
+                                            <th style="padding: 1.2rem; width: 100px; color: var(--color-text);">관리</th>
+                                            <% } %>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (locals.services && services.length> 0) { %>
+                                        <% services.forEach(function(item) { %>
+                                            <tr style="border-bottom: 1px solid #eee;">
+                                                <td style="padding: 1.2rem; text-align: center; font-weight: 500;">
+                                                    <%= item.name %>
                                                 </td>
-                                                <% } %>
-                                        </tr>
-                                        <% }); %>
-                                            <% } else { %>
-                                                <tr>
-                                                    <td colspan="3" class="text-center" style="padding: 2rem;">등록된 예배가
-                                                        없습니다.</td>
-                                                </tr>
-                                                <% } %>
-                            </tbody>
-                        </table>
+                                                <td style="padding: 1.2rem; text-align: center; color: #666;">
+                                                    <%= item.time %>
+                                                </td>
+                                                <td style="padding: 1.2rem; text-align: center; color: #666;">
+                                                    <%= item.place %>
+                                                </td>
+                                                <% if (locals.user && user.isAdmin) { %>
+                                                    <td style="padding: 1.2rem; text-align: center;">
+                                                        <a href="/admin/edit/worshipServices/<%= item.id %>"
+                                                            style="color: var(--color-primary); margin-right: 10px; font-size: 0.9rem;"><i
+                                                                class="fas fa-edit"></i></a>
+                                                        <a href="/admin/delete/worshipServices/<%= item.id %>"
+                                                            onclick="return confirm('정말 삭제하시겠습니까?')"
+                                                            style="color: #e74c3c; font-size: 0.9rem;"><i
+                                                                class="fas fa-trash"></i></a>
+                                                    </td>
+                                                    <% } %>
+                                            </tr>
+                                            <% }); %>
+                                                <% } else { %>
+                                                    <tr>
+                                                        <td colspan="4" class="text-center"
+                                                            style="padding: 3rem; color: #999;">등록된 예배가 없습니다.</td>
+                                                    </tr>
+                                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div style="margin-top: 5rem;">
+                            <h1 class="text-center">섬기는 사람들</h1>
+                            <div class="section-title"></div>
+
+                            <% if (locals.user && user.isAdmin) { %>
+                                <div style="text-align: right; margin-bottom: 1rem;">
+                                    <a href="/admin/write/staffMembers" class="btn btn-primary"
+                                        style="font-size: 0.9rem; padding: 0.5rem 1rem;">직원 추가</a>
+                                </div>
+                                <% } %>
+
+                                    <div
+                                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+                                        <% if (locals.staff && staff.length> 0) { %>
+                                            <% staff.forEach(function(item) { %>
+                                                <div
+                                                    style="background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid #eee; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: transform 0.2s ease;">
+                                                    <div
+                                                        style="color: var(--color-primary); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem;">
+                                                        <%= item.role %>
+                                                    </div>
+                                                    <div
+                                                        style="font-size: 1.15rem; font-weight: 700; color: var(--color-text);">
+                                                        <%= item.name %>
+                                                    </div>
+
+                                                    <% if (locals.user && user.isAdmin) { %>
+                                                        <div
+                                                            style="margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid #f5f5f5;">
+                                                            <a href="/admin/edit/staffMembers/<%= item.id %>"
+                                                                style="color: var(--color-primary); margin-right: 15px; font-size: 0.85rem;">수정</a>
+                                                            <a href="/admin/delete/staffMembers/<%= item.id %>"
+                                                                onclick="return confirm('정말 삭제하시겠습니까?')"
+                                                                style="color: #e74c3c; font-size: 0.85rem;">삭제</a>
+                                                        </div>
+                                                        <% } %>
+                                                </div>
+                                                <% }); %>
+                                                    <% } else { %>
+                                                        <div class="text-center"
+                                                            style="grid-column: 1 / -1; padding: 2rem; color: #999;">등록된
+                                                            정보가 없습니다.</div>
+                                                        <% } %>
+                                    </div>
+                        </div>
             </div>
         </div>
 

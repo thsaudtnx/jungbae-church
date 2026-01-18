@@ -110,6 +110,10 @@ const SCHEMAS: any = {
         { name: 'name', label: '예배명' },
         { name: 'time', label: '시간' },
         { name: 'place', label: '장소' }
+    ],
+    staffMembers: [
+        { name: 'role', label: '직분' },
+        { name: 'name', label: '이름' }
     ]
 };
 
@@ -154,7 +158,8 @@ app.get('/church/pastor', async (req, res) => {
 });
 app.get('/church/worship', async (req, res) => {
     const services = await getCollection('worshipServices');
-    res.render('church/worship', { title: '예배 안내 - 정배교회', page: 'church-worship', services });
+    const staff = await getCollection('staffMembers');
+    res.render('church/worship', { title: '예배 안내 - 정배교회', page: 'church-worship', services, staff });
 });
 app.get('/church/location', (req, res) => {
     res.render('church/location', { title: '오시는 길 - 정배교회', page: 'church-location' });
