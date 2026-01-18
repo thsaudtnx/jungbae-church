@@ -268,15 +268,38 @@ footer {
 
   .nav-menu.active {
     transform: translateX(0);
+    overflow-y: auto;
   }
 
-  .nav-item:hover .dropdown {
+  .nav-item {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .nav-link {
+    font-size: 1.2rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .dropdown {
     position: static;
-    box-shadow: none;
+    display: block;
     opacity: 1;
     visibility: visible;
     transform: none;
-    padding-left: 1rem;
-    display: none;
+    box-shadow: none;
+    padding-left: 1.2rem;
+    background: transparent;
+    transition: none;
+    min-width: auto;
+  }
+
+  .dropdown li a {
+    font-size: 1.05rem;
+    padding: 0.4rem 0;
+    color: #666;
   }
 }
