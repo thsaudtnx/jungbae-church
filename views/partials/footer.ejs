@@ -1,19 +1,42 @@
 <footer>
     <div class="container">
-        <div class="footer-content">
-            <div class="footer-info">
-                <h3>정배교회</h3>
-                <p>경기도 양평군 서종면 정배리 ...</p>
-                <p>Tel: 031-000-0000 | Email: contact@jungbaechurch.org</p>
+        <div class="footer-content" style="display: block;">
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                <div class="footer-info" style="text-align: left;">
+                    <h3 style="margin-bottom: 0.8rem; color: var(--color-text);">정배교회 <span
+                            style="font-size: 0.85rem; font-weight: normal; color: var(--color-text-light); margin-left: 10px;">대한예수교장로회(통합)</span>
+                    </h3>
+                    <p style="margin-bottom: 0.4rem; font-size: 0.95rem; color: #555;"><i class="fas fa-map-marker-alt"
+                            style="width: 20px; color: var(--color-primary);"></i> <b>주소:</b> 경기도 양평군 서종면 중미산로 773</p>
+                    <p style="margin-bottom: 1rem; font-size: 0.95rem; color: #555;"><i class="fas fa-envelope"
+                            style="width: 20px; color: var(--color-primary);"></i> <b>이메일:</b> ypjbch@gmail.com</p>
+                </div>
+                <div class="footer-social" style="text-align: left;">
+                    <h4 style="margin-bottom: 1rem; font-size: 1rem; color: var(--color-text);">소셜 네트워크</h4>
+                    <div style="display: flex; gap: 20px;">
+                        <a href="https://www.youtube.com/@jeongBaeChurch" target="_blank" title="유튜브"
+                            style="font-size: 1.6rem; color: #FF0000;"><i class="fab fa-youtube"></i></a>
+                        <a href="https://www.instagram.com/yp_jbchurch" target="_blank" title="인스타그램"
+                            style="font-size: 1.6rem; color: #E1306C;"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.threads.net/@yp_jbchurch" target="_blank" title="스레드"
+                            style="font-size: 1.6rem; color: #000000;"><i class="fab fa-threads"></i></a>
+                        <a href="#" target="_blank" title="페이스북" style="font-size: 1.6rem; color: #1877F2;"><i
+                                class="fab fa-facebook"></i></a>
+                    </div>
+                </div>
             </div>
-            <div class="footer-links">
-                <p>&copy; 2025 Jungbae Church. All Rights Reserved.</p>
-                <div style="margin-top: 1rem; font-size: 0.8rem;">
+
+            <div
+                style="border-top: 1px solid #ddd; padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <p style="color: #777; font-size: 0.9rem;">&copy; 2026 정배교회. <b>일상·여백·하나님 나라</b></p>
+                <div style="font-size: 0.85rem;">
                     <% if (locals.user && user.isAdmin) { %>
-                        <span style="color: var(--color-primary); margin-right: 10px;">관리자 모드</span>
-                        <a href="/logout" style="color: #666;">로그아웃</a>
+                        <span style="color: var(--color-primary); margin-right: 15px;"><i
+                                class="fas fa-user-shield"></i> 관리자 모드</span>
+                        <a href="/logout" style="color: #666; text-decoration: underline;">로그아웃</a>
                         <% } else { %>
-                            <a href="/login" style="color: #aaa;">관리자 로그인</a>
+                            <a href="/login" style="color: #bbb; text-decoration: none;">관리자 로그인</a>
                             <% } %>
                 </div>
             </div>
