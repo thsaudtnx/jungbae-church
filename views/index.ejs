@@ -7,7 +7,7 @@
             /* Hero Section specific styles */
             .hero {
                 height: 80vh;
-                background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/images/church-background.jpeg') center/cover no-repeat;
+                background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/images/jbchurch-background.png') center/cover no-repeat;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -17,16 +17,27 @@
             }
 
             .hero-content h1 {
-                font-size: 3.5rem;
+                font-size: 3rem;
                 margin-bottom: 1rem;
-                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
                 color: white;
+                line-height: 1.2;
             }
 
             .hero-content p {
-                font-size: 1.5rem;
+                font-size: 1.2rem;
                 margin-bottom: 2rem;
                 opacity: 0.9;
+            }
+
+            @media (max-width: 768px) {
+                .hero-content h1 {
+                    font-size: 2.2rem;
+                }
+
+                .hero-content p {
+                    font-size: 1.1rem;
+                }
             }
 
             .quick-links {
@@ -82,9 +93,6 @@
         <!-- Quick Links -->
         <section class="quick-links">
             <div class="container">
-                <div class="section-title text-center">
-                    <h2>예배 안내</h2>
-                </div>
                 <div class="card-grid">
                     <div class="card">
                         <i class="fas fa-church"></i>

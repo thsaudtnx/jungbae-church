@@ -156,7 +156,7 @@ header .container {
 }
 
 .logo img {
-  height: 55px;
+  height: 82px;
   vertical-align: middle;
 }
 
@@ -177,8 +177,8 @@ header .container {
 }
 
 .nav-link {
-  font-size: 1.15rem;
-  font-weight: 600;
+  font-size: 1.6rem;
+  font-weight: 700;
   color: var(--color-text);
   padding: 0.5rem 0;
 }

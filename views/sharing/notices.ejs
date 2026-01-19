@@ -24,7 +24,6 @@
                   <th style="padding: 1rem; width: 60px;">No.</th>
                   <th style="padding: 1rem;">제목</th>
                   <th style="padding: 1rem; width: 120px;">날짜</th>
-                  <th style="padding: 1rem; width: 80px;">조회</th>
                   <% if (locals.user && user.isAdmin) { %>
                     <th style="padding: 1rem; width: 120px;">관리</th>
                     <% } %>
@@ -43,9 +42,6 @@
                       <td style="padding: 1rem; text-align: center; color: #666;">
                         <%= item.date %>
                       </td>
-                      <td style="padding: 1rem; text-align: center; color: #666;">
-                        <%= item.views %>
-                      </td>
                       <% if (locals.user && user.isAdmin) { %>
                         <td style="padding: 1rem; text-align: center;">
                           <a href="/admin/edit/notices/<%= item.id %>"
@@ -58,7 +54,7 @@
                     <% }); %>
                       <% } else { %>
                         <tr>
-                          <td colspan="4" class="text-center" style="padding: 2rem;">등록된 공지가 없습니다.</td>
+                          <td colspan="3" class="text-center" style="padding: 2rem;">등록된 공지가 없습니다.</td>
                         </tr>
                         <% } %>
               </tbody>

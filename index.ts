@@ -98,7 +98,6 @@ const SCHEMAS: any = {
         { name: 'image', label: '이미지 파일명' }
     ],
     philosophies: [
-        { name: 'title', label: '제목' },
         { name: 'content', label: '내용', type: 'textarea' }
     ],
     pastorProfiles: [
@@ -142,7 +141,7 @@ app.get('/logout', (req, res) => {
 
 // Home
 app.get('/', (req, res) => {
-    res.render('index', { title: '정배교회 - 환영합니다', page: 'home' });
+    res.render('index', { title: '정배교회', page: 'home' });
 });
 
 // Church Section
