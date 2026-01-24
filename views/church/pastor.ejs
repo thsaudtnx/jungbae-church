@@ -24,7 +24,7 @@
 
                     <div style="max-width: 800px; margin: 0 auto; text-align: center;">
                         <div style="margin-bottom: 2rem;">
-                            <img src="/images/pastor.jpg"
+                            <img src="<%= (typeof pastor !== 'undefined' && pastor.image) ? pastor.image : '/images/pastor.jpg' %>"
                                 alt="<%= typeof pastor !== 'undefined' ? pastor.name : '김정배' %> 목사님"
                                 style="width: 250px; height: 250px; object-fit: cover; border-radius: 50%; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 5px solid white;">
                         </div>

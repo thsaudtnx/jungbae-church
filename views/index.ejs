@@ -56,12 +56,25 @@
                 padding: 2rem;
                 border-radius: 10px;
                 box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-                transition: transform 0.3s ease;
+                transition: all 0.3s ease;
                 text-align: center;
+                text-decoration: none;
+                color: inherit;
+                display: block;
+                cursor: pointer;
             }
 
             .card:hover {
                 transform: translateY(-5px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            }
+
+            .card h3 {
+                color: var(--color-text);
+            }
+
+            .card p {
+                color: var(--color-text-light);
             }
 
             .card i {
@@ -84,7 +97,7 @@
         <section class="hero">
             <div class="container hero-content">
                 <h1>환영합니다<br>정배교회입니다</h1>
-                <p>하나님의 사랑이 함께하는 곳</p>
+                <p>일상에 스미는 하나님 나라</p>
                 <a href="/church/philosophy" class="btn btn-outline" style="border-color: white; color: white;">교회 소개
                     보기</a>
             </div>
@@ -94,21 +107,21 @@
         <section class="quick-links">
             <div class="container">
                 <div class="card-grid">
-                    <div class="card">
+                    <a href="/church/worship" class="card">
                         <i class="fas fa-church"></i>
                         <h3>주일 예배</h3>
-                        <p>오전 11:00</p>
-                    </div>
-                    <div class="card">
+                        <p>1부 9:00 / 2부 11:00</p>
+                    </a>
+                    <a href="https://www.youtube.com/@jeongBaeChurch" target="_blank" class="card">
                         <i class="fas fa-video"></i>
                         <h3>온라인 예배</h3>
-                        <p>유튜브 실시간 송출</p>
-                    </div>
-                    <div class="card">
+                        <p>유튜브 실시간 방송</p>
+                    </a>
+                    <a href="/church/location" class="card">
                         <i class="fas fa-map-marker-alt"></i>
                         <h3>오시는 길</h3>
-                        <p>경기도 양평군 서종면 정배리</p>
-                    </div>
+                        <p>경기도 양평군 서종면 중미산로 773</p>
+                    </a>
                 </div>
             </div>
         </section>

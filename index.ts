@@ -1,7 +1,9 @@
 import express from 'express';
 import path from 'path';
 import session from 'express-session';
-import { db } from './db';
+import multer from 'multer';
+import { db, bucket } from './db';
+import fs from 'fs';
 
 const app = express();
 const PORT = 3000;
@@ -22,6 +24,44 @@ app.set('views', path.join(process.cwd(), 'views'));
 // Static files
 app.use(express.static(path.join(process.cwd(), 'public')));
 
+// Multer setup for file uploads (Memory storage for Firebase)
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 10 * 1024 * 1024 // 10MB limit
+    }
+});
+
+// Helper function to upload to Firebase Storage
+async function uploadToFirebase(file: any): Promise<string> {
+    if (!bucket) {
+        throw new Error('Firebase Storage bucket not initialized');
+    }
+
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const fileName = `uploads/${uniqueSuffix}${path.extname(file.originalname)}`;
+    const blob = bucket.file(fileName);
+
+    const blobStream = blob.createWriteStream({
+        metadata: {
+            contentType: file.mimetype
+        },
+        resumable: false
+    });
+
+    return new Promise((resolve, reject) => {
+        blobStream.on('error', (error: any) => reject(error));
+        blobStream.on('finish', async () => {
+            // Make the file public
+            await blob.makePublic();
+            // Construct the public URL
+            const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+            resolve(publicUrl);
+        });
+        blobStream.end(file.buffer);
+    });
+}
+
 // Helper functions for Data (Firestore)
 async function getCollection(collectionName: string) {
     if (!db) return [];
@@ -31,8 +71,14 @@ async function getCollection(collectionName: string) {
         // we map it simply. We can improve sorting later.
         let items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
 
-        // Simple sort by date descend if date exists
+        // Sort by 'order' ASC if exists, then by 'date' DESC
         items.sort((a, b) => {
+            const orderA = a.order !== undefined ? Number(a.order) : Infinity;
+            const orderB = b.order !== undefined ? Number(b.order) : Infinity;
+
+            if (orderA !== orderB) {
+                return orderA - orderB;
+            }
             if (a.date && b.date) {
                 return a.date < b.date ? 1 : -1;
             }
@@ -101,8 +147,8 @@ const SCHEMAS: any = {
         { name: 'content', label: '내용', type: 'textarea' }
     ],
     pastorProfiles: [
+        { name: 'image', label: '목사님 사진', type: 'file' },
         { name: 'name', label: '이름명' },
-        { name: 'role', label: '직분 (예: 담임목사)' },
         { name: 'description', label: '소개글', type: 'textarea' }
     ],
     worshipServices: [
@@ -234,10 +280,18 @@ app.get('/admin/edit/:type/:id', async (req, res) => {
 });
 
 // Create Logic
-app.post('/admin/create/:type', async (req, res) => {
+app.post('/admin/create/:type', upload.any(), async (req, res) => {
     if (!(req.session as any).user?.isAdmin) return res.sendStatus(403);
     const { type } = req.params;
-    const items = req.body;
+    const items = { ...req.body };
+
+    // Handle uploaded files to Firebase Storage
+    if (req.files && Array.isArray(req.files)) {
+        for (const file of req.files as any[]) {
+            const publicUrl = await uploadToFirebase(file);
+            items[file.fieldname] = publicUrl;
+        }
+    }
 
     if (db) {
         // Handle potential array inputs if multiple items (not typical for this form, but good to be safe)
@@ -262,10 +316,18 @@ app.post('/admin/create/:type', async (req, res) => {
 });
 
 // Update Logic
-app.post('/admin/update/:type', async (req, res) => {
+app.post('/admin/update/:type', upload.any(), async (req, res) => {
     if (!(req.session as any).user?.isAdmin) return res.sendStatus(403);
     const { type } = req.params;
     const { id, ...updates } = req.body;
+
+    // Handle uploaded files to Firebase Storage
+    if (req.files && Array.isArray(req.files)) {
+        for (const file of req.files as any[]) {
+            const publicUrl = await uploadToFirebase(file);
+            updates[file.fieldname] = publicUrl;
+        }
+    }
 
     if (db) {
         await db.collection(type).doc(id).update(updates);
