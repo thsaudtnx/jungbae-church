@@ -62,6 +62,43 @@ async function uploadToFirebase(file: any): Promise<string> {
     });
 }
 
+// Helper function to extract YouTube video ID from URL or Iframe
+function extractYouTubeId(url: string): string {
+    if (!url) return '';
+    const trimmed = url.trim();
+
+    // 1. <iframe> 소스코드에서 추출 시도
+    if (trimmed.includes('<iframe')) {
+        const srcMatch = trimmed.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/);
+        if (srcMatch) return srcMatch[1];
+    }
+
+    // 2. 주소창 주소에서 추출 시도
+    try {
+        if (trimmed.includes('youtube.com') || trimmed.includes('youtu.be')) {
+            // URL 객체를 사용하여 쿼리 파라미터(v=) 추출
+            if (trimmed.includes('?')) {
+                const searchParams = new URL(trimmed.startsWith('http') ? trimmed : `https://${trimmed}`).searchParams;
+                const v = searchParams.get('v');
+                if (v && /^[a-zA-Z0-9_-]{11}$/.test(v)) return v;
+            }
+        }
+    } catch (e) { }
+
+    // 3. 정규식으로 모든 패턴에서 11자리 ID 검색
+    const patterns = [
+        /(?:v=|v\/|embed\/|youtu\.be\/|live\/)([a-zA-Z0-9_-]{11})/,
+        /^[a-zA-Z0-9_-]{11}$/
+    ];
+
+    for (const pattern of patterns) {
+        const match = trimmed.match(pattern);
+        if (match) return match[1] || match[0];
+    }
+
+    return ''; // 찾지 못하면 빈 값 반환 (잘못된 영상 출력 방지)
+}
+
 // Helper functions for Data (Firestore)
 async function getCollection(collectionName: string) {
     if (!db) return [];
@@ -117,7 +154,7 @@ const SCHEMAS: any = {
         { name: 'date', label: '날짜', type: 'date' },
         { name: 'preacher', label: '설교자' },
         { name: 'content', label: '설교 원고', type: 'textarea' },
-        { name: 'videoId', label: '유튜브 영상 ID (선택사항)' }
+        { name: 'videoId', label: '유튜브 영상 (URL 또는 ID)' }
     ],
     meditations: [
         { name: 'title', label: '제목' },
@@ -132,23 +169,25 @@ const SCHEMAS: any = {
     notices: [
         { name: 'title', label: '제목' },
         { name: 'date', label: '날짜', type: 'date' },
-        { name: 'views', label: '조회수', type: 'number' }
+        { name: 'content', label: '내용', type: 'textarea' }
     ],
     bulletins: [
         { name: 'title', label: '주보 제목' },
-        { name: 'date', label: '날짜', type: 'date' }
+        { name: 'date', label: '날짜', type: 'date' },
+        { name: 'file', label: '주보 파일', type: 'file' }
     ],
     galleryItems: [
         { name: 'title', label: '제목' },
         { name: 'date', label: '날짜', type: 'date' },
-        { name: 'image', label: '이미지 파일명' }
+        { name: 'image', label: '이미지 선택', type: 'file' }
     ],
     philosophies: [
         { name: 'content', label: '내용', type: 'textarea' }
     ],
     pastorProfiles: [
         { name: 'image', label: '목사님 사진', type: 'file' },
-        { name: 'name', label: '이름명' },
+        { name: 'name', label: '이름' },
+        { name: 'role', label: '직격 (예: 담임목사)' },
         { name: 'description', label: '소개글', type: 'textarea' }
     ],
     worshipServices: [
@@ -212,8 +251,22 @@ app.get('/church/location', (req, res) => {
 
 // Word Section
 app.get('/word/sermons', async (req, res) => {
-    const sermons = await getCollection('sermons');
-    res.render('word/sermons', { title: '주일설교 - 정배교회', page: 'word-sermons', sermons });
+    const allSermons = await getCollection('sermons');
+    const page = parseInt(req.query.page as string) || 1;
+    const itemsPerPage = 15;
+    const totalPages = Math.ceil(allSermons.length / itemsPerPage);
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const sermons = allSermons.slice(startIndex, endIndex);
+
+    res.render('word/sermons', {
+        title: '주일설교 - 정배교회',
+        page: 'word-sermons',
+        sermons,
+        currentPage: page,
+        totalPages,
+        totalSermons: allSermons.length
+    });
 });
 app.get('/word/sermons/:id', async (req, res) => {
     const sermon = await getItem('sermons', req.params.id);
@@ -224,15 +277,44 @@ app.get('/word/meditation', async (req, res) => {
     const meditations = await getCollection('meditations');
     res.render('word/meditation', { title: '새벽묵상 - 정배교회', page: 'word-meditation', meditations });
 });
+app.get('/word/meditation/:id', async (req, res) => {
+    const meditation = await getItem('meditations', req.params.id);
+    if (!meditation) return res.status(404).send('Meditation not found');
+    res.render('word/meditation-view', { title: (meditation as any).title + ' - 정배교회', page: 'word-meditation', meditation });
+});
 app.get('/word/diary', async (req, res) => {
     const diaries = await getCollection('diaries');
     res.render('word/diary', { title: '목회일기 - 정배교회', page: 'word-diary', diaries });
 });
+app.get('/word/diary/:id', async (req, res) => {
+    const diary = await getItem('diaries', req.params.id);
+    if (!diary) return res.status(404).send('Diary not found');
+    res.render('word/diary-view', { title: (diary as any).title + ' - 정배교회', page: 'word-diary', diary });
+});
 
 // Sharing Section
 app.get('/sharing/notices', async (req, res) => {
-    const notices = await getCollection('notices');
-    res.render('sharing/notices', { title: '공지사항 - 정배교회', page: 'sharing-notices', notices });
+    const allNotices = await getCollection('notices');
+    const page = parseInt(req.query.page as string) || 1;
+    const itemsPerPage = 15;
+    const totalPages = Math.ceil(allNotices.length / itemsPerPage);
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const notices = allNotices.slice(startIndex, endIndex);
+
+    res.render('sharing/notices', {
+        title: '공지사항 - 정배교회',
+        page: 'sharing-notices',
+        notices,
+        currentPage: page,
+        totalPages,
+        totalNotices: allNotices.length
+    });
+});
+app.get('/sharing/notices/:id', async (req, res) => {
+    const notice = await getItem('notices', req.params.id);
+    if (!notice) return res.status(404).send('Notice not found');
+    res.render('sharing/notice-view', { title: (notice as any).title + ' - 정배교회', page: 'sharing-notices', notice });
 });
 app.get('/sharing/bulletin', async (req, res) => {
     const bulletins = await getCollection('bulletins');
@@ -293,6 +375,11 @@ app.post('/admin/create/:type', upload.any(), async (req, res) => {
         }
     }
 
+    // Extract YouTube video ID if videoId field exists
+    if (items.videoId) {
+        items.videoId = extractYouTubeId(items.videoId);
+    }
+
     if (db) {
         // Handle potential array inputs if multiple items (not typical for this form, but good to be safe)
         // Or normally it is just req.body for a single document
@@ -329,6 +416,11 @@ app.post('/admin/update/:type', upload.any(), async (req, res) => {
         }
     }
 
+    // Extract YouTube video ID if videoId field exists
+    if (updates.videoId) {
+        updates.videoId = extractYouTubeId(updates.videoId);
+    }
+
     if (db) {
         await db.collection(type).doc(id).update(updates);
     }
@@ -351,14 +443,39 @@ app.post('/admin/update/:type', upload.any(), async (req, res) => {
 
 // Delete Logic
 app.get('/admin/delete/:type/:id', async (req, res) => {
-    if (!(req.session as any).user?.isAdmin) return res.sendStatus(403);
+    console.log(`Delete request recived: Type=${req.params.type}, ID=${req.params.id}`);
+    if (!(req.session as any).user?.isAdmin) {
+        console.log('Access denied: Not an admin');
+        return res.sendStatus(403);
+    }
     const { type, id } = req.params;
 
     if (db) {
-        await db.collection(type).doc(id).delete();
+        try {
+            await db.collection(type).doc(id).delete();
+            console.log(`Successfully deleted ${id} from ${type}`);
+        } catch (err) {
+            console.error('Delete error:', err);
+            return res.status(500).send('Delete failed');
+        }
     }
 
-    res.redirect('back');
+    // Redirect logic mapping
+    const urlMap: any = {
+        sermons: '/word/sermons',
+        meditations: '/word/meditation',
+        diaries: '/word/diary',
+        notices: '/sharing/notices',
+        bulletins: '/sharing/bulletin',
+        galleryItems: '/sharing/gallery',
+        philosophies: '/church/philosophy',
+        pastorProfiles: '/church/pastor',
+        worshipServices: '/church/worship'
+    };
+
+    const listUrl = urlMap[type] || '/';
+    console.log(`Redirecting to: ${listUrl}`);
+    res.redirect(listUrl);
 });
 
 

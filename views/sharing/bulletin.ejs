@@ -37,7 +37,7 @@
                         style="color: red;">삭제</a>
                     </div>
                     <% } %>
-                      <a href="#" class="btn btn-outline">다운로드</a>
+                      <a href="<%= item.file || '#' %>" target="_blank" class="btn btn-outline">다운로드</a>
                 </div>
                 <% }); %>
                   <% } else { %>

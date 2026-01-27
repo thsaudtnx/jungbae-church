@@ -21,10 +21,16 @@
             <% if (locals.galleryItems) { %>
               <% galleryItems.forEach(function(item) { %>
                 <div class="card" style="padding: 0; overflow: hidden;">
-                  <div
-                    style="height: 200px; background-color: #eee; display: flex; align-items: center; justify-content: center; color: #aaa;">
-                    <!-- 이미지 Placeholder -->
-                    <i class="fas fa-image" style="font-size: 3rem;"></i>
+                  <div style="height: 200px; background-color: #eee; overflow: hidden;">
+                    <% if (item.image) { %>
+                      <img src="<%= item.image %>" style="width: 100%; height: 100%; object-fit: cover;"
+                        alt="<%= item.title %>">
+                      <% } else { %>
+                        <div
+                          style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #aaa;">
+                          <i class="fas fa-image" style="font-size: 3rem;"></i>
+                        </div>
+                        <% } %>
                   </div>
                   <div style="padding: 1.5rem;">
                     <h3>
