@@ -3,6 +3,7 @@ import path from 'path';
 import session from 'express-session';
 import multer from 'multer';
 import { db, bucket } from './db';
+import bcrypt from 'bcrypt';
 import fs from 'fs';
 
 const app = express();
@@ -179,7 +180,7 @@ const SCHEMAS: any = {
     galleryItems: [
         { name: 'title', label: '제목' },
         { name: 'date', label: '날짜', type: 'date' },
-        { name: 'image', label: '이미지 선택', type: 'file' }
+        { name: 'images', label: '이미지 선택(여러 개 가능)', type: 'file', multiple: true }
     ],
     philosophies: [
         { name: 'content', label: '내용', type: 'textarea' }
@@ -208,13 +209,34 @@ app.get('/login', (req, res) => {
     res.render('login', { title: '관리자 로그인 - 정배교회' });
 });
 
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
     const { password } = req.body;
-    if (password === 'jungbae1234') {
-        (req.session as any).user = { isAdmin: true };
-        res.redirect('/');
-    } else {
-        res.send('<script>alert("비밀번호가 틀렸습니다."); history.back();</script>');
+
+    if (!db) {
+        return res.send('<script>alert("데이터베이스 연결 실패"); history.back();</script>');
+    }
+
+    try {
+        const adminDoc = await db.collection('settings').doc('admin').get();
+        let isMatch = false;
+
+        if (adminDoc.exists) {
+            const adminData = adminDoc.data();
+            isMatch = await bcrypt.compare(password, adminData?.password);
+        } else {
+            // Fallback for first-time setup or if initialization fails
+            isMatch = (password === 'jungbae1234');
+        }
+
+        if (isMatch) {
+            (req.session as any).user = { isAdmin: true };
+            res.redirect('/');
+        } else {
+            res.send('<script>alert("비밀번호가 틀렸습니다."); history.back();</script>');
+        }
+    } catch (err) {
+        console.error('Login error:', err);
+        res.send('<script>alert("로그인 중 오류가 발생했습니다."); history.back();</script>');
     }
 });
 
@@ -222,6 +244,90 @@ app.get('/logout', (req, res) => {
     req.session.destroy(() => {
         res.redirect('/');
     });
+});
+
+app.get('/admin/change-password', (req, res) => {
+    if (!(req.session as any).user?.isAdmin) return res.redirect('/login');
+    res.render('admin/change-password', { title: '비밀번호 변경 - 정배교회' });
+});
+
+app.post('/admin/change-password', async (req, res) => {
+    if (!(req.session as any).user?.isAdmin) return res.sendStatus(403);
+    const { currentPassword, newPassword, confirmPassword } = req.body;
+
+    if (newPassword !== confirmPassword) {
+        return res.send('<script>alert("새 비밀번호와 확인 비밀번호가 일치하지 않습니다."); history.back();</script>');
+    }
+
+    if (!db) return res.send('<script>alert("데이터베이스 연결 실패"); history.back();</script>');
+
+    try {
+        const adminDoc = await db.collection('settings').doc('admin').get();
+        if (adminDoc.exists) {
+            const adminData = adminDoc.data();
+            const isMatch = await bcrypt.compare(currentPassword, adminData?.password);
+
+            if (isMatch) {
+                const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+                await db.collection('settings').doc('admin').update({
+                    password: hashedNewPassword,
+                    updatedAt: new Date()
+                });
+                res.send('<script>alert("비밀번호가 성공적으로 변경되었습니다. 다시 로그인해주세요."); location.href="/logout";</script>');
+            } else {
+                res.send('<script>alert("현재 비밀번호가 틀렸습니다."); history.back();</script>');
+            }
+        } else {
+            res.send('<script>alert("관리자 정보를 찾을 수 없습니다."); history.back();</script>');
+        }
+    } catch (err) {
+        console.error('Password change error:', err);
+        res.send('<script>alert("비밀번호 변경 중 오류가 발생했습니다."); history.back();</script>');
+    }
+});
+
+// Search
+app.get('/search', async (req, res) => {
+    const keyword = (req.query.q as string || '').trim();
+    if (!keyword) return res.render('search-results', { title: '검색 - 정배교회', page: 'search', results: [], keyword });
+
+    const collections = [
+        { id: 'sermons', label: '주일설교', link: '/word/sermons' },
+        { id: 'meditations', label: '새벽묵상', link: '/word/meditation' },
+        { id: 'diaries', label: '목회일기', link: '/word/diary' },
+        { id: 'notices', label: '공지사항', link: '/sharing/notices' },
+        { id: 'bulletins', label: '주보', link: '/sharing/bulletin' },
+        { id: 'galleryItems', label: '교회앨범', link: '/sharing/gallery' }
+    ];
+
+    const searchResults: any[] = [];
+
+    try {
+        for (const col of collections) {
+            const items = await getCollection(col.id);
+            const filtered = items.filter((item: any) => {
+                const searchIn = [item.title, item.content, item.preacher].join(' ').toLowerCase();
+                return searchIn.includes(keyword.toLowerCase());
+            });
+
+            if (filtered.length > 0) {
+                searchResults.push({
+                    category: col.label,
+                    baseUrl: col.link,
+                    items: filtered.map(item => ({
+                        id: item.id,
+                        title: item.title,
+                        date: item.date,
+                        link: col.id === 'galleryItems' || col.id === 'bulletins' ? col.link : `${col.link}/${item.id}`
+                    }))
+                });
+            }
+        }
+        res.render('search-results', { title: `"${keyword}" 검색 결과 - 정배교회`, page: 'search', results: searchResults, keyword });
+    } catch (err) {
+        console.error('Search error:', err);
+        res.status(500).send('Search error');
+    }
 });
 
 // Home
@@ -371,7 +477,15 @@ app.post('/admin/create/:type', upload.any(), async (req, res) => {
     if (req.files && Array.isArray(req.files)) {
         for (const file of req.files as any[]) {
             const publicUrl = await uploadToFirebase(file);
-            items[file.fieldname] = publicUrl;
+            if (items[file.fieldname]) {
+                if (Array.isArray(items[file.fieldname])) {
+                    items[file.fieldname].push(publicUrl);
+                } else {
+                    items[file.fieldname] = [items[file.fieldname], publicUrl];
+                }
+            } else {
+                items[file.fieldname] = publicUrl;
+            }
         }
     }
 
@@ -412,7 +526,15 @@ app.post('/admin/update/:type', upload.any(), async (req, res) => {
     if (req.files && Array.isArray(req.files)) {
         for (const file of req.files as any[]) {
             const publicUrl = await uploadToFirebase(file);
-            updates[file.fieldname] = publicUrl;
+            if (updates[file.fieldname]) {
+                if (Array.isArray(updates[file.fieldname])) {
+                    updates[file.fieldname].push(publicUrl);
+                } else {
+                    updates[file.fieldname] = [updates[file.fieldname], publicUrl];
+                }
+            } else {
+                updates[file.fieldname] = publicUrl;
+            }
         }
     }
 

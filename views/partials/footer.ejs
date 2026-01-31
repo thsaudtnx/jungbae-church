@@ -38,6 +38,8 @@
                     <% if (locals.user && user.isAdmin) { %>
                         <span style="color: var(--color-primary); margin-right: 15px;"><i
                                 class="fas fa-user-shield"></i> 관리자 모드</span>
+                        <a href="/admin/change-password"
+                            style="color: #666; text-decoration: underline; margin-right: 10px;">비밀번호 변경</a>
                         <a href="/logout" style="color: #666; text-decoration: underline;">로그아웃</a>
                         <% } else { %>
                             <a href="/login" style="color: #bbb; text-decoration: none;">관리자 로그인</a>

@@ -38,21 +38,25 @@
 
                                             <div id="preview-container-<%= field.name %>"
                                                 style="<%= (item && item[field.name]) ? 'margin-bottom: 1.5rem;' : 'display:none; margin-bottom: 1.5rem;' %>">
-                                                <!-- Image Preview -->
-                                                <img id="image-preview-<%= field.name %>"
-                                                    src="<%= (item && item[field.name]) ? item[field.name] : '' %>"
-                                                    style="max-width: 280px; max-height: 200px; object-fit: cover; border-radius: 12px; border: 5px solid white; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin: 0 auto; <%= (item && item[field.name] && item[field.name].match(/\.(jpg|jpeg|png|gif|webp)$/i)) ? 'display:block;' : 'display:none;' %>">
-
-                                                <!-- File Icon & Name (for non-images) -->
-                                                <div id="file-info-<%= field.name %>"
-                                                    style="margin-top: 1rem; <%= (item && item[field.name] && !item[field.name].match(/\.(jpg|jpeg|png|gif|webp)$/i)) ? 'display:block;' : 'display:none;' %>">
-                                                    <i class="fas fa-file-alt"
-                                                        style="font-size: 3.5rem; color: var(--color-primary); margin-bottom: 0.5rem;"></i>
-                                                    <div id="file-name-<%= field.name %>"
-                                                        style="font-size: 1rem; color: #333; font-weight: 600; word-break: break-all; max-width: 300px; margin: 0 auto;">
-                                                        <%= (item && item[field.name]) ?
-                                                            item[field.name].split('/').pop() : '' %>
-                                                    </div>
+                                                <div id="file-previews-<%= field.name %>"
+                                                    style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
+                                                    <% if (item && item[field.name]) { const
+                                                        files=Array.isArray(item[field.name]) ? item[field.name] :
+                                                        [item[field.name]]; files.forEach(fileUrl=> {
+                                                        if (fileUrl.match(/\.(jpg|jpeg|png|gif|webp)$/i) ||
+                                                        fileUrl.includes('storage')) { %>
+                                                        <img src="<%= fileUrl %>"
+                                                            style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 3px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                                                        <% } else { %>
+                                                            <div style="width: 120px; text-align: center;">
+                                                                <i class="fas fa-file-alt"
+                                                                    style="font-size: 2.5rem; color: var(--color-primary);"></i>
+                                                                <p
+                                                                    style="font-size: 0.8rem; color: #333; margin-top: 0.5rem; word-break: break-all;">
+                                                                    <%= fileUrl.split('/').pop() %>
+                                                                </p>
+                                                            </div>
+                                                            <% } }); } %>
                                                 </div>
 
                                                 <p
@@ -71,8 +75,10 @@
                                                 <p
                                                     style="color: #444; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">
                                                     파일을 선택해 주세요</p>
-                                                <p style="color: #888; font-size: 0.9rem; margin-bottom: 1.5rem;">이미지 또는
-                                                    PDF 파일을 업로드할 수 있습니다</p>
+                                                <p style="color: #888; font-size: 0.9rem; margin-bottom: 1.5rem;">
+                                                    <%= field.multiple ? '여러 개의 이미지 또는 파일을 선택할 수 있습니다'
+                                                        : '이미지 또는 PDF 파일을 업로드할 수 있습니다' %>
+                                                </p>
                                                 <span class="btn btn-outline"
                                                     style="border-color: var(--color-primary); color: var(--color-primary); background: #fff; pointer-events: none;">
                                                     내 컴퓨터에서 찾기
@@ -80,8 +86,8 @@
                                             </div>
 
                                             <input type="file" id="<%= field.name %>" name="<%= field.name %>"
-                                                style="display: none;"
-                                                onchange="handleFileSelect(this, '<%= field.name %>')"
+                                                style="display: none;" <%=field.multiple ? 'multiple' : '' %>
+                                            onchange="handleFileSelect(this, '<%= field.name %>')"
                                                 onclick="event.stopPropagation()">
                                         </div>
 
@@ -89,30 +95,51 @@
                                             function handleFileSelect(input, fieldName) {
                                                 const container = document.getElementById('preview-container-' + fieldName);
                                                 const placeholder = document.getElementById('upload-placeholder-' + fieldName);
-                                                const preview = document.getElementById('image-preview-' + fieldName);
-                                                const fileInfo = document.getElementById('file-info-' + fieldName);
-                                                const fileName = document.getElementById('file-name-' + fieldName);
+                                                const previewList = document.getElementById('file-previews-' + fieldName);
 
-                                                if (input.files && input.files[0]) {
-                                                    const file = input.files[0];
-                                                    const isImage = file.type.startsWith('image/');
-
+                                                if (input.files && input.files.length > 0) {
                                                     placeholder.style.display = 'none';
                                                     container.style.display = 'block';
+                                                    previewList.innerHTML = '';
 
-                                                    if (isImage) {
-                                                        const reader = new FileReader();
-                                                        reader.onload = function (e) {
-                                                            preview.src = e.target.result;
-                                                            preview.style.display = 'block';
-                                                            fileInfo.style.display = 'none';
+                                                    Array.from(input.files).forEach(file => {
+                                                        const itemWrapper = document.createElement('div');
+                                                        itemWrapper.style.width = '120px';
+                                                        itemWrapper.style.textAlign = 'center';
+
+                                                        if (file.type.startsWith('image/')) {
+                                                            const reader = new FileReader();
+                                                            const img = document.createElement('img');
+                                                            img.style.width = '120px';
+                                                            img.style.height = '120px';
+                                                            img.style.objectFit = 'cover';
+                                                            img.style.borderRadius = '8px';
+                                                            img.style.border = '3px solid white';
+                                                            img.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+
+                                                            reader.onload = function (e) {
+                                                                img.src = e.target.result;
+                                                            }
+                                                            reader.readAsDataURL(file);
+                                                            itemWrapper.appendChild(img);
+                                                        } else {
+                                                            const icon = document.createElement('i');
+                                                            icon.className = 'fas fa-file-alt';
+                                                            icon.style.fontSize = '2.5rem';
+                                                            icon.style.color = 'var(--color-primary)';
+
+                                                            const name = document.createElement('p');
+                                                            name.style.fontSize = '0.8rem';
+                                                            name.style.color = '#333';
+                                                            name.style.marginTop = '0.5rem';
+                                                            name.style.wordBreak = 'break-all';
+                                                            name.textContent = file.name;
+
+                                                            itemWrapper.appendChild(icon);
+                                                            itemWrapper.appendChild(name);
                                                         }
-                                                        reader.readAsDataURL(file);
-                                                    } else {
-                                                        preview.style.display = 'none';
-                                                        fileInfo.style.display = 'block';
-                                                        fileName.textContent = file.name;
-                                                    }
+                                                        previewList.appendChild(itemWrapper);
+                                                    });
                                                 }
                                             }
                                         </script>
