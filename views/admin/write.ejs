@@ -3,6 +3,25 @@
 
 <head>
     <%- include('../partials/head') %>
+        <!-- include libraries(jQuery, library) -->
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+        <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+        <!-- Image Compression -->
+        <script type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+        <style>
+            .note-editor.note-frame {
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }
+
+            .note-editor .note-editing-area {
+                background-color: white;
+            }
+        </style>
 </head>
 
 <body>
@@ -92,22 +111,50 @@
                                         </div>
 
                                         <script>
-                                            function handleFileSelect(input, fieldName) {
+                                            async function handleFileSelect(input, fieldName) {
                                                 const container = document.getElementById('preview-container-' + fieldName);
                                                 const placeholder = document.getElementById('upload-placeholder-' + fieldName);
                                                 const previewList = document.getElementById('file-previews-' + fieldName);
 
                                                 if (input.files && input.files.length > 0) {
+                                                    // Image Compression Options
+                                                    const options = {
+                                                        maxSizeMB: 1,
+                                                        maxWidthOrHeight: 1200,
+                                                        useWebWorker: true
+                                                    };
+
+                                                    // Create new DataTransfer to hold compressed files
+                                                    const dataTransfer = new DataTransfer();
+
                                                     placeholder.style.display = 'none';
                                                     container.style.display = 'block';
                                                     previewList.innerHTML = '';
 
-                                                    Array.from(input.files).forEach(file => {
+                                                    // Process files
+                                                    for (let file of input.files) {
+                                                        let fileToUpload = file;
+
+                                                        if (file.type.startsWith('image/')) {
+                                                            try {
+                                                                // Compress image
+                                                                const compressedFile = await imageCompression(file, options);
+                                                                // Create a new File object with correct name and type
+                                                                fileToUpload = new File([compressedFile], file.name, { type: file.type });
+                                                                console.log(`Compressed: ${file.size / 1024 / 1024}MB -> ${fileToUpload.size / 1024 / 1024}MB`);
+                                                            } catch (error) {
+                                                                console.error('Compression failed:', error);
+                                                            }
+                                                        }
+
+                                                        dataTransfer.items.add(fileToUpload);
+
+                                                        // Preview Logic
                                                         const itemWrapper = document.createElement('div');
                                                         itemWrapper.style.width = '120px';
                                                         itemWrapper.style.textAlign = 'center';
 
-                                                        if (file.type.startsWith('image/')) {
+                                                        if (fileToUpload.type.startsWith('image/')) {
                                                             const reader = new FileReader();
                                                             const img = document.createElement('img');
                                                             img.style.width = '120px';
@@ -120,7 +167,7 @@
                                                             reader.onload = function (e) {
                                                                 img.src = e.target.result;
                                                             }
-                                                            reader.readAsDataURL(file);
+                                                            reader.readAsDataURL(fileToUpload);
                                                             itemWrapper.appendChild(img);
                                                         } else {
                                                             const icon = document.createElement('i');
@@ -133,13 +180,16 @@
                                                             name.style.color = '#333';
                                                             name.style.marginTop = '0.5rem';
                                                             name.style.wordBreak = 'break-all';
-                                                            name.textContent = file.name;
+                                                            name.textContent = fileToUpload.name;
 
                                                             itemWrapper.appendChild(icon);
                                                             itemWrapper.appendChild(name);
                                                         }
                                                         previewList.appendChild(itemWrapper);
-                                                    });
+                                                    }
+
+                                                    // Update input files with compressed ones
+                                                    input.files = dataTransfer.files;
                                                 }
                                             }
                                         </script>
@@ -167,6 +217,25 @@
 
         <%- include('../partials/footer') %>
             <script src="/js/main.js"></script>
+            <script>
+                $(document).ready(function () {
+                    $('textarea').summernote({
+                        placeholder: '내용을 입력해주세요...',
+                        tabsize: 2,
+                        height: 400,
+                        lang: 'ko-KR',
+                        toolbar: [
+                            ['style', ['style']],
+                            ['font', ['bold', 'underline', 'clear']],
+                            ['color', ['color']],
+                            ['para', ['ul', 'ol', 'paragraph']],
+                            ['table', ['table']],
+                            ['insert', ['link', 'picture', 'video']],
+                            ['view', ['fullscreen', 'codeview', 'help']]
+                        ]
+                    });
+                });
+            </script>
 </body>
 
 </html>

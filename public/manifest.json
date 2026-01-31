@@ -1,0 +1,21 @@
+{
+    "name": "정배교회",
+    "short_name": "정배교회",
+    "description": "일상에 스미는 하나님 나라, 정배교회입니다.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#2c3e50",
+    "icons": [
+        {
+            "src": "/images/church-favicon.jpeg",
+            "sizes": "192x192",
+            "type": "image/jpeg"
+        },
+        {
+            "src": "/images/church-favicon.jpeg",
+            "sizes": "512x512",
+            "type": "image/jpeg"
+        }
+    ]
+}

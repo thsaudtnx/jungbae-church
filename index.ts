@@ -15,8 +15,24 @@ app.use(express.urlencoded({ extended: true }));
 app.use(session({
     secret: 'jungbae-secret-key', // In production, use environment variable
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: false, // Changed to false to prevent empty sessions
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24, // 24 hours
+        secure: false // Set to true if using HTTPS
+    }
 }));
+
+// Make user session available in all views
+app.use((req, res, next) => {
+    // Debug log
+    if (req.path !== '/favicon.ico' && !req.path.startsWith('/images') && !req.path.startsWith('/css')) {
+        const sessUser = (req.session as any).user;
+        console.log(`[${req.method}] ${req.path} - Session User:`, sessUser ? `${sessUser.id} (Admin: ${sessUser.isAdmin})` : 'None');
+    }
+
+    res.locals.user = (req.session as any).user;
+    next();
+});
 
 // View engine setup
 app.set('view engine', 'ejs');
@@ -230,7 +246,7 @@ app.post('/login', async (req, res) => {
 
         if (isMatch) {
             (req.session as any).user = { isAdmin: true };
-            res.redirect('/');
+            res.redirect('/admin/dashboard');
         } else {
             res.send('<script>alert("비밀번호가 틀렸습니다."); history.back();</script>');
         }
@@ -238,6 +254,43 @@ app.post('/login', async (req, res) => {
         console.error('Login error:', err);
         res.send('<script>alert("로그인 중 오류가 발생했습니다."); history.back();</script>');
     }
+});
+
+// Admin Dashboard
+app.get('/admin/dashboard', async (req, res) => {
+    if (!(req.session as any).user?.isAdmin) return res.redirect('/login');
+
+    // Fetch all collections for statistics
+    const sermons = await getCollection('sermons');
+    const meditations = await getCollection('meditations');
+    const diaries = await getCollection('diaries');
+    const notices = await getCollection('notices');
+    const bulletins = await getCollection('bulletins');
+    const galleryItems = await getCollection('galleryItems');
+
+    // Statistics
+    const stats = {
+        sermons: sermons.length,
+        meditations: meditations.length,
+        diaries: diaries.length,
+        notices: notices.length,
+        bulletins: bulletins.length,
+        gallery: galleryItems.length
+    };
+
+    // Recent content (latest 5 from each)
+    const recentContent = {
+        sermons: sermons.slice(0, 5),
+        notices: notices.slice(0, 5),
+        bulletins: bulletins.slice(0, 3)
+    };
+
+    res.render('admin/dashboard', {
+        title: '관리자 대시보드 - 정배교회',
+        page: 'admin-dashboard',
+        stats,
+        recentContent
+    });
 });
 
 app.get('/logout', (req, res) => {
@@ -331,8 +384,31 @@ app.get('/search', async (req, res) => {
 });
 
 // Home
-app.get('/', (req, res) => {
-    res.render('index', { title: '정배교회', page: 'home' });
+app.get('/', async (req, res) => {
+    // If admin is logged in, redirect to dashboard
+    if ((req.session as any).user && (req.session as any).user.isAdmin) {
+        return res.redirect('/admin/dashboard');
+    }
+
+    // Fetch latest 3 sermons
+    const allSermons = await getCollection('sermons');
+    const latestSermons = allSermons.slice(0, 3);
+
+    // Fetch latest 3 notices
+    const allNotices = await getCollection('notices');
+    const latestNotices = allNotices.slice(0, 3);
+
+    // Fetch latest bulletin
+    const allBulletins = await getCollection('bulletins');
+    const latestBulletin = allBulletins.length > 0 ? allBulletins[0] : null;
+
+    res.render('index', {
+        title: '정배교회',
+        page: 'home',
+        latestSermons,
+        latestNotices,
+        latestBulletin
+    });
 });
 
 // Church Section
@@ -357,7 +433,26 @@ app.get('/church/location', (req, res) => {
 
 // Word Section
 app.get('/word/sermons', async (req, res) => {
-    const allSermons = await getCollection('sermons');
+    let allSermons = await getCollection('sermons');
+
+    // Sort by date (descending)
+    allSermons.sort((a, b) => (a.date < b.date ? 1 : -1));
+
+    // Year Filter
+    const year = req.query.year as string;
+    if (year) {
+        allSermons = allSermons.filter(s => s.date.startsWith(year));
+    }
+
+    // Get available years for filter
+    const currentYear = new Date().getFullYear();
+    const availableYears = [];
+    for (let y = currentYear; y >= 2024; y--) {
+        availableYears.push(y);
+    }
+    // Also check actual data years
+    // This part assumes sermons have a valid date format YYYY-MM-DD
+
     const page = parseInt(req.query.page as string) || 1;
     const itemsPerPage = 15;
     const totalPages = Math.ceil(allSermons.length / itemsPerPage);
@@ -371,13 +466,30 @@ app.get('/word/sermons', async (req, res) => {
         sermons,
         currentPage: page,
         totalPages,
-        totalSermons: allSermons.length
+        totalSermons: allSermons.length,
+        currentYear: year || 'all',
+        availableYears
     });
 });
 app.get('/word/sermons/:id', async (req, res) => {
     const sermon = await getItem('sermons', req.params.id);
     if (!sermon) return res.status(404).send('Sermon not found');
-    res.render('word/sermon-view', { title: (sermon as any).title + ' - 정배교회', page: 'word-sermons', sermon });
+
+    // OG Data
+    const title = (sermon as any).title;
+    const ogImage = (sermon as any).videoId
+        ? `https://img.youtube.com/vi/${(sermon as any).videoId}/maxresdefault.jpg`
+        : 'https://jungbae-church.vercel.app/images/main-logo.png';
+
+    res.render('word/sermon-view', {
+        title: title + ' - 정배교회',
+        page: 'word-sermons',
+        sermon,
+        ogTitle: title,
+        ogDescription: `${(sermon as any).date} | ${(sermon as any).preacher} | 본문: ${(sermon as any).bible}`,
+        ogImage: ogImage,
+        ogUrl: `https://jungbae-church.vercel.app/word/sermons/${req.params.id}`
+    });
 });
 app.get('/word/meditation', async (req, res) => {
     const meditations = await getCollection('meditations');
@@ -386,11 +498,21 @@ app.get('/word/meditation', async (req, res) => {
 app.get('/word/meditation/:id', async (req, res) => {
     const meditation = await getItem('meditations', req.params.id);
     if (!meditation) return res.status(404).send('Meditation not found');
-    res.render('word/meditation-view', { title: (meditation as any).title + ' - 정배교회', page: 'word-meditation', meditation });
+
+    const title = (meditation as any).title;
+
+    res.render('word/meditation-view', {
+        title: title + ' - 정배교회',
+        page: 'word-meditation',
+        meditation,
+        ogTitle: title,
+        ogDescription: `${(meditation as any).date} 새벽묵상`,
+        ogUrl: `https://jungbae-church.vercel.app/word/meditation/${req.params.id}`
+    });
 });
 app.get('/word/diary', async (req, res) => {
     const diaries = await getCollection('diaries');
-    res.render('word/diary', { title: '목회일기 - 정배교회', page: 'word-diary', diaries });
+    res.render('word/diary', { title: '목양일기 - 정배교회', page: 'word-diary', diaries });
 });
 app.get('/word/diary/:id', async (req, res) => {
     const diary = await getItem('diaries', req.params.id);

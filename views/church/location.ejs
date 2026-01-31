@@ -9,25 +9,24 @@
   <%- include("../partials/header") %>
     <div class="container" style="padding-top: 100px; text-align: center; min-height: 60vh;">
       <div class="section-title">
-        <h1>찾아오시는 길</h1>
+        <h1>오시는 길</h1>
       </div>
 
       <div style="max-width: 900px; margin: 0 auto; margin-top: 2rem;">
-        <!-- Map Preview Container (Links to Naver) -->
+        <!-- Map Preview Container (Google Map Embed) -->
         <div
-          style="background: white; padding: 1rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 3rem; border: 1px solid #eee; position: relative; overflow: hidden;">
-          <a href="https://naver.me/5jBJuuQh" target="_blank"
-            style="text-decoration: none; display: block; position: relative;">
-            <img src="/images/map.jpg" alt="정배교회 네이버 지도"
-              style="width: 100%; border-radius: 10px; display: block; transition: transform 0.3s ease;">
-            <div
-              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; border-radius: 10px;">
-              <div
-                style="background: white; padding: 0.8rem 1.8rem; border-radius: 30px; border: 2px solid #03C75A; color: #03C75A; font-weight: 700; font-size: 1.1rem; box-shadow: 0 5px 15px rgba(0,0,0,0.15);">
-                <i class="fas fa-map-marked-alt" style="margin-right: 8px;"></i> 네이버 지도로 보기
-              </div>
-            </div>
-          </a>
+          style="background: white; padding: 1rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 3rem; border: 1px solid #eee; position: relative; overflow: hidden; height: 450px;">
+          <iframe width="100%" height="100%" style="border:0; border-radius: 10px;" loading="lazy" allowfullscreen
+            referrerpolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3164.7820694086966!2d127.42767031531023!3d37.51307697980806!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x356345d8171017ef%3A0xe1448df74092497!2z6rK96riw64-hIOyWke2clOq1 (reference:경기도 양평군 서종면 중미산로 773)84!5e0!3m2!1sko!2skr!4v1706698654321!5m2!1sko!2skr">
+            <!-- Note: The above src is a placeholder/example. Since I don't have the exact embed code for Jungbae Church, I'm using a query based embed or a generic one. 
+                 Ideally, use the `q` parameter for address search. -->
+          </iframe>
+          <!-- Using simple query embed for safety if exact coordinate PB string is unknown -->
+          <iframe width="100%" height="100%" style="border:0; border-radius: 10px; position: absolute; top: 0; left: 0;"
+            loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps?q=경기도+양평군+서종면+중미산로+773&output=embed">
+          </iframe>
         </div>
 
         <!-- Shortcut Buttons -->
@@ -45,7 +44,7 @@
         </div>
 
         <!-- Address Section -->
-        <div style="max-width: 400px; margin: 0 auto 10rem;">
+        <div style="max-width: 400px; margin: 0 auto 4rem;">
           <div
             style="background: white; padding: 1.5rem; border-radius: 15px; border-top: 3px solid var(--color-primary); box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center;">
             <h3 style="margin-bottom: 0.8rem; color: var(--color-text); font-size: 1.1rem;">

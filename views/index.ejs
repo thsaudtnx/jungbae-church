@@ -87,6 +87,19 @@
                 font-size: 1.2rem;
                 margin-bottom: 0.5rem;
             }
+
+            .notice-item {
+                border-bottom: 1px solid #f5f5f5;
+                transition: background 0.2s;
+            }
+
+            .notice-item:last-child {
+                border-bottom: none;
+            }
+
+            .notice-item:hover {
+                background-color: #f8f9fa;
+            }
         </style>
 </head>
 
@@ -126,8 +139,142 @@
             </div>
         </section>
 
-        <%- include('partials/footer') %>
-            <script src="/js/main.js"></script>
+        <!-- Latest Sermons Section -->
+        <% if (latestSermons && latestSermons.length> 0) { %>
+            <section style="padding: 4rem 0; background: white;">
+                <div class="container">
+                    <div style="text-align: center; margin-bottom: 3rem;">
+                        <h2 style="font-size: 2rem; color: var(--color-text); margin-bottom: 0.5rem;">최신 설교</h2>
+                        <p style="color: var(--color-text-light);">정배교회의 최근 말씀을 만나보세요</p>
+                    </div>
+                    <div class="card-grid">
+                        <% latestSermons.forEach(function(sermon) { %>
+                            <a href="/word/sermons/<%= sermon.id %>" class="card"
+                                style="text-align: left; padding: 0; overflow: hidden;">
+                                <% if (sermon.videoId) { %>
+                                    <div style="position: relative; padding-bottom: 56.25%; background: #000;">
+                                        <img src="https://img.youtube.com/vi/<%= sermon.videoId %>/maxresdefault.jpg"
+                                            alt="<%= sermon.title %>"
+                                            style="position: absolute; width: 100%; height: 100%; object-fit: cover;">
+                                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                                        background: rgba(0,0,0,0.7); border-radius: 50%; width: 60px; height: 60px; 
+                                        display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-play"
+                                                style="color: white; font-size: 1.5rem; margin-left: 4px;"></i>
+                                        </div>
+                                    </div>
+                                    <% } else { %>
+                                        <div style="height: 200px; background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%); 
+                                    display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-bible"
+                                                style="font-size: 3rem; color: white; opacity: 0.8;"></i>
+                                        </div>
+                                        <% } %>
+                                            <div style="padding: 1.5rem;">
+                                                <h3
+                                                    style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--color-text);">
+                                                    <%= sermon.title %>
+                                                </h3>
+                                                <p
+                                                    style="font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 0.5rem;">
+                                                    <i class="far fa-calendar-alt"></i>
+                                                    <%= sermon.date %>
+                                                </p>
+                                                <p style="font-size: 0.9rem; color: var(--color-text-light);">
+                                                    <i class="far fa-user"></i>
+                                                    <%= sermon.preacher %>
+                                                </p>
+                                            </div>
+                            </a>
+                            <% }); %>
+                    </div>
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <a href="/word/sermons" class="btn btn-outline">모든 설교 보기</a>
+                    </div>
+                </div>
+            </section>
+            <% } %>
+
+                <!-- Latest Notices & Bulletin Section -->
+                <section style="padding: 4rem 0; background: var(--color-bg-alt);">
+                    <div class="container">
+                        <div
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+
+                            <!-- Latest Notices -->
+                            <% if (latestNotices && latestNotices.length> 0) { %>
+                                <div>
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                                        <h2 style="font-size: 1.5rem; color: var(--color-text);">
+                                            <i class="fas fa-bullhorn"
+                                                style="color: var(--color-primary); margin-right: 8px;"></i>
+                                            최근 공지
+                                        </h2>
+                                        <a href="/sharing/notices"
+                                            style="color: var(--color-primary); font-size: 0.9rem;">더보기 →</a>
+                                    </div>
+                                    <div
+                                        style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                                        <% latestNotices.forEach(function(notice, index) { %>
+                                            <a href="/sharing/notices/<%= notice.id %>" class="notice-item"
+                                                style="display: block; padding: 1rem 1.5rem; text-decoration: none; color: inherit;">
+                                                <h4
+                                                    style="font-size: 1rem; margin-bottom: 0.3rem; color: var(--color-text);">
+                                                    <%= notice.title %>
+                                                </h4>
+                                                <p
+                                                    style="font-size: 0.85rem; color: var(--color-text-light); margin: 0;">
+                                                    <i class="far fa-calendar-alt"></i>
+                                                    <%= notice.date %>
+                                                </p>
+                                            </a>
+                                            <% }); %>
+                                    </div>
+                                </div>
+                                <% } %>
+
+                                    <!-- Latest Bulletin -->
+                                    <% if (latestBulletin) { %>
+                                        <div>
+                                            <div
+                                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                                                <h2 style="font-size: 1.5rem; color: var(--color-text);">
+                                                    <i class="fas fa-file-alt"
+                                                        style="color: var(--color-secondary); margin-right: 8px;"></i>
+                                                    이번 주 주보
+                                                </h2>
+                                                <a href="/sharing/bulletin"
+                                                    style="color: var(--color-primary); font-size: 0.9rem;">전체보기
+                                                    →</a>
+                                            </div>
+                                            <a href="<%= latestBulletin.file %>" target="_blank" style="display: block; background: white; border-radius: 10px; padding: 2rem; 
+                                  text-align: center; text-decoration: none; box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
+                                  transition: all 0.3s;">
+                                                <i class="fas fa-file-pdf"
+                                                    style="font-size: 4rem; color: #e74c3c; margin-bottom: 1rem;"></i>
+                                                <h3
+                                                    style="font-size: 1.2rem; color: var(--color-text); margin-bottom: 0.5rem;">
+                                                    <%= latestBulletin.title %>
+                                                </h3>
+                                                <p
+                                                    style="font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 1rem;">
+                                                    <i class="far fa-calendar-alt"></i>
+                                                    <%= latestBulletin.date %>
+                                                </p>
+                                                <span class="btn btn-primary" style="display: inline-block;">
+                                                    <i class="fas fa-download"></i> 주보 다운로드
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <% } %>
+
+                        </div>
+                    </div>
+                </section>
+
+                <%- include('partials/footer') %>
+                    <script src="/js/main.js"></script>
 </body>
 
 </html>

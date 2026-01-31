@@ -3,6 +3,19 @@
 
 <head>
     <%- include('./partials/head') %>
+        <style>
+            .search-item {
+                border-bottom: 1px solid #f5f5f5;
+            }
+
+            .search-item:last-child {
+                border-bottom: none;
+            }
+
+            .search-item:hover {
+                background-color: #f8f9fa;
+            }
+        </style>
 </head>
 
 <body>
@@ -45,7 +58,7 @@
                                     style="background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.03);">
                                     <% category.items.forEach(function(item, index) { %>
                                         <a href="<%= item.link %>"
-                                            style="display: block; padding: 1.2rem 1.5rem; text-decoration: none; color: inherit; transition: all 0.2s; border-bottom: <%= index === category.items.length - 1 ? 'none' : '1px solid #f5f5f5' %>;"
+                                            style="display: block; padding: 1.2rem 1.5rem; text-decoration: none; color: inherit; transition: all 0.2s;"
                                             class="search-item">
                                             <div
                                                 style="display: flex; justify-content: space-between; align-items: center;">
@@ -86,7 +99,31 @@
             .search-item:hover h3 {
                 color: var(--color-primary);
             }
+
+            .highlight {
+                background-color: #fff59d;
+                padding: 2px 4px;
+                border-radius: 3px;
+                font-weight: 600;
+                color: #333;
+            }
         </style>
+
+        <script>
+            // Highlight search keywords
+            document.addEventListener('DOMContentLoaded', function () {
+                const keyword = "<%= keyword %>";
+                if (!keyword) return;
+
+                const searchItems = document.querySelectorAll('.search-item h3');
+                searchItems.forEach(item => {
+                    const text = item.textContent;
+                    const regex = new RegExp(`(${keyword})`, 'gi');
+                    const highlightedText = text.replace(regex, '<span class="highlight">$1</span>');
+                    item.innerHTML = highlightedText;
+                });
+            });
+        </script>
 
         <%- include('./partials/footer') %>
             <script src="/js/main.js"></script>
