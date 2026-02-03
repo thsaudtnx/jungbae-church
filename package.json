@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/thsaudtnx/jungbae-church#readme",
   "dependencies": {
+    "@google-cloud/connect-firestore": "^3.0.0",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.3",
     "ejs": "^4.0.1",

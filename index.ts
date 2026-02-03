@@ -1,6 +1,8 @@
 import express from 'express';
 import path from 'path';
 import session from 'express-session';
+import { Firestore } from '@google-cloud/firestore';
+const FirestoreStore = require('@google-cloud/connect-firestore')(session);
 import multer from 'multer';
 import { db, bucket } from './db';
 import bcrypt from 'bcrypt';
@@ -15,14 +17,20 @@ app.set('trust proxy', 1);
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Setup Firestore Session Store
 app.use(session({
+    store: new FirestoreStore({
+        dataset: db as any,
+        kind: 'sessions', // Collection name in Firestore
+    }),
     secret: 'jungbae-secret-key',
-    resave: true, // Force session to be saved back to the session store
+    resave: false,
     saveUninitialized: false,
-    rolling: true, // Forces every response to set a session cookie
+    rolling: true,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24, // 24 hours
-        secure: process.env.NODE_ENV === 'production', // Use secure cookies in production (HTTPS)
+        secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax'
     }
 }));
