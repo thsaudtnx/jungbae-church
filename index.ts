@@ -2,7 +2,7 @@ import express from 'express';
 import path from 'path';
 import session from 'express-session';
 import { Firestore } from '@google-cloud/firestore';
-const FirestoreStore = require('@google-cloud/connect-firestore')(session);
+const FirestoreStore = require('@google-cloud/connect-firestore').FirestoreStore;
 import multer from 'multer';
 import { db, bucket } from './db';
 import bcrypt from 'bcrypt';
