@@ -9,16 +9,20 @@ import fs from 'fs';
 const app = express();
 const PORT = 3000;
 
+// Trust Proxy (Essential for session cookies on Vercel/Render)
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
-    secret: 'jungbae-secret-key', // In production, use environment variable
-    resave: true, // Changed to true for better session persistence on some environments
+    secret: 'jungbae-secret-key',
+    resave: true, // Force session to be saved back to the session store
     saveUninitialized: false,
+    rolling: true, // Forces every response to set a session cookie
     cookie: {
         maxAge: 1000 * 60 * 60 * 24, // 24 hours
-        secure: false, // Set to true if using HTTPS
+        secure: process.env.NODE_ENV === 'production', // Use secure cookies in production (HTTPS)
         sameSite: 'lax'
     }
 }));
