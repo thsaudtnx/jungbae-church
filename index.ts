@@ -14,11 +14,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
     secret: 'jungbae-secret-key', // In production, use environment variable
-    resave: false,
-    saveUninitialized: false, // Changed to false to prevent empty sessions
+    resave: true, // Changed to true for better session persistence on some environments
+    saveUninitialized: false,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24, // 24 hours
-        secure: false // Set to true if using HTTPS
+        secure: false, // Set to true if using HTTPS
+        sameSite: 'lax'
     }
 }));
 
@@ -27,10 +28,19 @@ app.use((req, res, next) => {
     // Debug log
     if (req.path !== '/favicon.ico' && !req.path.startsWith('/images') && !req.path.startsWith('/css')) {
         const sessUser = (req.session as any).user;
-        console.log(`[${req.method}] ${req.path} - Session User:`, sessUser ? `${sessUser.id} (Admin: ${sessUser.isAdmin})` : 'None');
+        console.log(`[${req.method}] ${req.path} - Session User:`, sessUser ? `Admin Logged In` : 'None');
     }
 
-    res.locals.user = (req.session as any).user;
+    res.locals.user = (req.session as any).user || null;
+    next();
+});
+
+// Prevent browser from caching pages (Fixes back-button showing logged-in state after logout)
+app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    res.set('Surrogate-Control', 'no-store');
     next();
 });
 
@@ -158,11 +168,6 @@ async function getItem(collectionName: string, id: string) {
     }
 }
 
-// Make user info available to all views
-app.use((req, res, next) => {
-    res.locals.user = (req.session as any).user || null;
-    next();
-});
 
 // Schemas for different content types
 const SCHEMAS: any = {
@@ -245,7 +250,7 @@ app.post('/login', async (req, res) => {
         }
 
         if (isMatch) {
-            (req.session as any).user = { isAdmin: true };
+            (req.session as any).user = { id: 'admin', isAdmin: true };
             res.redirect('/admin/dashboard');
         } else {
             res.send('<script>alert("비밀번호가 틀렸습니다."); history.back();</script>');
@@ -295,6 +300,7 @@ app.get('/admin/dashboard', async (req, res) => {
 
 app.get('/logout', (req, res) => {
     req.session.destroy(() => {
+        res.clearCookie('connect.sid'); // Clear the session cookie
         res.redirect('/');
     });
 });

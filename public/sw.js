@@ -1,24 +1,25 @@
-const CACHE_NAME = 'jungbae-church-v1';
-const ASSETS_TO_CACHE = [
-    '/',
-    '/css/style.css',
-    '/js/main.js',
-    '/images/main-logo.png',
-    '/images/church-favicon.jpeg'
-];
-
+// This service worker clears any existing caches and then unregisters itself.
 self.addEventListener('install', (event) => {
+    self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
     event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(ASSETS_TO_CACHE);
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cacheName) => {
+                    return caches.delete(cacheName);
+                })
+            );
+        }).then(() => {
+            return self.registration.unregister();
+        }).then(() => {
+            return self.clients.claim();
         })
     );
 });
 
 self.addEventListener('fetch', (event) => {
-    event.respondWith(
-        caches.match(event.request).then((response) => {
-            return response || fetch(event.request);
-        })
-    );
+    // Network only
+    return;
 });

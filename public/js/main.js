@@ -33,4 +33,11 @@ document.addEventListener('DOMContentLoaded', () => {
             NProgress.done();
         });
     }
+
+    // Force reload on back button to prevent showing cached logged-in state
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
 });
