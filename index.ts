@@ -187,6 +187,7 @@ const SCHEMAS: any = {
         { name: 'title', label: '설교 제목' },
         { name: 'date', label: '날짜', type: 'date' },
         { name: 'preacher', label: '설교자' },
+        { name: 'bible', label: '본문 성경구절' },
         { name: 'content', label: '설교 원고', type: 'textarea' },
         { name: 'videoId', label: '유튜브 영상 (URL 또는 ID)' }
     ],
@@ -232,6 +233,10 @@ const SCHEMAS: any = {
     staffMembers: [
         { name: 'role', label: '직분' },
         { name: 'name', label: '이름' }
+    ],
+    worshipGuides: [
+        { name: 'title', label: '제목' },
+        { name: 'content', label: '설명 내용', type: 'textarea' }
     ]
 };
 
@@ -443,7 +448,8 @@ app.get('/church/pastor', async (req, res) => {
 app.get('/church/worship', async (req, res) => {
     const services = await getCollection('worshipServices');
     const staff = await getCollection('staffMembers');
-    res.render('church/worship', { title: '예배 안내 - 정배교회', page: 'church-worship', services, staff });
+    const guides = await getCollection('worshipGuides');
+    res.render('church/worship', { title: '예배 안내 - 정배교회', page: 'church-worship', services, staff, guides });
 });
 app.get('/church/location', (req, res) => {
     res.render('church/location', { title: '오시는 길 - 정배교회', page: 'church-location' });
@@ -613,47 +619,53 @@ app.post('/admin/create/:type', upload.any(), async (req, res) => {
     const { type } = req.params;
     const items = { ...req.body };
 
-    // Handle uploaded files to Firebase Storage
-    if (req.files && Array.isArray(req.files)) {
-        for (const file of req.files as any[]) {
-            const publicUrl = await uploadToFirebase(file);
-            if (items[file.fieldname]) {
-                if (Array.isArray(items[file.fieldname])) {
-                    items[file.fieldname].push(publicUrl);
+    try {
+        // Handle uploaded files to Firebase Storage
+        if (req.files && Array.isArray(req.files)) {
+            for (const file of req.files as any[]) {
+                console.log(`Uploading file: ${file.originalname} for ${type}`);
+                const publicUrl = await uploadToFirebase(file);
+                if (items[file.fieldname]) {
+                    if (Array.isArray(items[file.fieldname])) {
+                        items[file.fieldname].push(publicUrl);
+                    } else {
+                        items[file.fieldname] = [items[file.fieldname], publicUrl];
+                    }
                 } else {
-                    items[file.fieldname] = [items[file.fieldname], publicUrl];
+                    items[file.fieldname] = publicUrl;
                 }
-            } else {
-                items[file.fieldname] = publicUrl;
             }
         }
-    }
 
-    // Extract YouTube video ID if videoId field exists
-    if (items.videoId) {
-        items.videoId = extractYouTubeId(items.videoId);
-    }
+        // Extract YouTube video ID if videoId field exists
+        if (items.videoId) {
+            items.videoId = extractYouTubeId(items.videoId);
+        }
 
-    if (db) {
-        // Handle potential array inputs if multiple items (not typical for this form, but good to be safe)
-        // Or normally it is just req.body for a single document
-        await db.collection(type).add(items);
-    }
+        if (db) {
+            console.log(`Adding document to ${type}:`, items);
+            await db.collection(type).add(items);
+        }
 
-    // Redirect logic mapping
-    const urlMap: any = {
-        sermons: '/word/sermons',
-        meditations: '/word/meditation',
-        diaries: '/word/diary',
-        notices: '/sharing/notices',
-        bulletins: '/sharing/bulletin',
-        galleryItems: '/sharing/gallery',
-        philosophies: '/church/philosophy',
-        pastorProfiles: '/church/pastor',
-        worshipServices: '/church/worship'
-    };
-    const listUrl = urlMap[type] || '/';
-    res.redirect(listUrl);
+        // Redirect logic mapping
+        const urlMap: any = {
+            sermons: '/word/sermons',
+            meditations: '/word/meditation',
+            diaries: '/word/diary',
+            notices: '/sharing/notices',
+            bulletins: '/sharing/bulletin',
+            galleryItems: '/sharing/gallery',
+            philosophies: '/church/philosophy',
+            pastorProfiles: '/church/pastor',
+            worshipServices: '/church/worship',
+            worshipGuides: '/church/worship'
+        };
+        const listUrl = urlMap[type] || '/';
+        res.redirect(listUrl);
+    } catch (err) {
+        console.error(`Create error in ${type}:`, err);
+        res.status(500).send(`Internal Server Error: ${err instanceof Error ? err.message : String(err)}`);
+    }
 });
 
 // Update Logic
@@ -662,45 +674,53 @@ app.post('/admin/update/:type', upload.any(), async (req, res) => {
     const { type } = req.params;
     const { id, ...updates } = req.body;
 
-    // Handle uploaded files to Firebase Storage
-    if (req.files && Array.isArray(req.files)) {
-        for (const file of req.files as any[]) {
-            const publicUrl = await uploadToFirebase(file);
-            if (updates[file.fieldname]) {
-                if (Array.isArray(updates[file.fieldname])) {
-                    updates[file.fieldname].push(publicUrl);
+    try {
+        // Handle uploaded files to Firebase Storage
+        if (req.files && Array.isArray(req.files)) {
+            for (const file of req.files as any[]) {
+                console.log(`Updating file: ${file.originalname} for ${type}`);
+                const publicUrl = await uploadToFirebase(file);
+                if (updates[file.fieldname]) {
+                    if (Array.isArray(updates[file.fieldname])) {
+                        updates[file.fieldname].push(publicUrl);
+                    } else {
+                        updates[file.fieldname] = [updates[file.fieldname], publicUrl];
+                    }
                 } else {
-                    updates[file.fieldname] = [updates[file.fieldname], publicUrl];
+                    updates[file.fieldname] = publicUrl;
                 }
-            } else {
-                updates[file.fieldname] = publicUrl;
             }
         }
-    }
 
-    // Extract YouTube video ID if videoId field exists
-    if (updates.videoId) {
-        updates.videoId = extractYouTubeId(updates.videoId);
-    }
+        // Extract YouTube video ID if videoId field exists
+        if (updates.videoId) {
+            updates.videoId = extractYouTubeId(updates.videoId);
+        }
 
-    if (db) {
-        await db.collection(type).doc(id).update(updates);
-    }
+        if (db) {
+            console.log(`Updating document ${id} in ${type}:`, updates);
+            await db.collection(type).doc(id).update(updates);
+        }
 
-    // Redirect logic
-    const urlMap: any = {
-        sermons: '/word/sermons',
-        meditations: '/word/meditation',
-        diaries: '/word/diary',
-        notices: '/sharing/notices',
-        bulletins: '/sharing/bulletin',
-        galleryItems: '/sharing/gallery',
-        philosophies: '/church/philosophy',
-        pastorProfiles: '/church/pastor',
-        worshipServices: '/church/worship'
-    };
-    const listUrl = urlMap[type] || '/';
-    res.redirect(listUrl);
+        // Redirect logic
+        const urlMap: any = {
+            sermons: '/word/sermons',
+            meditations: '/word/meditation',
+            diaries: '/word/diary',
+            notices: '/sharing/notices',
+            bulletins: '/sharing/bulletin',
+            galleryItems: '/sharing/gallery',
+            philosophies: '/church/philosophy',
+            pastorProfiles: '/church/pastor',
+            worshipServices: '/church/worship',
+            worshipGuides: '/church/worship'
+        };
+        const listUrl = urlMap[type] || '/';
+        res.redirect(listUrl);
+    } catch (err) {
+        console.error(`Update error in ${type}:`, err);
+        res.status(500).send(`Internal Server Error: ${err instanceof Error ? err.message : String(err)}`);
+    }
 });
 
 // Delete Logic
@@ -732,7 +752,8 @@ app.get('/admin/delete/:type/:id', async (req, res) => {
         galleryItems: '/sharing/gallery',
         philosophies: '/church/philosophy',
         pastorProfiles: '/church/pastor',
-        worshipServices: '/church/worship'
+        worshipServices: '/church/worship',
+        worshipGuides: '/church/worship'
     };
 
     const listUrl = urlMap[type] || '/';

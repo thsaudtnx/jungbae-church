@@ -23,19 +23,22 @@
                 <% } %>
 
                     <div style="max-width: 800px; margin: 0 auto; text-align: center;">
-                        <div style="margin-bottom: 2rem;">
-                            <img src="<%= (typeof pastor !== 'undefined' && pastor.image) ? pastor.image : '/images/pastor.jpg' %>"
-                                alt="<%= typeof pastor !== 'undefined' ? pastor.name : '김정배' %> 목사님"
-                                style="width: 250px; height: 250px; object-fit: cover; border-radius: 50%; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 5px solid white;">
+                        <div class="card"
+                            style="background: white; padding: 2.5rem; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); border: 1px solid #eee;">
+                            <div style="margin-bottom: 2rem;">
+                                <img src="<%= (typeof pastor !== 'undefined' && pastor.image) ? pastor.image : '/images/pastor.jpg' %>"
+                                    alt="<%= typeof pastor !== 'undefined' ? pastor.name : '김정배' %> 목사님"
+                                    style="width: 250px; height: 250px; object-fit: cover; border-radius: 50%; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 5px solid white;">
+                            </div>
+                            <h3 style="font-size: 1.8rem; color: var(--color-primary); margin-bottom: 0.5rem;">
+                                <%= typeof pastor !=='undefined' ? pastor.name : '김정배' %>
+                                    <%= typeof pastor !=='undefined' ? pastor.role : '담임목사' %>
+                            </h3>
                         </div>
-                        <h3 style="font-size: 1.8rem; color: var(--color-primary); margin-bottom: 0.5rem;">
-                            <%= typeof pastor !=='undefined' ? pastor.name : '김정배' %>
-                                <%= typeof pastor !=='undefined' ? pastor.role : '담임목사' %>
-                        </h3>
-                        <div
-                            style="white-space: pre-wrap; font-size: 1.1rem; color: #444; text-align: left; background: #f9f9f9; padding: 2rem; border-radius: 15px; border-left: 5px solid var(--color-primary);">
-                            <%= typeof pastor !=='undefined' ? pastor.description
-                                : '"오직 말씀과 기도로 거룩하여짐이라" (딤전 4:5)\n\n정배교회를 섬기는 김정배 목사입니다.' %>
+                        <div class="info-box"
+                            style="font-size: 1.1rem; color: #444; text-align: left; background: #f9f9f9; padding: 2rem; border-radius: 15px; border-left: 5px solid var(--color-primary);">
+                            <%- typeof pastor !=='undefined' ? pastor.description
+                                : '"오직 말씀과 기도로 거룩하여짐이라" (딤전 4:5)<br><br>정배교회를 섬기는 김정배 목사입니다.' %>
                         </div>
                     </div>
         </div>

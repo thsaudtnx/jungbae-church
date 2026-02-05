@@ -22,9 +22,8 @@
                 </div>
                 <% } %>
 
-                    <div
-                        style="max-width: 800px; margin: 0 auto; line-height: 1.8; font-size: 1.1rem; white-space: pre-wrap;">
-                        <%= typeof philosophy !=='undefined' ? philosophy.content : '내용이 없습니다.' %>
+                    <div style="max-width: 800px; margin: 0 auto; line-height: 1.8; font-size: 1.1rem;">
+                        <%- typeof philosophy !=='undefined' ? philosophy.content : '내용이 없습니다.' %>
                     </div>
         </div>
 

@@ -34,6 +34,7 @@
             <div class="section-title"></div>
 
             <form action="/admin/<%= action %>/<%= type %>" method="POST" enctype="multipart/form-data"
+                class="admin-form-container"
                 style="max-width: 800px; margin: 0 auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
 
                 <% if (action==='update' ) { %>
@@ -49,7 +50,7 @@
 
                                 <% if (field.type==='textarea' ) { %>
                                     <textarea id="<%= field.name %>" name="<%= field.name %>" rows="10"
-                                        style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px;"><%= item ? item[field.name] : '' %></textarea>
+                                        style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px;"><%- item ? item[field.name] : '' %></textarea>
                                     <% } else if (field.type==='file' ) { %>
                                         <div class="file-upload-container"
                                             style="text-align: center; border: 2px dashed #eee; padding: 2.5rem; border-radius: 15px; background: #fafafa; transition: all 0.3s ease; cursor: pointer;"

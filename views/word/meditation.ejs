@@ -101,7 +101,7 @@
                         <%= item.title %>
                       </a>
                       <div class="meditation-summary">
-                        <%= item.summary %>
+                        <%= item.summary.replace(/<[^>]*>?/gm, '') %>
                       </div>
                     </td>
                     <td>

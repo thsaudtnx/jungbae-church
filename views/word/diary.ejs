@@ -110,7 +110,7 @@
                   </div>
 
                   <p class="diary-snippet">
-                    <%= item.content %>
+                    <%= item.content.replace(/<[^>]*>?/gm, '') %>
                   </p>
 
                   <div style="text-align: right; color: var(--color-primary); font-size: 0.9rem; font-weight: 500;">

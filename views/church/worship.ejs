@@ -69,6 +69,57 @@
                             </table>
                         </div>
 
+                        <!-- Worship Guides / Descriptions Section -->
+                        <div style="margin-top: 4rem;">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                                <h2 style="font-size: 1.8rem; color: var(--color-text); margin: 0;">
+                                    <i class="fas fa-info-circle"
+                                        style="color: var(--color-primary); margin-right: 8px;"></i>
+                                    예배 관련 안내
+                                </h2>
+                                <% if (locals.user && user.isAdmin) { %>
+                                    <a href="/admin/write/worshipGuides" class="btn btn-primary"
+                                        style="font-size: 0.9rem; padding: 0.5rem 1rem;">안내 추가</a>
+                                    <% } %>
+                            </div>
+
+                            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                                <% if (locals.guides && guides.length> 0) { %>
+                                    <% guides.forEach(function(guide) { %>
+                                        <div class="card"
+                                            style="background: white; padding: 2.5rem; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); border: 1px solid #eee;">
+                                            <div
+                                                style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; border-bottom: 2px solid #f8f9fa; padding-bottom: 1rem;">
+                                                <h3 style="font-size: 1.4rem; color: var(--color-primary); margin: 0;">
+                                                    <%= guide.title %>
+                                                </h3>
+                                                <% if (locals.user && user.isAdmin) { %>
+                                                    <div style="display: flex; gap: 12px;">
+                                                        <a href="/admin/edit/worshipGuides/<%= guide.id %>"
+                                                            style="color: #3498DB; font-size: 1.1rem;"><i
+                                                                class="fas fa-edit"></i></a>
+                                                        <a href="/admin/delete/worshipGuides/<%= guide.id %>"
+                                                            onclick="return confirm('정말 삭제하시겠습니까?')"
+                                                            style="color: #e74c3c; font-size: 1.1rem;"><i
+                                                                class="fas fa-trash"></i></a>
+                                                    </div>
+                                                    <% } %>
+                                            </div>
+                                            <div style="line-height: 2; color: #333; font-size: 1.1rem;">
+                                                <%- guide.content %>
+                                            </div>
+                                        </div>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <div
+                                                    style="text-align: center; padding: 4rem; background: #fff; border-radius: 15px; border: 1px dashed #ddd; color: #999;">
+                                                    등록된 안내 내용이 없습니다.
+                                                </div>
+                                                <% } %>
+                            </div>
+                        </div>
+
             </div>
         </div>
 

@@ -246,10 +246,70 @@ footer {
 
 /* Responsive */
 @media (max-width: 768px) {
+  :root {
+    --spacing-xl: 2rem;
+    --spacing-lg: 1.5rem;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
   .menu-toggle {
     display: block;
     margin-left: auto;
     padding: 10px;
+  }
+
+  /* Global reduction of large paddings for mobile */
+  .card,
+  .sermon-detail,
+  .sermon-content,
+  .meditation-detail,
+  .diary-detail,
+  .notice-detail,
+  .dashboard-header,
+  .recent-section,
+  .diary-card,
+  .info-box,
+  .admin-form-container,
+  .file-upload-container,
+  .category-group>div {
+    padding: 1.25rem !important;
+  }
+
+  /* Specific fix for detailed views where padding was too rigid */
+  .meditation-detail blockquote,
+  .sermon-content blockquote {
+    padding: 1rem !important;
+    margin: 1rem 0 !important;
+  }
+
+  .board-table th,
+  .board-table td {
+    padding: 0.8rem 0.5rem !important;
+  }
+
+  /* Reduce vertical spacing too */
+  .container {
+    padding-top: 80px !important;
+    padding-bottom: 30px !important;
+  }
+
+  .section-title {
+    margin-bottom: 1.5rem !important;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.3rem;
   }
 
   .nav-menu {
@@ -260,7 +320,7 @@ footer {
     width: 210px;
     height: calc(100vh - var(--header-height));
     flex-direction: column;
-    padding: 2rem;
+    padding: 1.5rem;
     box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
     transform: translateX(100%);
     transition: transform 0.3s ease;
@@ -277,7 +337,7 @@ footer {
   }
 
   .nav-link {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     padding: 0.5rem 0;
     border-bottom: 1px solid #f0f0f0;
     display: block;
@@ -291,14 +351,14 @@ footer {
     visibility: visible;
     transform: none;
     box-shadow: none;
-    padding-left: 1.2rem;
+    padding-left: 1rem;
     background: transparent;
     transition: none;
     min-width: auto;
   }
 
   .dropdown li a {
-    font-size: 1.05rem;
+    font-size: 1rem;
     padding: 0.4rem 0;
     color: #666;
   }
