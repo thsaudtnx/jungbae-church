@@ -112,12 +112,21 @@
 
 <body>
   <%- include("../partials/header") %>
-    <div class="container" style="padding-top: 100px; padding-bottom: 50px;">
-      <h1 class="text-center">공지사항</h1>
-      <div class="section-title"></div>
+    <section class="page-header" data-aos="fade">
+      <div class="container">
+        <h1 data-aos="fade-up" data-aos-delay="100">공지사항</h1>
+        <p data-aos="fade-up" data-aos-delay="200">정배교회의 새로운 소식과 안내를 전해드립니다</p>
+        <ul class="breadcrumb" data-aos="fade-up" data-aos-delay="300">
+          <li><a href="/">홈</a></li>
+          <li>나눔</li>
+          <li class="active">공지사항</li>
+        </ul>
+      </div>
+    </section>
 
+    <div class="container" style="padding-bottom: var(--spacing-xl);">
       <% if (locals.user && user.isAdmin) { %>
-        <div style="text-align: right; margin-bottom: 1rem;">
+        <div style="text-align: right; margin-bottom: 2rem;">
           <a href="/admin/write/notices" class="btn btn-primary">공지 등록</a>
         </div>
         <% } %>

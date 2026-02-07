@@ -8,53 +8,73 @@
 <body>
     <%- include('../partials/header') %>
 
-        <div class="container" style="padding-top: 100px; padding-bottom: 50px;">
-            <h1 class="text-center">예배 안내</h1>
-            <div class="section-title"></div>
+        <section class="page-header" data-aos="fade">
+            <div class="container">
+                <h1 data-aos="fade-up" data-aos-delay="100">예배 안내</h1>
+                <p data-aos="fade-up" data-aos-delay="200">하나님과 만나는 가장 복된 시간, 정배교회 예배 시간표입니다</p>
+                <ul class="breadcrumb" data-aos="fade-up" data-aos-delay="300">
+                    <li><a href="/">홈</a></li>
+                    <li>교회</li>
+                    <li class="active">예배 안내</li>
+                </ul>
+            </div>
+        </section>
 
-            <div style="max-width: 800px; margin: 0 auto;">
+        <div class="container" style="padding-bottom: var(--spacing-xl);">
+            <div style="max-width: 900px; margin: 0 auto;">
                 <% if (locals.user && user.isAdmin) { %>
-                    <div style="text-align: right; margin-bottom: 1rem;">
-                        <a href="/admin/write/worshipServices" class="btn btn-primary"
-                            style="font-size: 0.9rem; padding: 0.5rem 1rem;">예배 추가</a>
+                    <div style="text-align: right; margin-bottom: 2rem;">
+                        <a href="/admin/write/worshipServices" class="btn btn-primary">예배 추가</a>
                     </div>
                     <% } %>
-                        <div
-                            style="background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #eee; margin-bottom: 4rem;">
+
+                        <div data-aos="fade-up"
+                            style="background: white; border-radius: 20px; box-shadow: var(--shadow-medium); overflow: hidden; border: 1px solid var(--glass-border); margin-bottom: 5rem;">
                             <table style="width: 100%; border-collapse: collapse;">
                                 <thead>
                                     <tr
-                                        style="background: var(--color-bg-alt); border-bottom: 2px solid var(--color-primary);">
-                                        <th style="padding: 1.2rem; color: var(--color-text);">예배명</th>
-                                        <th style="padding: 1.2rem; color: var(--color-text);">시간</th>
-                                        <th style="padding: 1.2rem; color: var(--color-text);">장소</th>
+                                        style="background: rgba(0, 69, 140, 0.03); border-bottom: 2px solid var(--color-primary);">
+                                        <th style="padding: 1.5rem; color: var(--color-primary); font-weight: 700;">예배명
+                                        </th>
+                                        <th style="padding: 1.5rem; color: var(--color-primary); font-weight: 700;">시간
+                                        </th>
+                                        <th style="padding: 1.5rem; color: var(--color-primary); font-weight: 700;">장소
+                                        </th>
                                         <% if (locals.user && user.isAdmin) { %>
-                                            <th style="padding: 1.2rem; width: 100px; color: var(--color-text);">관리</th>
+                                            <th
+                                                style="padding: 1.5rem; width: 100px; color: var(--color-primary); font-weight: 700;">
+                                                관리</th>
                                             <% } %>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <% if (locals.services && services.length> 0) { %>
                                         <% services.forEach(function(item) { %>
-                                            <tr style="border-bottom: 1px solid #eee;">
-                                                <td style="padding: 1.2rem; text-align: center; font-weight: 500;">
+                                            <tr style="border-bottom: 1px solid #f2f2f2; transition: background 0.2s;"
+                                                onmouseover="this.style.background='#fcfdfe'"
+                                                onmouseout="this.style.background='transparent'">
+                                                <td
+                                                    style="padding: 1.5rem; text-align: center; font-weight: 600; color: var(--color-text);">
                                                     <%= item.name %>
                                                 </td>
-                                                <td style="padding: 1.2rem; text-align: center; color: #666;">
+                                                <td
+                                                    style="padding: 1.5rem; text-align: center; color: var(--color-text-light);">
                                                     <%= item.time %>
                                                 </td>
-                                                <td style="padding: 1.2rem; text-align: center; color: #666;">
+                                                <td
+                                                    style="padding: 1.5rem; text-align: center; color: var(--color-text-light);">
                                                     <%= item.place %>
                                                 </td>
                                                 <% if (locals.user && user.isAdmin) { %>
-                                                    <td style="padding: 1.2rem; text-align: center;">
-                                                        <a href="/admin/edit/worshipServices/<%= item.id %>"
-                                                            style="color: var(--color-primary); margin-right: 10px; font-size: 0.9rem;"><i
-                                                                class="fas fa-edit"></i></a>
-                                                        <a href="/admin/delete/worshipServices/<%= item.id %>"
-                                                            onclick="return confirm('정말 삭제하시겠습니까?')"
-                                                            style="color: #e74c3c; font-size: 0.9rem;"><i
-                                                                class="fas fa-trash"></i></a>
+                                                    <td style="padding: 1.5rem; text-align: center;">
+                                                        <div style="display: flex; gap: 10px; justify-content: center;">
+                                                            <a href="/admin/edit/worshipServices/<%= item.id %>"
+                                                                style="color: var(--color-secondary);"><i
+                                                                    class="fas fa-edit"></i></a>
+                                                            <a href="/admin/delete/worshipServices/<%= item.id %>"
+                                                                onclick="return confirm('정말 삭제하시겠습니까?')"
+                                                                style="color: #e74c3c;"><i class="fas fa-trash"></i></a>
+                                                        </div>
                                                     </td>
                                                     <% } %>
                                             </tr>
@@ -62,64 +82,74 @@
                                                 <% } else { %>
                                                     <tr>
                                                         <td colspan="4" class="text-center"
-                                                            style="padding: 3rem; color: #999;">등록된 예배가 없습니다.</td>
+                                                            style="padding: 5rem; color: #aaa;">등록된 예배가 없습니다.</td>
                                                     </tr>
                                                     <% } %>
                                 </tbody>
                             </table>
                         </div>
 
-                        <!-- Worship Guides / Descriptions Section -->
-                        <div style="margin-top: 4rem;">
-                            <div
-                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                                <h2 style="font-size: 1.8rem; color: var(--color-text); margin: 0;">
-                                    <i class="fas fa-info-circle"
-                                        style="color: var(--color-primary); margin-right: 8px;"></i>
-                                    예배 관련 안내
+                        <!-- Worship Guides -->
+                        <div style="margin-top: 5rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;"
+                                data-aos="fade-up">
+                                <h2 style="font-size: 2rem; color: var(--color-text); font-weight: 800;">예배 이야기 및 안내
                                 </h2>
                                 <% if (locals.user && user.isAdmin) { %>
-                                    <a href="/admin/write/worshipGuides" class="btn btn-primary"
-                                        style="font-size: 0.9rem; padding: 0.5rem 1rem;">안내 추가</a>
+                                    <a href="/admin/write/worshipGuides" class="btn btn-primary">안내 추가</a>
                                     <% } %>
                             </div>
 
-                            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                            <div style="display: flex; flex-direction: column; gap: 2.5rem;">
                                 <% if (locals.guides && guides.length> 0) { %>
-                                    <% guides.forEach(function(guide) { %>
-                                        <div class="card"
-                                            style="background: white; padding: 2.5rem; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); border: 1px solid #eee;">
+                                    <% guides.forEach(function(guide, index) { %>
+                                        <div class="card" data-aos="fade-up" data-aos-delay="<%= index * 100 %>"
+                                            style="background: white; padding: 3rem; border-radius: 20px; box-shadow: var(--shadow-soft); border: 1px solid var(--glass-border);">
                                             <div
-                                                style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; border-bottom: 2px solid #f8f9fa; padding-bottom: 1rem;">
-                                                <h3 style="font-size: 1.4rem; color: var(--color-primary); margin: 0;">
+                                                style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; border-bottom: 1px solid #f2f2f2; padding-bottom: 1.5rem;">
+                                                <h3
+                                                    style="font-size: 1.5rem; color: var(--color-primary); margin: 0; font-weight: 700;">
                                                     <%= guide.title %>
                                                 </h3>
                                                 <% if (locals.user && user.isAdmin) { %>
-                                                    <div style="display: flex; gap: 12px;">
+                                                    <div style="display: flex; gap: 15px;">
                                                         <a href="/admin/edit/worshipGuides/<%= guide.id %>"
-                                                            style="color: #3498DB; font-size: 1.1rem;"><i
+                                                            style="color: var(--color-secondary);"><i
                                                                 class="fas fa-edit"></i></a>
                                                         <a href="/admin/delete/worshipGuides/<%= guide.id %>"
                                                             onclick="return confirm('정말 삭제하시겠습니까?')"
-                                                            style="color: #e74c3c; font-size: 1.1rem;"><i
-                                                                class="fas fa-trash"></i></a>
+                                                            style="color: #e74c3c;"><i class="fas fa-trash"></i></a>
                                                     </div>
                                                     <% } %>
                                             </div>
-                                            <div style="line-height: 2; color: #333; font-size: 1.1rem;">
+                                            <div style="line-height: 2; color: var(--color-text); font-size: 1.15rem;">
                                                 <%- guide.content %>
                                             </div>
                                         </div>
                                         <% }); %>
                                             <% } else { %>
-                                                <div
-                                                    style="text-align: center; padding: 4rem; background: #fff; border-radius: 15px; border: 1px dashed #ddd; color: #999;">
+                                                <div data-aos="fade-up"
+                                                    style="text-align: center; padding: 5rem; background: #fff; border-radius: 20px; border: 2px dashed #eee; color: #aaa;">
                                                     등록된 안내 내용이 없습니다.
                                                 </div>
                                                 <% } %>
                             </div>
                         </div>
 
+                        <!-- Related Action -->
+                        <div style="border-top: 1px solid #eee; margin-top: 5rem; padding-top: 3rem; text-align: center;"
+                            data-aos="fade-up">
+                            <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 교회 안내
+                                보기</h4>
+                            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                                <a href="/church/pastor" class="btn btn-outline"
+                                    style="border-radius: 50px; padding: 12px 25px;">담임목사 소개</a>
+                                <a href="/church/philosophy" class="btn btn-outline"
+                                    style="border-radius: 50px; padding: 12px 25px;">목회철학</a>
+                                <a href="/church/location" class="btn btn-outline"
+                                    style="border-radius: 50px; padding: 12px 25px;">오시는 길</a>
+                            </div>
+                        </div>
             </div>
         </div>
 

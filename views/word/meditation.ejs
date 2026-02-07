@@ -7,12 +7,21 @@
 
 <body>
   <%- include("../partials/header") %>
-    <div class="container" style="padding-top: 100px; padding-bottom: 50px;">
-      <h1 class="text-center">새벽묵상</h1>
-      <div class="section-title"></div>
+    <section class="page-header" data-aos="fade">
+      <div class="container">
+        <h1 data-aos="fade-up" data-aos-delay="100">새벽묵상</h1>
+        <p data-aos="fade-up" data-aos-delay="200">매일 아침, 하나님의 말씀으로 시작하는 은혜의 시간입니다</p>
+        <ul class="breadcrumb" data-aos="fade-up" data-aos-delay="300">
+          <li><a href="/">홈</a></li>
+          <li>말씀</li>
+          <li class="active">새벽묵상</li>
+        </ul>
+      </div>
+    </section>
 
+    <div class="container" style="padding-bottom: var(--spacing-xl);">
       <% if (locals.user && user.isAdmin) { %>
-        <div style="text-align: right; margin-bottom: 1rem;">
+        <div style="text-align: right; margin-bottom: 2rem;">
           <a href="/admin/write/meditations" class="btn btn-primary">묵상 등록</a>
         </div>
         <% } %>
@@ -101,7 +110,7 @@
                         <%= item.title %>
                       </a>
                       <div class="meditation-summary">
-                        <%= item.summary.replace(/<[^>]*>?/gm, '') %>
+                        <%= item.summary ? item.summary.replace(/<[^>]*>?/gm, '') : '' %>
                       </div>
                     </td>
                     <td>
@@ -129,6 +138,16 @@
                       <% } %>
             </tbody>
           </table>
+
+          <!-- Related Action -->
+          <div style="border-top: 1px solid #eee; margin-top: 5rem; padding-top: 3rem; text-align: center;"
+            data-aos="fade-up">
+            <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 말씀 안내 보기</h4>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+              <a href="/word/sermons" class="btn btn-outline" style="border-radius: 50px; padding: 12px 25px;">주일 설교</a>
+              <a href="/word/diary" class="btn btn-outline" style="border-radius: 50px; padding: 12px 25px;">목양 일기</a>
+            </div>
+          </div>
     </div>
     <%- include("../partials/footer") %>
       <script src="/js/main.js"></script>

@@ -7,18 +7,27 @@
 
 <body>
   <%- include("../partials/header") %>
-    <div class="container" style="padding-top: 100px; padding-bottom: 50px;">
-      <h1 class="text-center">주보</h1>
-      <div class="section-title"></div>
+    <section class="page-header" data-aos="fade">
+      <div class="container">
+        <h1 data-aos="fade-up" data-aos-delay="100">주보</h1>
+        <p data-aos="fade-up" data-aos-delay="200">정배교회의 한 주간 소식과 예배 순서를 확인하세요</p>
+        <ul class="breadcrumb" data-aos="fade-up" data-aos-delay="300">
+          <li><a href="/">홈</a></li>
+          <li>나눔</li>
+          <li class="active">주보</li>
+        </ul>
+      </div>
+    </section>
 
+    <div class="container" style="padding-bottom: var(--spacing-xl);">
       <% if (locals.user && user.isAdmin) { %>
-        <div style="text-align: right; margin-bottom: 1rem;">
+        <div style="text-align: right; margin-bottom: 2rem;">
           <a href="/admin/write/bulletins" class="btn btn-primary">주보 등록</a>
         </div>
         <% } %>
 
           <div class="card-grid">
-            <% if (locals.bulletins) { %>
+            <% if (locals.bulletins && bulletins.length> 0) { %>
               <% bulletins.forEach(function(item) { %>
                 <div class="card" style="text-align: center; padding: 3rem 2rem;">
                   <div style="font-size: 3rem; color: var(--color-primary); margin-bottom: 1rem;">
@@ -41,7 +50,10 @@
                 </div>
                 <% }); %>
                   <% } else { %>
-                    <p class="text-center">등록된 주보가 없습니다.</p>
+                    <div style="grid-column: 1/-1; text-align: center; padding: 5rem 0; color: #aaa;">
+                      <i class="fas fa-file-alt" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;"></i>
+                      <p>등록된 주보가 없습니다.</p>
+                    </div>
                     <% } %>
           </div>
     </div>

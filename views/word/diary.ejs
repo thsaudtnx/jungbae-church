@@ -72,12 +72,21 @@
 
 <body>
   <%- include("../partials/header") %>
-    <div class="container" style="padding-top: 100px; padding-bottom: 50px;">
-      <h1 class="text-center">목양일기</h1>
-      <div class="section-title"></div>
+    <section class="page-header" data-aos="fade">
+      <div class="container">
+        <h1 data-aos="fade-up" data-aos-delay="100">목양일기</h1>
+        <p data-aos="fade-up" data-aos-delay="200">성도들을 향한 목자의 마음과 기도가 담긴 따뜻한 기록입니다</p>
+        <ul class="breadcrumb" data-aos="fade-up" data-aos-delay="300">
+          <li><a href="/">홈</a></li>
+          <li>말씀</li>
+          <li class="active">목양일기</li>
+        </ul>
+      </div>
+    </section>
 
+    <div class="container" style="padding-bottom: var(--spacing-xl);">
       <% if (locals.user && user.isAdmin) { %>
-        <div style="text-align: right; margin-bottom: 2rem;">
+        <div style="text-align: right; margin-bottom: 3rem;">
           <a href="/admin/write/diaries" class="btn btn-primary">일기 등록</a>
         </div>
         <% } %>
@@ -121,6 +130,19 @@
                   <% } else { %>
                     <p class="text-center" style="padding: 3rem; color: #aaa;">등록된 일기가 없습니다.</p>
                     <% } %>
+
+                      <!-- Related Action -->
+                      <div style="border-top: 1px solid #eee; margin-top: 5rem; padding-top: 3rem; text-align: center;"
+                        data-aos="fade-up">
+                        <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 말씀 안내 보기
+                        </h4>
+                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                          <a href="/word/sermons" class="btn btn-outline"
+                            style="border-radius: 50px; padding: 12px 25px;">주일 설교</a>
+                          <a href="/word/meditation" class="btn btn-outline"
+                            style="border-radius: 50px; padding: 12px 25px;">새벽 묵상</a>
+                        </div>
+                      </div>
           </div>
     </div>
 

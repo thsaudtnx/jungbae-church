@@ -8,12 +8,21 @@
 <body>
     <%- include('../partials/header') %>
 
-        <div class="container" style="padding-top: 100px; padding-bottom: 50px;">
-            <h1 class="text-center">담임목사 소개</h1>
-            <div class="section-title"></div>
+        <section class="page-header" data-aos="fade">
+            <div class="container">
+                <h1 data-aos="fade-up" data-aos-delay="100">담임목사 소개</h1>
+                <p data-aos="fade-up" data-aos-delay="200">하나님 나라의 종으로 정배교회를 섬기는 목회자입니다</p>
+                <ul class="breadcrumb" data-aos="fade-up" data-aos-delay="300">
+                    <li><a href="/">홈</a></li>
+                    <li>교회</li>
+                    <li class="active">담임목사 소개</li>
+                </ul>
+            </div>
+        </section>
 
+        <div class="container" style="padding-bottom: var(--spacing-xl);">
             <% if (locals.user && user.isAdmin) { %>
-                <div style="text-align: right; margin-bottom: 1rem;">
+                <div style="text-align: right; margin-bottom: 2rem;">
                     <% if (typeof pastor !=='undefined' && pastor.id) { %>
                         <a href="/admin/edit/pastorProfiles/<%= pastor.id %>" class="btn btn-primary">수정하기</a>
                         <% } else { %>
@@ -22,23 +31,43 @@
                 </div>
                 <% } %>
 
-                    <div style="max-width: 800px; margin: 0 auto; text-align: center;">
-                        <div class="card"
-                            style="background: white; padding: 2.5rem; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); border: 1px solid #eee;">
+                    <div style="max-width: 850px; margin: 0 auto;">
+                        <div class="card" data-aos="fade-up"
+                            style="background: white; padding: 3rem; border-radius: 20px; box-shadow: var(--shadow-medium); border: 1px solid var(--glass-border); text-align: center; margin-bottom: 3rem;">
                             <div style="margin-bottom: 2rem;">
                                 <img src="<%= (typeof pastor !== 'undefined' && pastor.image) ? pastor.image : '/images/pastor.jpg' %>"
                                     alt="<%= typeof pastor !== 'undefined' ? pastor.name : '김정배' %> 목사님"
-                                    style="width: 250px; height: 250px; object-fit: cover; border-radius: 50%; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 5px solid white;">
+                                    style="width: 280px; height: 280px; object-fit: cover; border-radius: 50%; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border: 8px solid white;">
                             </div>
-                            <h3 style="font-size: 1.8rem; color: var(--color-primary); margin-bottom: 0.5rem;">
+                            <h3
+                                style="font-size: 2rem; color: var(--color-primary); margin-bottom: 0.5rem; font-weight: 800;">
                                 <%= typeof pastor !=='undefined' ? pastor.name : '김정배' %>
-                                    <%= typeof pastor !=='undefined' ? pastor.role : '담임목사' %>
+                                    <span
+                                        style="font-size: 1.25rem; color: var(--color-text-light); font-weight: 500; margin-left: 5px;">
+                                        <%= typeof pastor !=='undefined' ? pastor.role : '담임목사' %>
+                                    </span>
                             </h3>
                         </div>
-                        <div class="info-box"
-                            style="font-size: 1.1rem; color: #444; text-align: left; background: #f9f9f9; padding: 2rem; border-radius: 15px; border-left: 5px solid var(--color-primary);">
+
+                        <div data-aos="fade-up" data-aos-delay="100"
+                            style="font-size: 1.15rem; color: var(--color-text); text-align: left; background: white; padding: 3rem; border-radius: 20px; box-shadow: var(--shadow-soft); border-left: 8px solid var(--color-primary); line-height: 2;">
                             <%- typeof pastor !=='undefined' ? pastor.description
                                 : '"오직 말씀과 기도로 거룩하여짐이라" (딤전 4:5)<br><br>정배교회를 섬기는 김정배 목사입니다.' %>
+                        </div>
+
+                        <!-- Related Action -->
+                        <div style="border-top: 1px solid #eee; margin-top: 5rem; padding-top: 3rem; text-align: center;"
+                            data-aos="fade-up">
+                            <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 교회 안내
+                                보기</h4>
+                            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                                <a href="/church/philosophy" class="btn btn-outline"
+                                    style="border-radius: 50px; padding: 12px 25px;">목회철학</a>
+                                <a href="/church/worship" class="btn btn-outline"
+                                    style="border-radius: 50px; padding: 12px 25px;">예배 안내</a>
+                                <a href="/church/location" class="btn btn-outline"
+                                    style="border-radius: 50px; padding: 12px 25px;">오시는 길</a>
+                            </div>
                         </div>
                     </div>
         </div>

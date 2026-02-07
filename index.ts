@@ -9,7 +9,7 @@ import bcrypt from 'bcrypt';
 import fs from 'fs';
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Trust Proxy (Essential for session cookies on Vercel/Render)
 app.set('trust proxy', 1);
@@ -425,12 +425,17 @@ app.get('/', async (req, res) => {
     const allBulletins = await getCollection('bulletins');
     const latestBulletin = allBulletins.length > 0 ? allBulletins[0] : null;
 
+    // Fetch latest 3 meditations
+    const allMeditations = await getCollection('meditations');
+    const latestMeditations = allMeditations.slice(0, 3);
+
     res.render('index', {
         title: '정배교회',
         page: 'home',
         latestSermons,
         latestNotices,
-        latestBulletin
+        latestBulletin,
+        latestMeditations
     });
 });
 

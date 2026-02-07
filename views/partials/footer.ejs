@@ -3,7 +3,7 @@
         <div class="footer-content" style="display: block;">
             <div
                 style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
-                <div class="footer-info" style="text-align: left;">
+                <div class="footer-info" style="text-align: center;">
                     <h3 style="margin-bottom: 0.8rem; color: var(--color-text);">정배교회 <span
                             style="font-size: 0.85rem; font-weight: normal; color: var(--color-text-light); margin-left: 10px;">대한예수교장로회(통합)</span>
                     </h3>
@@ -12,13 +12,13 @@
                     <p style="margin-bottom: 1rem; font-size: 0.95rem; color: #555;"><i class="fas fa-envelope"
                             style="width: 20px; color: var(--color-primary);"></i> <b>이메일:</b> ypjbch@gmail.com</p>
                 </div>
-                <div class="footer-social" style="text-align: left;">
+                <div class="footer-social" style="text-align: center;">
                     <h4 style="margin-bottom: 1rem; font-size: 1rem; color: var(--color-text);">소셜 네트워크</h4>
-                    <div style="display: flex; gap: 12px; align-items: center;">
+                    <div style="display: flex; gap: 15px; align-items: center; justify-content: center;">
                         <a href="https://www.youtube.com/@jeongBaeChurch" target="_blank" title="유튜브"
                             style="font-size: 1.6rem; color: #FF0000; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"><i
                                 class="fab fa-youtube"></i></a>
-                        <a href="https://www.instagram.com/yp_jbchurch" target="_blank" title="인스타그램"
+                        <a href="https://www.instagram.com/yp_jbchurch/#" target="_blank" title="인스타그램"
                             style="font-size: 1.6rem; color: #E1306C; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"><i
                                 class="fab fa-instagram"></i></a>
                         <a href="https://www.threads.net/@yp_jbchurch" target="_blank" title="스레드"
@@ -32,7 +32,7 @@
             </div>
 
             <div
-                style="border-top: 1px solid #ddd; padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                style="border-top: 1px solid #ddd; padding-top: 1.5rem; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 1rem; text-align: center;">
                 <p style="color: #777; font-size: 0.9rem;">&copy; 2026 정배교회. <b>일상·여백·하나님 나라</b></p>
                 <div style="font-size: 0.85rem;">
                     <% if (locals.user && user.isAdmin) { %>
@@ -49,3 +49,24 @@
         </div>
     </div>
 </footer>
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+    // Initialize AOS
+    document.addEventListener('DOMContentLoaded', () => {
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            offset: 100
+        });
+
+        // Page Transition - Body Fade In
+        document.body.classList.add('loaded');
+    });
+
+    // Handle NProgress for page transitions
+    window.addEventListener('beforeunload', () => {
+        NProgress.start();
+        document.body.style.opacity = '0';
+    });
+</script>
