@@ -11,7 +11,6 @@
         <section class="page-header" data-aos="fade">
             <div class="container">
                 <h1 data-aos="fade-up" data-aos-delay="100">예배 안내</h1>
-                <p data-aos="fade-up" data-aos-delay="200">하나님과 만나는 가장 복된 시간, 정배교회 예배 시간표입니다</p>
                 <ul class="breadcrumb" data-aos="fade-up" data-aos-delay="300">
                     <li><a href="/">홈</a></li>
                     <li>교회</li>
@@ -91,10 +90,8 @@
 
                         <!-- Worship Guides -->
                         <div style="margin-top: 5rem;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;"
+                            <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 3rem;"
                                 data-aos="fade-up">
-                                <h2 style="font-size: 2rem; color: var(--color-text); font-weight: 800;">예배 이야기 및 안내
-                                </h2>
                                 <% if (locals.user && user.isAdmin) { %>
                                     <a href="/admin/write/worshipGuides" class="btn btn-primary">안내 추가</a>
                                     <% } %>

@@ -75,7 +75,6 @@
     <section class="page-header" data-aos="fade">
       <div class="container">
         <h1 data-aos="fade-up" data-aos-delay="100">목양일기</h1>
-        <p data-aos="fade-up" data-aos-delay="200">성도들을 향한 목자의 마음과 기도가 담긴 따뜻한 기록입니다</p>
         <ul class="breadcrumb" data-aos="fade-up" data-aos-delay="300">
           <li><a href="/">홈</a></li>
           <li>말씀</li>
@@ -91,7 +90,7 @@
         </div>
         <% } %>
 
-          <div style="max-width: 850px; margin: 0 auto;">
+          <div>
             <% if (locals.diaries && diaries.length> 0) { %>
               <% diaries.forEach(function(item) { %>
                 <div class="diary-card" onclick="location.href='/word/diary/<%= item.id %>'">
