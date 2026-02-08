@@ -204,7 +204,8 @@ const SCHEMAS: any = {
     notices: [
         { name: 'title', label: '제목' },
         { name: 'date', label: '날짜', type: 'date' },
-        { name: 'content', label: '내용', type: 'textarea' }
+        { name: 'content', label: '내용', type: 'textarea' },
+        { name: 'file', label: '첨부파일', type: 'file' }
     ],
     bulletins: [
         { name: 'title', label: '주보 제목' },

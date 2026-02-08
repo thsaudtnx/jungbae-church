@@ -70,6 +70,14 @@
                         <i class="far fa-calendar-alt"></i>
                         <%= notice.date %>
                     </div>
+                    <% if (notice.file) { %>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee;">
+                            <a href="<%= notice.file %>" target="_blank" class="btn btn-outline"
+                                style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                <i class="fas fa-paperclip"></i> 첨부파일 다운로드
+                            </a>
+                        </div>
+                        <% } %>
                 </div>
 
                 <div class="notice-content">
