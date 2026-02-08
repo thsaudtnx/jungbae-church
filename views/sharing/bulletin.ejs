@@ -25,31 +25,59 @@
         </div>
         <% } %>
 
-          <div class="card-grid">
+          <div style="display: flex; flex-direction: column; gap: 4rem;">
             <% if (locals.bulletins && bulletins.length> 0) { %>
               <% bulletins.forEach(function(item) { %>
-                <div class="card" style="text-align: center; padding: 3rem 2rem;">
-                  <div style="font-size: 3rem; color: var(--color-primary); margin-bottom: 1rem;">
-                    <i class="far fa-file-pdf"></i>
-                  </div>
-                  <h3>
-                    <%= item.title %>
-                  </h3>
-                  <p style="color: #666; margin-bottom: 1.5rem;">
-                    <%= item.date %>
-                  </p>
-                  <% if (locals.user && user.isAdmin) { %>
-                    <div style="font-size: 0.9rem; margin-bottom: 1rem;">
-                      <a href="/admin/edit/bulletins/<%= item.id %>" style="color: var(--color-primary);">수정</a> |
-                      <a href="/admin/delete/bulletins/<%= item.id %>" onclick="return confirm('정말 삭제하시겠습니까?')"
-                        style="color: red;">삭제</a>
+                <div class="card" style="padding: 2rem; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                  <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
+                    <div>
+                      <h3 style="margin: 0; font-size: 1.5rem; color: var(--color-primary);">
+                        <%= item.title %>
+                      </h3>
+                      <p style="margin: 0.5rem 0 0; color: #666; font-size: 0.95rem;">
+                        <i class="far fa-calendar-alt"></i>
+                        <%= item.date %>
+                      </p>
                     </div>
-                    <% } %>
-                      <a href="<%= item.file || '#' %>" target="_blank" class="btn btn-outline">다운로드</a>
+                    <% if (locals.user && user.isAdmin) { %>
+                      <div style="font-size: 0.9rem;">
+                        <a href="/admin/edit/bulletins/<%= item.id %>"
+                          style="color: var(--color-primary); margin-right: 10px;">수정</a>
+                        <a href="/admin/delete/bulletins/<%= item.id %>" onclick="return confirm('정말 삭제하시겠습니까?')"
+                          style="color: red;">삭제</a>
+                      </div>
+                      <% } %>
+                  </div>
+
+                  <% if (item.file && item.file.toLowerCase().endsWith('.pdf')) { %>
+                    <div
+                      style="width: 100%; max-width: 500px; margin: 0 auto; height: 700px; border: 1px solid #eee; border-radius: 8px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                      <iframe src="<%= item.file %>#toolbar=0"
+                        style="width: 100%; height: 100%; border: none;"></iframe>
+                    </div>
+                    <div style="text-align: right; margin-top: 0.5rem;">
+                      <a href="<%= item.file %>" target="_blank" class="btn btn-outline"
+                        style="font-size: 0.85rem; padding: 5px 15px;">
+                        <i class="fas fa-external-link-alt"></i> 새 창에서 보기
+                      </a>
+                    </div>
+                    <% } else if (item.file && (item.file.match(/\.(jpg|jpeg|png|gif|webp)$/i))) { %>
+                      <div style="width: 100%; text-align: center;">
+                        <img src="<%= item.file %>"
+                          style="max-width: 100%; max-height: 800px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                      </div>
+                      <% } else { %>
+                        <div style="text-align: center; padding: 3rem; background: #f9f9f9; border-radius: 8px;">
+                          <i class="fas fa-file-alt" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                          <p>미리보기를 지원하지 않는 파일입니다.</p>
+                          <a href="<%= item.file || '#' %>" target="_blank" class="btn btn-primary">다운로드</a>
+                        </div>
+                        <% } %>
                 </div>
                 <% }); %>
                   <% } else { %>
-                    <div style="grid-column: 1/-1; text-align: center; padding: 5rem 0; color: #aaa;">
+                    <div style="text-align: center; padding: 5rem 0; color: #aaa;">
                       <i class="fas fa-file-alt" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;"></i>
                       <p>등록된 주보가 없습니다.</p>
                     </div>

@@ -4,115 +4,192 @@
 <head>
     <%- include('../partials/head') %>
         <style>
+            :root {
+                --admin-primary: #4e54c8;
+                --admin-secondary: #8f94fb;
+                --admin-bg: #f4f6f9;
+                --admin-card-bg: #ffffff;
+                --admin-text: #2d3436;
+                --admin-text-muted: #636e72;
+            }
+
             .dashboard-container {
-                padding-top: 120px;
+                padding-top: 100px;
                 padding-bottom: 50px;
                 min-height: 100vh;
-                background: var(--color-bg-alt);
+                background-color: var(--admin-bg);
+                font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
             }
 
             .dashboard-header {
-                background: white;
-                padding: 2rem;
-                border-radius: 15px;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-                margin-bottom: 2rem;
+                background: linear-gradient(135deg, var(--admin-primary), var(--admin-secondary));
+                padding: 3rem 2rem;
+                border-radius: 20px;
+                box-shadow: 0 10px 30px rgba(78, 84, 200, 0.2);
+                margin-bottom: 3rem;
+                color: white;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .dashboard-header::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                right: -10%;
+                width: 300px;
+                height: 300px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+            }
+
+            .dashboard-header h1 {
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+                display: flex;
+                align-items: center;
+                gap: 15px;
             }
 
             .stats-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
                 gap: 1.5rem;
                 margin-bottom: 3rem;
             }
 
             .stat-card {
-                background: white;
+                background: var(--admin-card-bg);
                 padding: 1.5rem;
-                border-radius: 10px;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-                text-align: center;
+                border-radius: 16px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
                 transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 1.5rem;
+                border: 1px solid rgba(0, 0, 0, 0.02);
             }
 
             .stat-card:hover {
                 transform: translateY(-5px);
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
             }
 
-            .stat-card i {
-                font-size: 2.5rem;
-                margin-bottom: 1rem;
-            }
-
-            .stat-card h3 {
-                font-size: 2rem;
-                color: var(--color-text);
-                margin-bottom: 0.5rem;
-            }
-
-            .stat-card p {
-                color: var(--color-text-light);
-                font-size: 0.9rem;
-            }
-
-            .quick-actions {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 1rem;
-                margin-bottom: 3rem;
-            }
-
-            .quick-action-btn {
+            .stat-icon {
+                width: 60px;
+                height: 60px;
+                border-radius: 12px;
                 display: flex;
                 align-items: center;
-                gap: 1rem;
-                padding: 1rem 1.5rem;
-                background: white;
-                border-radius: 10px;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-                text-decoration: none;
-                color: var(--color-text);
-                transition: all 0.3s ease;
+                justify-content: center;
+                font-size: 1.8rem;
             }
 
-            .quick-action-btn:hover {
-                transform: translateX(5px);
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            .stat-info h3 {
+                font-size: 2rem;
+                font-weight: 800;
+                color: var(--admin-text);
+                margin: 0;
+                line-height: 1;
             }
 
-            .quick-action-btn i {
-                font-size: 1.5rem;
-                color: var(--color-primary);
+            .stat-info p {
+                color: var(--admin-text-muted);
+                font-size: 0.95rem;
+                margin: 5px 0 0 0;
+                font-weight: 500;
             }
 
-            .recent-section {
-                background: white;
-                padding: 2rem;
-                border-radius: 15px;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-                margin-bottom: 2rem;
-            }
-
-            .recent-section h2 {
-                font-size: 1.5rem;
+            .section-title {
+                font-size: 1.4rem;
+                font-weight: 700;
+                color: var(--admin-text);
                 margin-bottom: 1.5rem;
-                color: var(--color-text);
                 display: flex;
                 align-items: center;
                 gap: 10px;
             }
 
+            .quick-actions {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+                margin-bottom: 4rem;
+            }
+
+            .quick-action-btn {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem;
+                background: var(--admin-card-bg);
+                border-radius: 16px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+                text-decoration: none;
+                color: var(--admin-text);
+                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                /* Bouncy transition */
+                border: 1px solid transparent;
+            }
+
+            .quick-action-btn:hover {
+                transform: translateY(-5px) scale(1.02);
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+                border-color: var(--admin-primary);
+                color: var(--admin-primary);
+            }
+
+            .quick-action-btn i {
+                font-size: 2.5rem;
+                margin-bottom: 1rem;
+                color: var(--admin-secondary);
+                transition: color 0.3s ease;
+            }
+
+            .quick-action-btn:hover i {
+                color: var(--admin-primary);
+            }
+
+            .quick-action-btn span {
+                font-weight: 600;
+                font-size: 1.1rem;
+            }
+
+            .content-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+            }
+
+            @media (max-width: 900px) {
+                .content-row {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .recent-section {
+                background: var(--admin-card-bg);
+                padding: 2rem;
+                border-radius: 20px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+                height: 100%;
+            }
+
             .recent-list {
                 list-style: none;
+                padding: 0;
+                margin: 0;
             }
 
             .recent-item {
-                padding: 1rem;
-                border-bottom: 1px solid #f5f5f5;
+                padding: 1.2rem 0;
+                border-bottom: 1px solid #f0f0f0;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                transition: background 0.2s ease;
             }
 
             .recent-item:last-child {
@@ -120,17 +197,41 @@
             }
 
             .recent-item:hover {
-                background: var(--color-bg-alt);
+                background: rgba(0, 0, 0, 0.01);
+                padding-left: 10px;
+                padding-right: 10px;
+                border-radius: 8px;
             }
 
             .recent-item-title {
-                font-weight: 500;
-                color: var(--color-text);
+                font-weight: 600;
+                font-size: 1.05rem;
+                color: var(--admin-text);
+                margin-bottom: 0.3rem;
             }
 
             .recent-item-date {
                 font-size: 0.85rem;
-                color: var(--color-text-light);
+                color: var(--admin-text-muted);
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .btn-edit {
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                font-size: 0.9rem;
+                font-weight: 500;
+                color: var(--admin-primary);
+                background: rgba(78, 84, 200, 0.1);
+                border: none;
+                transition: all 0.2s ease;
+            }
+
+            .btn-edit:hover {
+                background: var(--admin-primary);
+                color: white;
             }
         </style>
 </head>
@@ -139,155 +240,183 @@
     <%- include('../partials/header') %>
 
         <div class="container dashboard-container">
-            <div class="dashboard-header">
-                <h1 style="margin-bottom: 0.5rem;">
-                    <i class="fas fa-tachometer-alt" style="color: var(--color-primary);"></i>
+            <div class="dashboard-header" data-aos="fade-down">
+                <h1>
+                    <i class="fas fa-crown"></i>
                     관리자 대시보드
                 </h1>
-                <p style="color: var(--color-text-light);">정배교회 콘텐츠 관리</p>
+                <p style="font-size: 1.1rem; opacity: 0.9; margin-left: 3px;">정배교회의 모든 콘텐츠를 한눈에 관리하세요.</p>
             </div>
 
             <!-- Statistics -->
-            <div class="stats-grid">
+            <div class="stats-grid" data-aos="fade-up" data-aos-delay="100">
                 <div class="stat-card">
-                    <i class="fas fa-bible" style="color: var(--color-primary);"></i>
-                    <h3>
-                        <%= stats.sermons %>
-                    </h3>
-                    <p>주일설교</p>
+                    <div class="stat-icon" style="background: rgba(78, 84, 200, 0.1); color: var(--admin-primary);">
+                        <i class="fas fa-bible"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>
+                            <%= stats.sermons %>
+                        </h3>
+                        <p>주일설교</p>
+                    </div>
                 </div>
                 <div class="stat-card">
-                    <i class="fas fa-book-open" style="color: var(--color-secondary);"></i>
-                    <h3>
-                        <%= stats.meditations %>
-                    </h3>
-                    <p>새벽묵상</p>
+                    <div class="stat-icon" style="background: rgba(46, 204, 113, 0.1); color: #2ecc71;">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>
+                            <%= stats.meditations %>
+                        </h3>
+                        <p>새벽묵상</p>
+                    </div>
                 </div>
                 <div class="stat-card">
-                    <i class="fas fa-pen-fancy" style="color: #9b59b6;"></i>
-                    <h3>
-                        <%= stats.diaries %>
-                    </h3>
-                    <p>목양일기</p>
+                    <div class="stat-icon" style="background: rgba(155, 89, 182, 0.1); color: #9b59b6;">
+                        <i class="fas fa-pen-fancy"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>
+                            <%= stats.diaries %>
+                        </h3>
+                        <p>목양일기</p>
+                    </div>
                 </div>
                 <div class="stat-card">
-                    <i class="fas fa-bullhorn" style="color: #e74c3c;"></i>
-                    <h3>
-                        <%= stats.notices %>
-                    </h3>
-                    <p>공지사항</p>
+                    <div class="stat-icon" style="background: rgba(231, 76, 60, 0.1); color: #e74c3c;">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>
+                            <%= stats.notices %>
+                        </h3>
+                        <p>공지사항</p>
+                    </div>
                 </div>
                 <div class="stat-card">
-                    <i class="fas fa-file-alt" style="color: #f39c12;"></i>
-                    <h3>
-                        <%= stats.bulletins %>
-                    </h3>
-                    <p>주보</p>
+                    <div class="stat-icon" style="background: rgba(243, 156, 18, 0.1); color: #f39c12;">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>
+                            <%= stats.bulletins %>
+                        </h3>
+                        <p>주보</p>
+                    </div>
                 </div>
                 <div class="stat-card">
-                    <i class="fas fa-images" style="color: #16a085;"></i>
-                    <h3>
-                        <%= stats.gallery %>
-                    </h3>
-                    <p>교회앨범</p>
+                    <div class="stat-icon" style="background: rgba(22, 160, 133, 0.1); color: #16a085;">
+                        <i class="fas fa-images"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>
+                            <%= stats.gallery %>
+                        </h3>
+                        <p>교회앨범</p>
+                    </div>
                 </div>
             </div>
 
             <!-- Quick Actions -->
-            <h2 style="margin-bottom: 1rem; color: var(--color-text);">
+            <h2 class="section-title" data-aos="fade-right" data-aos-delay="200">
                 <i class="fas fa-bolt" style="color: var(--color-accent);"></i> 빠른 작성
             </h2>
-            <div class="quick-actions">
+            <div class="quick-actions" data-aos="fade-up" data-aos-delay="300">
                 <a href="/admin/write/sermons" class="quick-action-btn">
-                    <i class="fas fa-plus-circle"></i>
+                    <i class="fas fa-microphone-alt"></i>
                     <span>설교 등록</span>
                 </a>
                 <a href="/admin/write/meditations" class="quick-action-btn">
-                    <i class="fas fa-plus-circle"></i>
+                    <i class="fas fa-praying-hands"></i>
                     <span>묵상 등록</span>
                 </a>
                 <a href="/admin/write/diaries" class="quick-action-btn">
-                    <i class="fas fa-plus-circle"></i>
+                    <i class="fas fa-feather-alt"></i>
                     <span>일기 등록</span>
                 </a>
                 <a href="/admin/write/notices" class="quick-action-btn">
-                    <i class="fas fa-plus-circle"></i>
+                    <i class="fas fa-bell"></i>
                     <span>공지 등록</span>
                 </a>
                 <a href="/admin/write/bulletins" class="quick-action-btn">
-                    <i class="fas fa-plus-circle"></i>
+                    <i class="fas fa-file-pdf"></i>
                     <span>주보 등록</span>
                 </a>
                 <a href="/admin/write/galleryItems" class="quick-action-btn">
-                    <i class="fas fa-plus-circle"></i>
+                    <i class="fas fa-camera-retro"></i>
                     <span>앨범 등록</span>
-                </a>
-                <a href="/admin/write/worshipGuides" class="quick-action-btn">
-                    <i class="fas fa-plus-circle"></i>
-                    <span>예배 안내 등록</span>
                 </a>
             </div>
 
             <!-- Recent Content -->
-            <div class="recent-section">
-                <h2>
-                    <i class="fas fa-clock"></i> 최근 등록된 설교
-                </h2>
-                <% if (recentContent.sermons && recentContent.sermons.length> 0) { %>
-                    <ul class="recent-list">
-                        <% recentContent.sermons.forEach(function(sermon) { %>
-                            <li class="recent-item">
-                                <div>
-                                    <div class="recent-item-title">
-                                        <%= sermon.title %>
+            <div class="content-row" data-aos="fade-up" data-aos-delay="400">
+                <div class="recent-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-history" style="color: var(--admin-primary);"></i> 최근 등록된 설교
+                    </h2>
+                    <% if (recentContent.sermons && recentContent.sermons.length> 0) { %>
+                        <ul class="recent-list">
+                            <% recentContent.sermons.forEach(function(sermon) { %>
+                                <li class="recent-item">
+                                    <div>
+                                        <div class="recent-item-title">
+                                            <%= sermon.title %>
+                                        </div>
+                                        <div class="recent-item-date">
+                                            <i class="far fa-calendar-alt"></i>
+                                            <%= sermon.date %>
+                                                <span style="margin: 0 5px; color: #ddd;">|</span>
+                                                <i class="far fa-user"></i>
+                                                <%= sermon.preacher %>
+                                        </div>
                                     </div>
-                                    <div class="recent-item-date">
-                                        <i class="far fa-calendar-alt"></i>
-                                        <%= sermon.date %> |
-                                            <i class="far fa-user"></i>
-                                            <%= sermon.preacher %>
-                                    </div>
-                                </div>
-                                <a href="/admin/edit/sermons/<%= sermon.id %>" class="btn btn-outline"
-                                    style="padding: 0.5rem 1rem;">
-                                    <i class="fas fa-edit"></i> 수정
-                                </a>
-                            </li>
-                            <% }); %>
-                    </ul>
-                    <% } else { %>
-                        <p style="text-align: center; color: var(--color-text-light); padding: 2rem;">등록된 설교가 없습니다.</p>
-                        <% } %>
-            </div>
+                                    <a href="/admin/edit/sermons/<%= sermon.id %>" class="btn-edit">
+                                        <i class="fas fa-pen"></i> 수정
+                                    </a>
+                                </li>
+                                <% }); %>
+                        </ul>
+                        <% } else { %>
+                            <div style="text-align: center; padding: 3rem 0; color: var(--admin-text-muted);">
+                                <i class="fas fa-inbox"
+                                    style="font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.3;"></i>
+                                <p>등록된 설교가 없습니다.</p>
+                            </div>
+                            <% } %>
+                </div>
 
-            <div class="recent-section">
-                <h2>
-                    <i class="fas fa-clock"></i> 최근 공지사항
-                </h2>
-                <% if (recentContent.notices && recentContent.notices.length> 0) { %>
-                    <ul class="recent-list">
-                        <% recentContent.notices.forEach(function(notice) { %>
-                            <li class="recent-item">
-                                <div>
-                                    <div class="recent-item-title">
-                                        <%= notice.title %>
+                <div class="recent-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-history" style="color: var(--admin-primary);"></i> 최근 공지사항
+                    </h2>
+                    <% if (recentContent.notices && recentContent.notices.length> 0) { %>
+                        <ul class="recent-list">
+                            <% recentContent.notices.forEach(function(notice) { %>
+                                <li class="recent-item">
+                                    <div>
+                                        <div class="recent-item-title">
+                                            <%= notice.title %>
+                                        </div>
+                                        <div class="recent-item-date">
+                                            <i class="far fa-calendar-alt"></i>
+                                            <%= notice.date %>
+                                        </div>
                                     </div>
-                                    <div class="recent-item-date">
-                                        <i class="far fa-calendar-alt"></i>
-                                        <%= notice.date %>
-                                    </div>
-                                </div>
-                                <a href="/admin/edit/notices/<%= notice.id %>" class="btn btn-outline"
-                                    style="padding: 0.5rem 1rem;">
-                                    <i class="fas fa-edit"></i> 수정
-                                </a>
-                            </li>
-                            <% }); %>
-                    </ul>
-                    <% } else { %>
-                        <p style="text-align: center; color: var(--color-text-light); padding: 2rem;">등록된 공지사항이 없습니다.
-                        </p>
-                        <% } %>
+                                    <a href="/admin/edit/notices/<%= notice.id %>" class="btn-edit">
+                                        <i class="fas fa-pen"></i> 수정
+                                    </a>
+                                </li>
+                                <% }); %>
+                        </ul>
+                        <% } else { %>
+                            <div style="text-align: center; padding: 3rem 0; color: var(--admin-text-muted);">
+                                <i class="fas fa-inbox"
+                                    style="font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.3;"></i>
+                                <p>등록된 공지사항이 없습니다.</p>
+                            </div>
+                            <% } %>
+                </div>
             </div>
         </div>
 
