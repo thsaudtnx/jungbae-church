@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <%- include('../partials/head') %>
+        <style>
+            :root {
+                --admin-primary: #4e54c8;
+                --admin-secondary: #8f94fb;
+                --admin-bg: #f4f6f9;
+                --admin-card-bg: #ffffff;
+                --admin-text: #2d3436;
+                --admin-text-muted: #636e72;
+            }
+
+            .dashboard-container {
+                padding-top: 100px;
+                padding-bottom: 50px;
+                min-height: 100vh;
+                background-color: var(--admin-bg);
+                font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            }
+
+            .dashboard-header {
+                background: linear-gradient(135deg, var(--admin-primary), var(--admin-secondary));
+                padding: 3rem 2rem;
+                border-radius: 20px;
+                box-shadow: 0 10px 30px rgba(78, 84, 200, 0.2);
+                margin-bottom: 3rem;
+                color: white;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .dashboard-header::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                right: -10%;
+                width: 300px;
+                height: 300px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+            }
+
+            .dashboard-header h1 {
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 1.5rem;
+                margin-bottom: 3rem;
+            }
+
+            .stat-card {
+                background: var(--admin-card-bg);
+                padding: 1.5rem;
+                border-radius: 16px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 1.5rem;
+                border: 1px solid rgba(0, 0, 0, 0.02);
+            }
+
+            .stat-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            }
+
+            .stat-icon {
+                width: 60px;
+                height: 60px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.8rem;
+            }
+
+            .stat-info h3 {
+                font-size: 2rem;
+                font-weight: 800;
+                color: var(--admin-text);
+                margin: 0;
+                line-height: 1;
+            }
+
+            .stat-info p {
+                color: var(--admin-text-muted);
+                font-size: 0.95rem;
+                margin: 5px 0 0 0;
+                font-weight: 500;
+            }
+
+            .section-title {
+                font-size: 1.4rem;
+                font-weight: 700;
+                color: var(--admin-text);
+                margin-bottom: 1.5rem;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .quick-actions {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+                margin-bottom: 4rem;
+            }
+
+            .quick-action-btn {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem;
+                background: var(--admin-card-bg);
+                border-radius: 16px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+                text-decoration: none;
+                color: var(--admin-text);
+                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                /* Bouncy transition */
+                border: 1px solid transparent;
+            }
+
+            .quick-action-btn:hover {
+                transform: translateY(-5px) scale(1.02);
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+                border-color: var(--admin-primary);
+                color: var(--admin-primary);
+            }
+
+            .quick-action-btn i {
+                font-size: 2.5rem;
+                margin-bottom: 1rem;
+                color: var(--admin-secondary);
+                transition: color 0.3s ease;
+            }
+
+            .quick-action-btn:hover i {
+                color: var(--admin-primary);
+            }
+
+            .quick-action-btn span {
+                font-weight: 600;
+                font-size: 1.1rem;
+            }
+
+            .content-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+            }
+
+            @media (max-width: 900px) {
+                .content-row {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .recent-section {
+                background: var(--admin-card-bg);
+                padding: 2rem;
+                border-radius: 20px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+                height: 100%;
+            }
+
+            .recent-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .recent-item {
+                padding: 1.2rem 0;
+                border-bottom: 1px solid #f0f0f0;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                transition: background 0.2s ease;
+            }
+
+            .recent-item:last-child {
+                border-bottom: none;
+            }
+
+            .recent-item:hover {
+                background: rgba(0, 0, 0, 0.01);
+                padding-left: 10px;
+                padding-right: 10px;
+                border-radius: 8px;
+            }
+
+            .recent-item-title {
+                font-weight: 600;
+                font-size: 1.05rem;
+                color: var(--admin-text);
+                margin-bottom: 0.3rem;
+            }
+
+            .recent-item-date {
+                font-size: 0.85rem;
+                color: var(--admin-text-muted);
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .btn-edit {
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                font-size: 0.9rem;
+                font-weight: 500;
+                color: var(--admin-primary);
+                background: rgba(78, 84, 200, 0.1);
+                border: none;
+                transition: all 0.2s ease;
+            }
+
+            .btn-edit:hover {
+                background: var(--admin-primary);
+                color: white;
+            }
+        </style>
+</head>
+
+<body>
+    <%- include('../partials/header') %>
+
+        <div class="container dashboard-container">
+            <div class="dashboard-header" data-aos="fade-down">
+                <h1>
+                    <i class="fas fa-crown"></i>
+                    관리자 대시보드
+                </h1>
+                <p style="font-size: 1.1rem; opacity: 0.9; margin-left: 3px;">정배교회의 모든 콘텐츠를 한눈에 관리하세요.</p>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-grid" data-aos="fade-up" data-aos-delay="100">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(78, 84, 200, 0.1); color: var(--admin-primary);">
+                        <i class="fas fa-bible"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>
+                            <%= stats.sermons %>
+                        </h3>
+                        <p>주일설교</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(46, 204, 113, 0.1); color: #2ecc71;">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>
+                            <%= stats.meditations %>
+                        </h3>
+                        <p>새벽묵상</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(155, 89, 182, 0.1); color: #9b59b6;">
+                        <i class="fas fa-pen-fancy"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>
+                            <%= stats.diaries %>
+                        </h3>
+                        <p>목양일기</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(231, 76, 60, 0.1); color: #e74c3c;">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>
+                            <%= stats.notices %>
+                        </h3>
+                        <p>공지사항</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(243, 156, 18, 0.1); color: #f39c12;">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>
+                            <%= stats.bulletins %>
+                        </h3>
+                        <p>주보</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(22, 160, 133, 0.1); color: #16a085;">
+                        <i class="fas fa-images"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>
+                            <%= stats.gallery %>
+                        </h3>
+                        <p>교회앨범</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <h2 class="section-title" data-aos="fade-right" data-aos-delay="200">
+                <i class="fas fa-bolt" style="color: var(--color-accent);"></i> 빠른 작성
+            </h2>
+            <div class="quick-actions" data-aos="fade-up" data-aos-delay="300">
+                <a href="#" onclick="openAdminModal('/admin/write/sermons', '설교 등록')" class="quick-action-btn">
+                    <i class="fas fa-microphone-alt"></i>
+                    <span>설교 등록</span>
+                </a>
+                <a href="#" onclick="openAdminModal('/admin/write/meditations', '묵상 등록')" class="quick-action-btn">
+                    <i class="fas fa-praying-hands"></i>
+                    <span>묵상 등록</span>
+                </a>
+                <a href="#" onclick="openAdminModal('/admin/write/diaries', '일기 등록')" class="quick-action-btn">
+                    <i class="fas fa-feather-alt"></i>
+                    <span>일기 등록</span>
+                </a>
+                <a href="#" onclick="openAdminModal('/admin/write/notices', '공지 등록')" class="quick-action-btn">
+                    <i class="fas fa-bell"></i>
+                    <span>공지 등록</span>
+                </a>
+                <a href="#" onclick="openAdminModal('/admin/write/bulletins', '주보 등록')" class="quick-action-btn">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>주보 등록</span>
+                </a>
+                <a href="#" onclick="openAdminModal('/admin/write/galleryItems', '앨범 등록')" class="quick-action-btn">
+                    <i class="fas fa-camera-retro"></i>
+                    <span>앨범 등록</span>
+                </a>
+            </div>
+
+            <!-- Recent Content -->
+            <div class="content-row" data-aos="fade-up" data-aos-delay="400">
+                <div class="recent-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-history" style="color: var(--admin-primary);"></i> 최근 등록된 설교
+                    </h2>
+                    <% if (recentContent.sermons && recentContent.sermons.length> 0) { %>
+                        <ul class="recent-list">
+                            <% recentContent.sermons.forEach(function(sermon) { %>
+                                <li class="recent-item">
+                                    <div>
+                                        <div class="recent-item-title">
+                                            <%= sermon.title %>
+                                        </div>
+                                        <div class="recent-item-date">
+                                            <i class="far fa-calendar-alt"></i>
+                                            <%= sermon.date %>
+                                                <span style="margin: 0 5px; color: #ddd;">|</span>
+                                                <i class="far fa-user"></i>
+                                                <%= sermon.preacher %>
+                                        </div>
+                                    </div>
+                                    <a href="#"
+                                        onclick="openAdminModal('/admin/edit/sermons/<%= sermon.id %>', '설교 수정')"
+                                        class="btn-edit">
+                                        <i class="fas fa-pen"></i> 수정
+                                    </a>
+                                </li>
+                                <% }); %>
+                        </ul>
+                        <% } else { %>
+                            <div style="text-align: center; padding: 3rem 0; color: var(--admin-text-muted);">
+                                <i class="fas fa-inbox"
+                                    style="font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.3;"></i>
+                                <p>등록된 설교가 없습니다.</p>
+                            </div>
+                            <% } %>
+                </div>
+
+                <div class="recent-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-history" style="color: var(--admin-primary);"></i> 최근 공지사항
+                    </h2>
+                    <% if (recentContent.notices && recentContent.notices.length> 0) { %>
+                        <ul class="recent-list">
+                            <% recentContent.notices.forEach(function(notice) { %>
+                                <li class="recent-item">
+                                    <div>
+                                        <div class="recent-item-title">
+                                            <%= notice.title %>
+                                        </div>
+                                        <div class="recent-item-date">
+                                            <i class="far fa-calendar-alt"></i>
+                                            <%= notice.date %>
+                                        </div>
+                                    </div>
+                                    <a href="#"
+                                        onclick="openAdminModal('/admin/edit/notices/<%= notice.id %>', '공지 수정')"
+                                        class="btn-edit">
+                                        <i class="fas fa-pen"></i> 수정
+                                    </a>
+                                </li>
+                                <% }); %>
+                        </ul>
+                        <% } else { %>
+                            <div style="text-align: center; padding: 3rem 0; color: var(--admin-text-muted);">
+                                <i class="fas fa-inbox"
+                                    style="font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.3;"></i>
+                                <p>등록된 공지사항이 없습니다.</p>
+                            </div>
+                            <% } %>
+                </div>
+            </div>
+        </div>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>
