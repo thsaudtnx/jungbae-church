@@ -23,9 +23,12 @@
             <% if (locals.user && user.isAdmin) { %>
                 <div style="text-align: right; margin-bottom: 2rem;">
                     <% if (typeof pastor !=='undefined' && pastor.id) { %>
-                        <a href="/admin/edit/pastorProfiles/<%= pastor.id %>" class="btn btn-primary">수정하기</a>
+                        <a href="#"
+                            onclick="openAdminModal('/admin/edit/pastorProfiles/<%= pastor.id %>', '담임목사 소개 수정')"
+                            class="btn btn-primary">수정하기</a>
                         <% } else { %>
-                            <a href="/admin/write/pastorProfiles" class="btn btn-primary">작성하기</a>
+                            <a href="#" onclick="openAdminModal('/admin/write/pastorProfiles', '담임목사 소개 작성')"
+                                class="btn btn-primary">작성하기</a>
                             <% } %>
                 </div>
                 <% } %>

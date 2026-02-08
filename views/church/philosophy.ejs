@@ -23,9 +23,12 @@
             <% if (locals.user && user.isAdmin) { %>
                 <div style="text-align: right; margin-bottom: 2rem;">
                     <% if (typeof philosophy !=='undefined' && philosophy.id) { %>
-                        <a href="/admin/edit/philosophies/<%= philosophy.id %>" class="btn btn-primary">수정하기</a>
+                        <a href="#"
+                            onclick="openAdminModal('/admin/edit/philosophies/<%= philosophy.id %>', '교회 소개 수정')"
+                            class="btn btn-primary">수정하기</a>
                         <% } else { %>
-                            <a href="/admin/write/philosophies" class="btn btn-primary">작성하기</a>
+                            <a href="#" onclick="openAdminModal('/admin/write/philosophies', '교회 소개 작성')"
+                                class="btn btn-primary">작성하기</a>
                             <% } %>
                 </div>
                 <% } %>

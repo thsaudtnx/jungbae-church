@@ -592,12 +592,15 @@ app.get('/admin/write/:type', (req, res) => {
     const schema = SCHEMAS[type];
     if (!schema) return res.status(404).send('Invalid Type');
 
+    const layout = req.query.layout || 'default';
+
     res.render('admin/write', {
         title: '글 작성',
         action: 'create',
         type,
         fields: schema,
-        item: null
+        item: null,
+        layout
     });
 });
 
@@ -608,6 +611,8 @@ app.get('/admin/edit/:type/:id', async (req, res) => {
     const schema = SCHEMAS[type];
     const item = await getItem(type, id);
 
+    const layout = req.query.layout || 'default';
+
     if (!item) return res.status(404).send('Item not found');
 
     res.render('admin/write', {
@@ -615,7 +620,8 @@ app.get('/admin/edit/:type/:id', async (req, res) => {
         action: 'update',
         type,
         fields: schema,
-        item
+        item,
+        layout
     });
 });
 
@@ -667,7 +673,12 @@ app.post('/admin/create/:type', upload.any(), async (req, res) => {
             worshipGuides: '/church/worship'
         };
         const listUrl = urlMap[type] || '/';
-        res.redirect(listUrl);
+
+        if (req.query.layout === 'iframe') {
+            res.send('<script>window.parent.location.reload();</script>');
+        } else {
+            res.redirect(listUrl);
+        }
     } catch (err) {
         console.error(`Create error in ${type}:`, err);
         res.status(500).send(`Internal Server Error: ${err instanceof Error ? err.message : String(err)}`);
@@ -722,7 +733,12 @@ app.post('/admin/update/:type', upload.any(), async (req, res) => {
             worshipGuides: '/church/worship'
         };
         const listUrl = urlMap[type] || '/';
-        res.redirect(listUrl);
+
+        if (req.query.layout === 'iframe') {
+            res.send('<script>window.parent.location.reload();</script>');
+        } else {
+            res.redirect(listUrl);
+        }
     } catch (err) {
         console.error(`Update error in ${type}:`, err);
         res.status(500).send(`Internal Server Error: ${err instanceof Error ? err.message : String(err)}`);

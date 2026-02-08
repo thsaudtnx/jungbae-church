@@ -126,7 +126,7 @@
     <div class="container" style="padding-bottom: var(--spacing-xl);">
       <% if (locals.user && user.isAdmin) { %>
         <div style="text-align: right; margin-bottom: 2rem;">
-          <a href="/admin/write/notices" class="btn btn-primary">공지 등록</a>
+          <a href="#" onclick="openAdminModal('/admin/write/notices', '공지 등록')" class="btn btn-primary">공지 등록</a>
         </div>
         <% } %>
 
@@ -161,7 +161,7 @@
                     </td>
                     <% if (locals.user && user.isAdmin) { %>
                       <td style="text-align: center; font-size: 0.85rem;">
-                        <a href="/admin/edit/notices/<%= item.id %>"
+                        <a href="#" onclick="openAdminModal('/admin/edit/notices/<%= item.id %>', '공지 수정')"
                           style="color: var(--color-secondary); margin-right: 8px;"><i class="fas fa-edit"></i></a>
                         <a href="/admin/delete/notices/<%= item.id %>" onclick="return confirm('정말 삭제하시겠습니까?')"
                           style="color: #e74c3c;"><i class="fas fa-trash"></i></a>

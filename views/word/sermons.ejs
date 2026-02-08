@@ -127,7 +127,8 @@
         <div class="container" style="padding-bottom: var(--spacing-xl);">
             <% if (locals.user && user.isAdmin) { %>
                 <div style="text-align: right; margin-bottom: 2.5rem;">
-                    <a href="/admin/write/sermons" class="btn btn-primary">설교 등록</a>
+                    <a href="#" onclick="openAdminModal('/admin/write/sermons', '설교 등록')" class="btn btn-primary">설교
+                        등록</a>
                 </div>
                 <% } %>
 
@@ -167,7 +168,8 @@
                                         <% if (locals.user && user.isAdmin) { %>
                                             <td style="text-align: center;">
                                                 <div style="display: flex; gap: 10px; justify-content: center;">
-                                                    <a href="/admin/edit/sermons/<%= item.id %>"
+                                                    <a href="#"
+                                                        onclick="openAdminModal('/admin/edit/sermons/<%= item.id %>', '설교 수정')"
                                                         style="color: var(--color-secondary);"><i
                                                             class="fas fa-edit"></i></a>
                                                     <a href="/admin/delete/sermons/<%= item.id %>"

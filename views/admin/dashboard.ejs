@@ -323,27 +323,27 @@
                 <i class="fas fa-bolt" style="color: var(--color-accent);"></i> 빠른 작성
             </h2>
             <div class="quick-actions" data-aos="fade-up" data-aos-delay="300">
-                <a href="/admin/write/sermons" class="quick-action-btn">
+                <a href="#" onclick="openAdminModal('/admin/write/sermons', '설교 등록')" class="quick-action-btn">
                     <i class="fas fa-microphone-alt"></i>
                     <span>설교 등록</span>
                 </a>
-                <a href="/admin/write/meditations" class="quick-action-btn">
+                <a href="#" onclick="openAdminModal('/admin/write/meditations', '묵상 등록')" class="quick-action-btn">
                     <i class="fas fa-praying-hands"></i>
                     <span>묵상 등록</span>
                 </a>
-                <a href="/admin/write/diaries" class="quick-action-btn">
+                <a href="#" onclick="openAdminModal('/admin/write/diaries', '일기 등록')" class="quick-action-btn">
                     <i class="fas fa-feather-alt"></i>
                     <span>일기 등록</span>
                 </a>
-                <a href="/admin/write/notices" class="quick-action-btn">
+                <a href="#" onclick="openAdminModal('/admin/write/notices', '공지 등록')" class="quick-action-btn">
                     <i class="fas fa-bell"></i>
                     <span>공지 등록</span>
                 </a>
-                <a href="/admin/write/bulletins" class="quick-action-btn">
+                <a href="#" onclick="openAdminModal('/admin/write/bulletins', '주보 등록')" class="quick-action-btn">
                     <i class="fas fa-file-pdf"></i>
                     <span>주보 등록</span>
                 </a>
-                <a href="/admin/write/galleryItems" class="quick-action-btn">
+                <a href="#" onclick="openAdminModal('/admin/write/galleryItems', '앨범 등록')" class="quick-action-btn">
                     <i class="fas fa-camera-retro"></i>
                     <span>앨범 등록</span>
                 </a>
@@ -371,7 +371,9 @@
                                                 <%= sermon.preacher %>
                                         </div>
                                     </div>
-                                    <a href="/admin/edit/sermons/<%= sermon.id %>" class="btn-edit">
+                                    <a href="#"
+                                        onclick="openAdminModal('/admin/edit/sermons/<%= sermon.id %>', '설교 수정')"
+                                        class="btn-edit">
                                         <i class="fas fa-pen"></i> 수정
                                     </a>
                                 </li>
@@ -403,7 +405,9 @@
                                             <%= notice.date %>
                                         </div>
                                     </div>
-                                    <a href="/admin/edit/notices/<%= notice.id %>" class="btn-edit">
+                                    <a href="#"
+                                        onclick="openAdminModal('/admin/edit/notices/<%= notice.id %>', '공지 수정')"
+                                        class="btn-edit">
                                         <i class="fas fa-pen"></i> 수정
                                     </a>
                                 </li>

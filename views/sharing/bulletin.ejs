@@ -21,7 +21,7 @@
     <div class="container" style="padding-bottom: var(--spacing-xl);">
       <% if (locals.user && user.isAdmin) { %>
         <div style="text-align: right; margin-bottom: 2rem;">
-          <a href="/admin/write/bulletins" class="btn btn-primary">주보 등록</a>
+          <a href="#" onclick="openAdminModal('/admin/write/bulletins', '주보 등록')" class="btn btn-primary">주보 등록</a>
         </div>
         <% } %>
 
@@ -42,7 +42,7 @@
                     </div>
                     <% if (locals.user && user.isAdmin) { %>
                       <div style="font-size: 0.9rem;">
-                        <a href="/admin/edit/bulletins/<%= item.id %>"
+                        <a href="#" onclick="openAdminModal('/admin/edit/bulletins/<%= item.id %>', '주보 수정')"
                           style="color: var(--color-primary); margin-right: 10px;">수정</a>
                         <a href="/admin/delete/bulletins/<%= item.id %>" onclick="return confirm('정말 삭제하시겠습니까?')"
                           style="color: red;">삭제</a>

@@ -23,7 +23,8 @@
             <div style="max-width: 900px; margin: 0 auto;">
                 <% if (locals.user && user.isAdmin) { %>
                     <div style="text-align: right; margin-bottom: 2rem;">
-                        <a href="/admin/write/worshipServices" class="btn btn-primary">예배 추가</a>
+                        <a href="#" onclick="openAdminModal('/admin/write/worshipServices', '예배 추가')"
+                            class="btn btn-primary">예배 추가</a>
                     </div>
                     <% } %>
 
@@ -67,7 +68,8 @@
                                                 <% if (locals.user && user.isAdmin) { %>
                                                     <td style="padding: 1.5rem; text-align: center;">
                                                         <div style="display: flex; gap: 10px; justify-content: center;">
-                                                            <a href="/admin/edit/worshipServices/<%= item.id %>"
+                                                            <a href="#"
+                                                                onclick="openAdminModal('/admin/edit/worshipServices/<%= item.id %>', '예배 수정')"
                                                                 style="color: var(--color-secondary);"><i
                                                                     class="fas fa-edit"></i></a>
                                                             <a href="/admin/delete/worshipServices/<%= item.id %>"
@@ -93,7 +95,8 @@
                             <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 3rem;"
                                 data-aos="fade-up">
                                 <% if (locals.user && user.isAdmin) { %>
-                                    <a href="/admin/write/worshipGuides" class="btn btn-primary">안내 추가</a>
+                                    <a href="#" onclick="openAdminModal('/admin/write/worshipGuides', '예배 안내 추가')"
+                                        class="btn btn-primary">안내 추가</a>
                                     <% } %>
                             </div>
 
@@ -110,7 +113,8 @@
                                                 </h3>
                                                 <% if (locals.user && user.isAdmin) { %>
                                                     <div style="display: flex; gap: 15px;">
-                                                        <a href="/admin/edit/worshipGuides/<%= guide.id %>"
+                                                        <a href="#"
+                                                            onclick="openAdminModal('/admin/edit/worshipGuides/<%= guide.id %>', '예배 안내 수정')"
                                                             style="color: var(--color-secondary);"><i
                                                                 class="fas fa-edit"></i></a>
                                                         <a href="/admin/delete/worshipGuides/<%= guide.id %>"

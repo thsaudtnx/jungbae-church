@@ -53,34 +53,35 @@
     </div>
   </div>
 </header>
+<%- include('../partials/admin-modal') %>
 
-<script>
-  // Live Indicator Logic
-  function checkLiveStatus() {
-    const now = new Date();
-    const day = now.getDay(); // 0 is Sunday
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const timeVal = hours * 100 + minutes;
+  <script>
+    // Live Indicator Logic
+    function checkLiveStatus() {
+      const now = new Date();
+      const day = now.getDay(); // 0 is Sunday
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const timeVal = hours * 100 + minutes;
 
-    let isLive = false;
+      let isLive = false;
 
-    // Sunday Worship: 08:50 ~ 12:30, 13:20 ~ 15:00
-    if (day === 0) {
-      if ((timeVal >= 850 && timeVal <= 1230) || (timeVal >= 1320 && timeVal <= 1500)) {
-        isLive = true;
+      // Sunday Worship: 08:50 ~ 12:30, 13:20 ~ 15:00
+      if (day === 0) {
+        if ((timeVal >= 850 && timeVal <= 1230) || (timeVal >= 1320 && timeVal <= 1500)) {
+          isLive = true;
+        }
       }
-    }
-    // Wednesday Worship: 19:20 ~ 21:00
-    if (day === 3) {
-      if (timeVal >= 1920 && timeVal <= 2100) {
-        isLive = true;
+      // Wednesday Worship: 19:20 ~ 21:00
+      if (day === 3) {
+        if (timeVal >= 1920 && timeVal <= 2100) {
+          isLive = true;
+        }
       }
+
+      document.getElementById('live-banner').style.display = isLive ? 'block' : 'none';
     }
 
-    document.getElementById('live-banner').style.display = isLive ? 'block' : 'none';
-  }
-
-  checkLiveStatus();
-  setInterval(checkLiveStatus, 60000); // Check every minute
-</script>
+    checkLiveStatus();
+    setInterval(checkLiveStatus, 60000); // Check every minute
+  </script>
