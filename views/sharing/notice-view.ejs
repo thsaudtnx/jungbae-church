@@ -57,9 +57,7 @@
     <%- include('../partials/header') %>
 
         <div class="container" style="padding-top: 100px; padding-bottom: 80px;">
-            <a href="/sharing/notices" class="back-btn">
-                <i class="fas fa-arrow-left"></i> 목록으로 돌아가기
-            </a>
+
 
             <div class="notice-view">
                 <div class="notice-header">
@@ -70,11 +68,16 @@
                         <i class="far fa-calendar-alt"></i>
                         <%= notice.date %>
                     </div>
-                    <% if (notice.file) { %>
+                    <% if (notice.file) { let fileName='첨부파일' ; try { const urlObj=new URL(notice.file); const
+                        pathName=urlObj.pathname.split('/').pop(); let decoded=decodeURIComponent(pathName); if
+                        (decoded.includes('uploads/')) { decoded=decoded.split('uploads/')[1]; } const
+                        timestampRegex=/^\d+-/; if (timestampRegex.test(decoded)) {
+                        decoded=decoded.replace(timestampRegex, '' ); } fileName=decoded; } catch (e) { fileName='첨부파일'
+                        ; } %>
                         <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee;">
                             <a href="<%= notice.file %>" target="_blank" class="btn btn-outline"
                                 style="font-size: 0.9rem; padding: 0.5rem 1rem;">
-                                <i class="fas fa-paperclip"></i> 첨부파일 다운로드
+                                <i class="fas fa-paperclip"></i> 첨부파일 다운로드 (<%= fileName %>)
                             </a>
                         </div>
                         <% } %>
@@ -82,6 +85,12 @@
 
                 <div class="notice-content">
                     <%- notice.content %>
+                </div>
+
+                <div style="margin-top: 3rem; text-align: center; border-top: 1px solid #eee; padding-top: 2rem;">
+                    <a href="/sharing/notices" class="btn btn-outline" style="font-size: 0.9rem;">
+                        <i class="fas fa-list" style="margin-right: 8px;"></i> 목록으로
+                    </a>
                 </div>
             </div>
         </div>

@@ -193,10 +193,7 @@
 
                                 <% if (sermon.content && sermon.content.trim()) { %>
                                     <div class="manuscript-box">
-                                        <div class="manuscript-header">
-                                            <i class="fas fa-quote-left"></i>
-                                            설교 말씀 요약 및 원고
-                                        </div>
+                                        <!-- Header removed as requested -->
                                         <div class="manuscript-body">
                                             <%- sermon.content %>
                                         </div>
@@ -211,7 +208,11 @@
 
                                             <!-- Social Sharing or Action -->
                                             <div
-                                                style="margin-top: 4rem; text-align: center; border-top: 1px solid #eee; padding-top: 3rem;">
+                                                style="margin-top: 4rem; text-align: center; border-top: 1px solid #eee; padding-top: 3rem; display: flex; justify-content: center; gap: 1rem;">
+                                                <a href="/word/sermons" class="btn btn-outline"
+                                                    style="font-size: 0.9rem;">
+                                                    <i class="fas fa-list" style="margin-right: 8px;"></i> 목록으로
+                                                </a>
                                                 <button onclick="window.print()" class="btn btn-outline"
                                                     style="font-size: 0.9rem;">
                                                     <i class="fas fa-print" style="margin-right: 8px;"></i> 원고 인쇄하기

@@ -47,9 +47,7 @@
                 <h1>목회 일기</h1>
             </div>
 
-            <a href="/word/diary" class="btn btn-outline" style="margin-bottom: 2rem; display: inline-block;">
-                <i class="fas fa-list"></i> 목록으로
-            </a>
+
 
             <div class="diary-detail">
                 <h2 style="color: var(--color-text); margin-bottom: 0.5rem;">
@@ -62,6 +60,12 @@
 
                 <div class="diary-content">
                     <%- diary.content %>
+                </div>
+
+                <div style="margin-top: 3rem; text-align: center;">
+                    <a href="/word/diary" class="btn btn-outline" style="font-size: 0.9rem;">
+                        <i class="fas fa-list" style="margin-right: 8px;"></i> 목록으로
+                    </a>
                 </div>
             </div>
         </div>
