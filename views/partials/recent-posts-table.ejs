@@ -1,50 +1,154 @@
-<div style="margin-top: 5rem; padding-top: 3rem; border-top: 1px solid #eee;" data-aos="fade-up">
-    <h3 style="font-size: 1.5rem; color: var(--color-text); margin-bottom: 2rem;">최근 게시물</h3>
-    <div class="card" style="padding: 1.5rem; border-radius: 12px; box-shadow: var(--shadow-soft); background: white;">
-        <table class="meditation-table">
-            <thead>
-                <tr>
-                    <th style="width: 75%;">제목</th>
-                    <th style="width: 25%;">날짜</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% if (locals.recentItems && recentItems.length> 0) { %>
-                    <% recentItems.forEach(function(item) { %>
-                        <tr class="<%= item.id === currentId ? 'active-row' : '' %>">
-                            <td>
-                                <a href="/<%= basePath %>/<%= item.id %>"
-                                    class="board-title <%= item.id === currentId ? 'text-primary' : '' %>"
-                                    style="font-weight: 600;">
-                                    <%= item.title %>
-                                </a>
-                                <% if (item.id===currentId) { %>
-                                    <span
-                                        style="font-size: 0.75rem; background: var(--color-primary); color: white; padding: 2px 6px; border-radius: 4px; margin-left: 8px;">현재글</span>
-                                    <% } %>
-                            </td>
-                            <td style="color: #666; font-size: 0.9rem;">
-                                <%= item.date %>
-                            </td>
-                        </tr>
-                        <% }); %>
-                            <% } else { %>
-                                <tr>
-                                    <td colspan="2" style="text-align: center; padding: 2rem; color: #aaa;">게시물이 없습니다.
-                                    </td>
-                                </tr>
-                                <% } %>
-            </tbody>
-        </table>
+<div class="recent-posts-section" data-aos="fade-up">
+    <h3 class="section-title">최근 게시물</h3>
+    <div class="recent-posts-list">
+        <% if (locals.recentItems && recentItems.length> 0) { %>
+            <% recentItems.forEach(function(item) { %>
+                <a href="/<%= basePath %>/<%= item.id %>"
+                    class="recent-post-item <%= item.id === currentId ? 'current' : '' %>">
+                    <div class="post-info">
+                        <span class="post-title">
+                            <%= item.title %>
+                        </span>
+                        <span class="post-date">
+                            <%= item.date %>
+                        </span>
+                    </div>
+                    <% if (item.id===currentId) { %>
+                        <span class="current-label">현재글</span>
+                        <% } else { %>
+                            <i class="fas fa-chevron-right arrow-icon"></i>
+                            <% } %>
+                </a>
+                <% }); %>
+                    <% } else { %>
+                        <div class="no-posts">최근 게시물이 없습니다.</div>
+                        <% } %>
     </div>
 </div>
 
 <style>
-    .active-row {
-        background-color: #f0f7ff;
+    .recent-posts-section {
+        margin-top: 6rem;
+        padding-top: 4rem;
+        border-top: 1px solid #f1f5f9;
+        max-width: 850px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
-    .text-primary {
-        color: var(--color-primary) !important;
+    .recent-posts-section .section-title {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--color-text);
+        margin-bottom: 2rem;
+        text-align: center;
+        letter-spacing: -0.02em;
+    }
+
+    .recent-posts-list {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid #f1f5f9;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    }
+
+    .recent-post-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5rem 2rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .recent-post-item:last-child {
+        border-bottom: none;
+    }
+
+    .recent-post-item:hover {
+        background-color: #f8fafc;
+    }
+
+    .recent-post-item.current {
+        background-color: #f0f7ff;
+        pointer-events: none;
+    }
+
+    .post-info {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+        margin-right: 20px;
+    }
+
+    .post-title {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: #334155;
+        line-height: 1.4;
+        transition: color 0.2s ease;
+    }
+
+    .recent-post-item:hover .post-title {
+        color: var(--color-primary);
+    }
+
+    .recent-post-item.current .post-title {
+        color: var(--color-primary);
+    }
+
+    .post-date {
+        font-size: 0.85rem;
+        color: #94a3b8;
+    }
+
+    .current-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        background: var(--color-primary);
+        color: white;
+        padding: 4px 10px;
+        border-radius: 50px;
+        flex-shrink: 0;
+    }
+
+    .arrow-icon {
+        color: #cbd5e1;
+        font-size: 0.9rem;
+        transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    .recent-post-item:hover .arrow-icon {
+        color: var(--color-primary);
+        transform: translateX(4px);
+    }
+
+    .no-posts {
+        padding: 4rem;
+        text-align: center;
+        color: #94a3b8;
+        font-size: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .recent-posts-section {
+            margin-top: 4rem;
+            padding-top: 2rem;
+        }
+
+        .recent-post-item {
+            padding: 1.25rem 1.5rem;
+        }
+
+        .post-title {
+            font-size: 0.95rem;
+        }
+
+        .post-date {
+            font-size: 0.8rem;
+        }
     }
 </style>

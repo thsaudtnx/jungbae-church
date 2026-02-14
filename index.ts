@@ -237,6 +237,18 @@ const SCHEMAS: any = {
     worshipGuides: [
         { name: 'title', label: '제목' },
         { name: 'content', label: '설명 내용', type: 'textarea' }
+    ],
+    histories: [
+        { name: 'yearRange', label: '연도 범위 (예: 2020 ~ 현재)' },
+        { name: 'date', label: '상세 날짜 (예: 2023. 02)' },
+        { name: 'content', label: '연혁 내용', type: 'textarea' },
+        { name: 'order', label: '정렬 순서 (숫자가 작을수록 위로)', type: 'number' }
+    ],
+    bibleStudies: [
+        { name: 'title', label: '제목' },
+        { name: 'date', label: '날짜', type: 'date' },
+        { name: 'videoId', label: '유튜브 영상 (URL 또는 ID)' },
+        { name: 'content', label: '내용', type: 'textarea' }
     ]
 };
 
@@ -443,6 +455,28 @@ app.get('/church/philosophy', async (req, res) => {
     const philosophy = items.length > 0 ? items[0] : { title: '목회철학', content: '' };
     res.render('church/philosophy', { title: '목회철학 - 정배교회', page: 'church-philosophy', philosophy });
 });
+app.get('/church/history', async (req, res) => {
+    const histories = await getCollection('histories');
+
+    // Group by yearRange while maintaining order
+    const yearRanges: string[] = [];
+    const groupedHistories: { [key: string]: any[] } = {};
+
+    histories.forEach((item: any) => {
+        if (!groupedHistories[item.yearRange]) {
+            yearRanges.push(item.yearRange);
+            groupedHistories[item.yearRange] = [];
+        }
+        groupedHistories[item.yearRange].push(item);
+    });
+
+    res.render('church/history', {
+        title: '교회 연혁 - 정배교회',
+        page: 'church-history',
+        yearRanges,
+        groupedHistories
+    });
+});
 app.get('/church/pastor', async (req, res) => {
     const items = await getCollection('pastorProfiles');
     const pastor = items.length > 0 ? items[0] : { name: '', role: '', description: '' };
@@ -545,6 +579,29 @@ app.get('/word/meditation/:id', async (req, res) => {
         ogTitle: title,
         ogDescription: `${(meditation as any).date} 새벽묵상`,
         ogUrl: `https://jungbae-church.vercel.app/word/meditation/${req.params.id}`
+    });
+});
+app.get('/word/bible-study', async (req, res) => {
+    const bibleStudies = await getCollection('bibleStudies');
+    res.render('word/bible-study', { title: '수요 성경공부 - 정배교회', page: 'word-bible-study', bibleStudies });
+});
+app.get('/word/bible-study/:id', async (req, res) => {
+    const study = await getItem('bibleStudies', req.params.id);
+    if (!study) return res.status(404).send('Bible Study not found');
+
+    const allStudies = await getCollection('bibleStudies');
+    const recentItems = allStudies.slice(0, 10);
+
+    const title = (study as any).title;
+
+    res.render('word/bible-study-view', {
+        title: title + ' - 정배교회',
+        page: 'word-bible-study',
+        study,
+        recentItems,
+        ogTitle: title,
+        ogDescription: `${(study as any).date} 수요 성경공부`,
+        ogUrl: `https://jungbae-church.vercel.app/word/bible-study/${req.params.id}`
     });
 });
 app.get('/word/diary', async (req, res) => {
@@ -713,7 +770,9 @@ app.post('/admin/create/:type', upload.any(), async (req, res) => {
             philosophies: '/church/philosophy',
             pastorProfiles: '/church/pastor',
             worshipServices: '/church/worship',
-            worshipGuides: '/church/worship'
+            worshipGuides: '/church/worship',
+            histories: '/church/history',
+            bibleStudies: '/word/bible-study/:id'
         };
 
         let targetUrl = urlMap[type] || '/';
@@ -781,7 +840,9 @@ app.post('/admin/update/:type', upload.any(), async (req, res) => {
             philosophies: '/church/philosophy',
             pastorProfiles: '/church/pastor',
             worshipServices: '/church/worship',
-            worshipGuides: '/church/worship'
+            worshipGuides: '/church/worship',
+            histories: '/church/history',
+            bibleStudies: '/word/bible-study'
         };
         const listUrl = urlMap[type] || '/';
 

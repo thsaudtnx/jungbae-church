@@ -93,7 +93,7 @@
                 }
 
                 .meditation-card h3 {
-                    font-size: 1.1rem !important;
+                    font-size: 1rem !important;
                     margin-bottom: 0.8rem !important;
                 }
 
@@ -238,7 +238,7 @@
         </section>
 
         <!-- Quick Links -->
-        <section class="quick-links" data-aos="fade-up" data-aos-delay="100">
+        <section class="quick-links">
             <div class="container">
                 <div class="card-grid">
                     <a href="/church/worship" class="card">
@@ -389,29 +389,19 @@
                                         onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='var(--color-primary)'; this.style.boxShadow='var(--shadow-medium)';"
                                         onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='transparent'; this.style.boxShadow='var(--shadow-soft)';"
                                         data-aos="fade-up" data-aos-delay="<%= index * 100 %>">
-                                        <div style="display: flex; align-items: center; margin-bottom: 1.5rem;">
-                                            <div
-                                                style="width: 40px; height: 40px; background: var(--color-primary); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
-                                                <i class="fas fa-sun"
-                                                    style="font-size: 1.1rem; margin: 0; color: white;"></i>
-                                            </div>
+                                        <div style="display: flex; align-items: center; margin-bottom: 1.2rem;">
                                             <span
-                                                style="font-size: 0.9rem; color: var(--color-text-light); font-weight: 500;">
+                                                style="display: inline-flex; align-items: center; padding: 4px 12px; background: #f1f3f5; border-radius: 50px; font-size: 0.8rem; color: var(--color-text-light); font-weight: 600;">
                                                 <%= item.date %>
                                             </span>
                                         </div>
                                         <h3
-                                            style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1.2rem; color: var(--color-text); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                            style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem; color: var(--color-text); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 1; line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">
                                             <%= item.title %>
                                         </h3>
                                         <div class="meditation-summary"
-                                            style="font-size: 0.95rem; color: #666; line-height: 1.8; margin-bottom: 1.5rem; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                                            style="font-size: 0.95rem; color: #666; line-height: 1.8; margin-bottom: 0; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                                             <%= item.summary ? item.summary.replace(/<[^>]*>?/gm, '') : '' %>
-                                        </div>
-                                        <div class="view-more"
-                                            style="display: flex; align-items: center; color: var(--color-primary); font-weight: 700; font-size: 0.95rem;">
-                                            자세히 보기 <i class="fas fa-arrow-right"
-                                                style="margin-left: 8px; font-size: 0.8rem;"></i>
                                         </div>
                                     </a>
                                     <% }); %>
