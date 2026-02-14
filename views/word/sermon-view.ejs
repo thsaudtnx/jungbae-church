@@ -109,16 +109,47 @@
             }
 
             @media (max-width: 768px) {
+                .sermon-detail-card {
+                    margin-top: 1.5rem;
+                    border-radius: 15px;
+                }
+
                 .sermon-content-area {
-                    padding: 2.5rem 1.5rem;
+                    padding: 2rem 1rem;
+                }
+
+                .sermon-header-inner {
+                    margin-bottom: 1.5rem;
                 }
 
                 .sermon-detail-title {
-                    font-size: 1.75rem;
+                    font-size: 1.4rem;
+                    margin-bottom: 1rem;
+                }
+
+                .sermon-detail-meta {
+                    gap: 10px;
+                    font-size: 0.9rem;
+                }
+
+                .meta-pill {
+                    padding: 4px 12px;
                 }
 
                 .manuscript-box {
-                    padding: 2rem 1.5rem;
+                    padding: 1.5rem 1rem;
+                    border-radius: 12px;
+                }
+
+                .manuscript-body {
+                    font-size: 1rem !important;
+                    line-height: 1.7;
+                }
+
+                .btn-outline,
+                .btn-primary {
+                    padding: 8px 18px !important;
+                    font-size: 0.85rem !important;
                 }
             }
         </style>
@@ -182,12 +213,6 @@
                                             <i class="far fa-user"></i>
                                             <%= sermon.preacher %>
                                         </div>
-                                        <% if(sermon.bibleRange) { %>
-                                            <div class="meta-pill">
-                                                <i class="fas fa-bible"></i>
-                                                <%= sermon.bibleRange %>
-                                            </div>
-                                            <% } %>
                                     </div>
                                 </header>
 
@@ -221,19 +246,8 @@
                             </div>
                 </article>
 
-                <!-- Related Action -->
-                <div style="border-top: 1px solid #eee; margin-top: 5rem; padding-top: 3rem; text-align: center;"
-                    data-aos="fade-up">
-                    <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 말씀 안내 보기</h4>
-                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                        <a href="/word/sermons" class="btn btn-outline"
-                            style="border-radius: 50px; padding: 12px 25px;">주일 설교</a>
-                        <a href="/word/meditation" class="btn btn-outline"
-                            style="border-radius: 50px; padding: 12px 25px;">새벽 묵상</a>
-                        <a href="/word/diary" class="btn btn-outline"
-                            style="border-radius: 50px; padding: 12px 25px;">목양 일기</a>
-                    </div>
-                </div>
+                <%- include('../partials/recent-posts-table', { recentItems, currentId: sermon.id,
+                    basePath: 'word/sermons' }) %>
             </div>
         </div>
 

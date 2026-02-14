@@ -169,6 +169,28 @@
                 }
             }
 
+            @media (max-width: 600px) {
+                .dashboard-header h1 {
+                    font-size: 1.8rem;
+                }
+
+                .stat-info h3 {
+                    font-size: 1.5rem;
+                }
+
+                .quick-action-btn i {
+                    font-size: 1.8rem;
+                }
+
+                .quick-action-btn span {
+                    font-size: 0.9rem;
+                }
+
+                .recent-item-title {
+                    font-size: 0.95rem;
+                }
+            }
+
             .recent-section {
                 background: var(--admin-card-bg);
                 padding: 2rem;
@@ -250,7 +272,7 @@
 
             <!-- Statistics -->
             <div class="stats-grid" data-aos="fade-up" data-aos-delay="100">
-                <div class="stat-card">
+                <a href="/word/sermons" class="stat-card" style="text-decoration: none; color: inherit;">
                     <div class="stat-icon" style="background: rgba(78, 84, 200, 0.1); color: var(--admin-primary);">
                         <i class="fas fa-bible"></i>
                     </div>
@@ -260,8 +282,8 @@
                         </h3>
                         <p>주일설교</p>
                     </div>
-                </div>
-                <div class="stat-card">
+                </a>
+                <a href="/word/meditation" class="stat-card" style="text-decoration: none; color: inherit;">
                     <div class="stat-icon" style="background: rgba(46, 204, 113, 0.1); color: #2ecc71;">
                         <i class="fas fa-book-open"></i>
                     </div>
@@ -271,8 +293,8 @@
                         </h3>
                         <p>새벽묵상</p>
                     </div>
-                </div>
-                <div class="stat-card">
+                </a>
+                <a href="/word/diary" class="stat-card" style="text-decoration: none; color: inherit;">
                     <div class="stat-icon" style="background: rgba(155, 89, 182, 0.1); color: #9b59b6;">
                         <i class="fas fa-pen-fancy"></i>
                     </div>
@@ -282,8 +304,8 @@
                         </h3>
                         <p>목양일기</p>
                     </div>
-                </div>
-                <div class="stat-card">
+                </a>
+                <a href="/sharing/notices" class="stat-card" style="text-decoration: none; color: inherit;">
                     <div class="stat-icon" style="background: rgba(231, 76, 60, 0.1); color: #e74c3c;">
                         <i class="fas fa-bullhorn"></i>
                     </div>
@@ -293,8 +315,8 @@
                         </h3>
                         <p>공지사항</p>
                     </div>
-                </div>
-                <div class="stat-card">
+                </a>
+                <a href="/sharing/bulletin" class="stat-card" style="text-decoration: none; color: inherit;">
                     <div class="stat-icon" style="background: rgba(243, 156, 18, 0.1); color: #f39c12;">
                         <i class="fas fa-file-alt"></i>
                     </div>
@@ -304,8 +326,8 @@
                         </h3>
                         <p>주보</p>
                     </div>
-                </div>
-                <div class="stat-card">
+                </a>
+                <a href="/sharing/gallery" class="stat-card" style="text-decoration: none; color: inherit;">
                     <div class="stat-icon" style="background: rgba(22, 160, 133, 0.1); color: #16a085;">
                         <i class="fas fa-images"></i>
                     </div>
@@ -315,7 +337,7 @@
                         </h3>
                         <p>교회앨범</p>
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- Quick Actions -->

@@ -30,7 +30,8 @@
               <% galleryItems.forEach(function(item) { const images=Array.isArray(item.images) ? item.images :
                 (item.images ? [item.images] : (item.image ? [item.image] : [])); %>
                 <div class="card gallery-card" style="padding: 0; overflow: hidden; cursor: pointer;"
-                  onclick="openLightbox('<%= item.title %>', '<%= item.date %>', <%- JSON.stringify(images) %>)">
+                  data-title="<%= item.title %>" data-date="<%= item.date %>"
+                  data-images="<%= JSON.stringify(images) %>" onclick="openLightboxFromData(this)">
                   <div style="height: 250px; background-color: #eee; overflow: hidden; position: relative;">
                     <% if (images.length> 0) { %>
                       <img src="<%= images[0] %>"
@@ -77,6 +78,15 @@
                     </div>
                     <% } %>
           </div>
+
+          <!-- Related Action -->
+          <div class="related-info-section" data-aos="fade-up">
+            <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 나눔 안내 보기</h4>
+            <div class="sharing-info-links">
+              <a href="/sharing/notices" class="btn btn-outline">공지 사항</a>
+              <a href="/sharing/bulletin" class="btn btn-outline">주보 안내</a>
+            </div>
+          </div>
     </div>
 
     <!-- Lightbox Structure -->
@@ -114,6 +124,13 @@
     <script>
       let currentImages = [];
       let currentIndex = 0;
+
+      function openLightboxFromData(el) {
+        const title = el.getAttribute('data-title');
+        const date = el.getAttribute('data-date');
+        const images = JSON.parse(el.getAttribute('data-images'));
+        openLightbox(title, date, images);
+      }
 
       function openLightbox(title, date, images) {
         if (!images || images.length === 0) return;

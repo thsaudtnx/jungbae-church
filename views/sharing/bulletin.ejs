@@ -3,6 +3,84 @@
 
 <head>
   <%- include("../partials/head") %>
+    <style>
+      .board-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 2rem;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+      }
+
+      .board-table th {
+        background: #f8f9fa;
+        padding: 1.2rem;
+        font-weight: 600;
+        color: var(--color-text);
+        border-bottom: 2px solid #edf2f7;
+        text-align: left;
+      }
+
+      .board-table td {
+        padding: 1.2rem;
+        border-bottom: 1px solid #edf2f7;
+        vertical-align: middle;
+      }
+
+      .board-table tr:hover {
+        background-color: #fcfdfe;
+      }
+
+      .date-badge {
+        font-size: 0.85rem;
+        color: var(--color-text-light);
+        background: #f1f3f5;
+        padding: 4px 10px;
+        border-radius: 20px;
+      }
+
+      .board-title {
+        font-weight: 600;
+        color: var(--color-primary);
+        font-size: 1.05rem;
+        display: block;
+        margin-bottom: 4px;
+        text-decoration: none;
+      }
+
+      @media (max-width: 768px) {
+        .page-header {
+          padding: 3rem 0 !important;
+        }
+
+        .page-header h1 {
+          font-size: 1.8rem !important;
+        }
+
+        .container {
+          padding-top: 1rem !important;
+          padding-bottom: 2rem !important;
+        }
+
+        .board-table th,
+        .board-table td {
+          padding: 1rem 0.75rem !important;
+          font-size: 0.85rem !important;
+        }
+
+        .board-title {
+          font-size: 0.95rem !important;
+        }
+
+        .btn-outline,
+        .btn-primary {
+          padding: 8px 18px !important;
+          font-size: 0.85rem !important;
+        }
+      }
+    </style>
 </head>
 
 <body>
@@ -25,64 +103,63 @@
         </div>
         <% } %>
 
-          <div style="display: flex; flex-direction: column; gap: 4rem;">
-            <% if (locals.bulletins && bulletins.length> 0) { %>
-              <% bulletins.forEach(function(item) { %>
-                <div class="card" style="padding: 2rem; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
-                  <div
-                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
-                    <div>
-                      <h3 style="margin: 0; font-size: 1.5rem; color: var(--color-primary);">
-                        <%= item.title %>
-                      </h3>
-                      <p style="margin: 0.5rem 0 0; color: #666; font-size: 0.95rem;">
-                        <i class="far fa-calendar-alt"></i>
-                        <%= item.date %>
-                      </p>
-                    </div>
-                    <% if (locals.user && user.isAdmin) { %>
-                      <div style="font-size: 0.9rem;">
-                        <a href="#" onclick="openAdminModal('/admin/edit/bulletins/<%= item.id %>', '주보 수정')"
-                          style="color: var(--color-primary); margin-right: 10px;">수정</a>
-                        <a href="/admin/delete/bulletins/<%= item.id %>" onclick="return confirm('정말 삭제하시겠습니까?')"
-                          style="color: red;">삭제</a>
-                      </div>
-                      <% } %>
-                  </div>
-
-                  <% if (item.file && item.file.toLowerCase().endsWith('.pdf')) { %>
-                    <!-- PDF Viewer Container with A4 Aspect Ratio -->
-                    <div class="pdf-container"
-                      style="width: 100%; max-width: 500px; margin: 0 auto; aspect-ratio: 1 / 1.42;">
-                      <iframe src="<%= item.file %>#toolbar=0&navpanes=0&scrollbar=0&view=FitH"
-                        style="width: 100%; height: 100%; border: none;" frameborder="0" scrolling="no"></iframe>
-                    </div>
-                    <div style="text-align: right; margin-top: 0.5rem;">
-                      <a href="<%= item.file %>" target="_blank" class="btn btn-outline"
-                        style="font-size: 0.85rem; padding: 5px 15px;">
-                        <i class="fas fa-external-link-alt"></i> 새 창에서 보기
-                      </a>
-                    </div>
-                    <% } else if (item.file && (item.file.match(/\.(jpg|jpeg|png|gif|webp)$/i))) { %>
-                      <div style="width: 100%; text-align: center;">
-                        <img src="<%= item.file %>"
-                          style="max-width: 100%; max-height: 800px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                      </div>
-                      <% } else { %>
-                        <div style="text-align: center; padding: 3rem; background: #f9f9f9; border-radius: 8px;">
-                          <i class="fas fa-file-alt" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
-                          <p>미리보기를 지원하지 않는 파일입니다.</p>
-                          <a href="<%= item.file || '#' %>" target="_blank" class="btn btn-primary">다운로드</a>
-                        </div>
-                        <% } %>
-                </div>
-                <% }); %>
-                  <% } else { %>
-                    <div style="text-align: center; padding: 5rem 0; color: #aaa;">
-                      <i class="fas fa-file-alt" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;"></i>
-                      <p>등록된 주보가 없습니다.</p>
-                    </div>
+          <div class="board-table-wrapper">
+            <table class="board-table transition-all">
+              <thead>
+                <tr>
+                  <th style="width: 70%;">제목</th>
+                  <th style="width: 25%;">날짜</th>
+                  <% if (locals.user && user.isAdmin) { %>
+                    <th style="width: 15%; text-align: center;">관리</th>
                     <% } %>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (locals.bulletins && bulletins.length> 0) { %>
+                  <% bulletins.forEach(function(item) { %>
+                    <tr>
+                      <td>
+                        <a href="/sharing/bulletin/<%= item.id %>" class="board-title">
+                          <i class="fas fa-file-pdf" style="color: #e74c3c; margin-right: 8px;"></i>
+                          <%= item.title %>
+                        </a>
+                      </td>
+                      <td>
+                        <span class="date-badge">
+                          <%= item.date %>
+                        </span>
+                      </td>
+                      <% if (locals.user && user.isAdmin) { %>
+                        <td style="text-align: center;">
+                          <div style="display: flex; gap: 10px; justify-content: center;">
+                            <a href="#" onclick="openAdminModal('/admin/edit/bulletins/<%= item.id %>', '주보 수정')"
+                              style="color: var(--color-primary);"><i class="fas fa-edit"></i></a>
+                            <a href="/admin/delete/bulletins/<%= item.id %>" onclick="return confirm('정말 삭제하시겠습니까?')"
+                              style="color: #e74c3c;"><i class="fas fa-trash-alt"></i></a>
+                          </div>
+                        </td>
+                        <% } %>
+                    </tr>
+                    <% }); %>
+                      <% } else { %>
+                        <tr>
+                          <td colspan="<%= locals.user && user.isAdmin ? 3 : 2 %>"
+                            style="text-align: center; padding: 5rem; color: #aaa;">
+                            등록된 주보가 없습니다.
+                          </td>
+                        </tr>
+                        <% } %>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Related Action -->
+          <div class="related-info-section" data-aos="fade-up">
+            <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 나눔 안내 보기</h4>
+            <div class="sharing-info-links">
+              <a href="/sharing/notices" class="btn btn-outline">공지 사항</a>
+              <a href="/sharing/gallery" class="btn btn-outline">교회 앨범</a>
+            </div>
           </div>
     </div>
     <%- include("../partials/footer") %>

@@ -187,14 +187,13 @@ const SCHEMAS: any = {
         { name: 'title', label: '설교 제목' },
         { name: 'date', label: '날짜', type: 'date' },
         { name: 'preacher', label: '설교자' },
-        { name: 'bible', label: '본문 성경구절' },
         { name: 'content', label: '설교 원고', type: 'textarea' },
         { name: 'videoId', label: '유튜브 영상 (URL 또는 ID)' }
     ],
     meditations: [
         { name: 'title', label: '제목' },
         { name: 'date', label: '날짜', type: 'date' },
-        { name: 'summary', label: '내용 요약', type: 'textarea' }
+        { name: 'summary', label: '내용', type: 'textarea' }
     ],
     diaries: [
         { name: 'title', label: '제목' },
@@ -269,7 +268,7 @@ app.post('/login', async (req, res) => {
 
         if (isMatch) {
             (req.session as any).user = { id: 'admin', isAdmin: true };
-            res.redirect('/admin/dashboard');
+            res.redirect('/');
         } else {
             res.send('<script>alert("비밀번호가 틀렸습니다."); history.back();</script>');
         }
@@ -409,10 +408,8 @@ app.get('/search', async (req, res) => {
 
 // Home
 app.get('/', async (req, res) => {
-    // If admin is logged in, redirect to dashboard
-    if ((req.session as any).user && (req.session as any).user.isAdmin) {
-        return res.redirect('/admin/dashboard');
-    }
+    // Simplified Home route to show home page for everyone
+
 
     // Fetch latest 3 sermons
     const allSermons = await getCollection('sermons');
@@ -505,6 +502,10 @@ app.get('/word/sermons/:id', async (req, res) => {
     const sermon = await getItem('sermons', req.params.id);
     if (!sermon) return res.status(404).send('Sermon not found');
 
+    // Fetch recent sermons for bottom list
+    const allSermons = await getCollection('sermons');
+    const recentSermons = allSermons.slice(0, 10);
+
     // OG Data
     const title = (sermon as any).title;
     const ogImage = (sermon as any).videoId
@@ -515,8 +516,9 @@ app.get('/word/sermons/:id', async (req, res) => {
         title: title + ' - 정배교회',
         page: 'word-sermons',
         sermon,
+        recentItems: recentSermons,
         ogTitle: title,
-        ogDescription: `${(sermon as any).date} | ${(sermon as any).preacher} | 본문: ${(sermon as any).bible}`,
+        ogDescription: `${(sermon as any).date} | ${(sermon as any).preacher}`,
         ogImage: ogImage,
         ogUrl: `https://jungbae-church.vercel.app/word/sermons/${req.params.id}`
     });
@@ -529,12 +531,17 @@ app.get('/word/meditation/:id', async (req, res) => {
     const meditation = await getItem('meditations', req.params.id);
     if (!meditation) return res.status(404).send('Meditation not found');
 
+    // Fetch recent meditations for bottom list
+    const allMeditations = await getCollection('meditations');
+    const recentMeditations = allMeditations.slice(0, 10);
+
     const title = (meditation as any).title;
 
     res.render('word/meditation-view', {
         title: title + ' - 정배교회',
         page: 'word-meditation',
         meditation,
+        recentItems: recentMeditations,
         ogTitle: title,
         ogDescription: `${(meditation as any).date} 새벽묵상`,
         ogUrl: `https://jungbae-church.vercel.app/word/meditation/${req.params.id}`
@@ -547,7 +554,17 @@ app.get('/word/diary', async (req, res) => {
 app.get('/word/diary/:id', async (req, res) => {
     const diary = await getItem('diaries', req.params.id);
     if (!diary) return res.status(404).send('Diary not found');
-    res.render('word/diary-view', { title: (diary as any).title + ' - 정배교회', page: 'word-diary', diary });
+
+    // Fetch recent diaries
+    const allDiaries = await getCollection('diaries');
+    const recentDiaries = allDiaries.slice(0, 10);
+
+    res.render('word/diary-view', {
+        title: (diary as any).title + ' - 정배교회',
+        page: 'word-diary',
+        diary,
+        recentItems: recentDiaries
+    });
 });
 
 // Sharing Section
@@ -572,11 +589,35 @@ app.get('/sharing/notices', async (req, res) => {
 app.get('/sharing/notices/:id', async (req, res) => {
     const notice = await getItem('notices', req.params.id);
     if (!notice) return res.status(404).send('Notice not found');
-    res.render('sharing/notice-view', { title: (notice as any).title + ' - 정배교회', page: 'sharing-notices', notice });
+
+    // Fetch recent notices
+    const allNotices = await getCollection('notices');
+    const recentNotices = allNotices.slice(0, 10);
+
+    res.render('sharing/notice-view', {
+        title: (notice as any).title + ' - 정배교회',
+        page: 'sharing-notices',
+        notice,
+        recentItems: recentNotices
+    });
 });
 app.get('/sharing/bulletin', async (req, res) => {
     const bulletins = await getCollection('bulletins');
     res.render('sharing/bulletin', { title: '주보 - 정배교회', page: 'sharing-bulletin', bulletins });
+});
+app.get('/sharing/bulletin/:id', async (req, res) => {
+    const bulletin = await getItem('bulletins', req.params.id);
+    if (!bulletin) return res.status(404).send('Bulletin not found');
+
+    const allBulletins = await getCollection('bulletins');
+    const recentItems = allBulletins.slice(0, 10);
+
+    res.render('sharing/bulletin-view', {
+        title: (bulletin as any).title + ' - 정배교회',
+        page: 'sharing-bulletin',
+        bulletin,
+        recentItems
+    });
 });
 app.get('/sharing/gallery', async (req, res) => {
     const galleryItems = await getCollection('galleryItems');

@@ -67,6 +67,32 @@
       .diary-admin-btns a:hover {
         opacity: 0.7;
       }
+
+      @media (max-width: 768px) {
+        .diary-card {
+          padding: 1.5rem !important;
+        }
+
+        .diary-title {
+          font-size: 1.15rem !important;
+        }
+
+        .diary-date {
+          font-size: 0.85rem !important;
+        }
+
+        .diary-snippet {
+          font-size: 0.95rem !important;
+          -webkit-line-clamp: 2;
+          line-clamp: 2;
+        }
+
+        .btn-outline,
+        .btn-primary {
+          padding: 8px 18px !important;
+          font-size: 0.85rem !important;
+        }
+      }
     </style>
 </head>
 
@@ -132,15 +158,12 @@
                     <% } %>
 
                       <!-- Related Action -->
-                      <div style="border-top: 1px solid #eee; margin-top: 5rem; padding-top: 3rem; text-align: center;"
-                        data-aos="fade-up">
+                      <div class="related-info-section" data-aos="fade-up">
                         <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 말씀 안내 보기
                         </h4>
-                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                          <a href="/word/sermons" class="btn btn-outline"
-                            style="border-radius: 50px; padding: 12px 25px;">주일 설교</a>
-                          <a href="/word/meditation" class="btn btn-outline"
-                            style="border-radius: 50px; padding: 12px 25px;">새벽 묵상</a>
+                        <div class="word-info-links">
+                          <a href="/word/sermons" class="btn btn-outline">주일 설교</a>
+                          <a href="/word/meditation" class="btn btn-outline">새벽 묵상</a>
                         </div>
                       </div>
           </div>

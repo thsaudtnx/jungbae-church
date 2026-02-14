@@ -3,6 +3,37 @@
 
 <head>
     <%- include('../partials/head') %>
+        <style>
+            @media (max-width: 768px) {
+                .pastor-profile-card {
+                    padding: 2rem 1rem !important;
+                }
+
+                .pastor-img {
+                    width: 200px !important;
+                    height: 200px !important;
+                }
+
+                .pastor-name {
+                    font-size: 1.5rem !important;
+                }
+
+                .pastor-role {
+                    font-size: 1rem !important;
+                }
+
+                .pastor-description {
+                    padding: 1.5rem !important;
+                    font-size: 0.95rem !important;
+                    line-height: 1.8 !important;
+                }
+
+                .btn-outline {
+                    padding: 10px 20px !important;
+                    font-size: 0.85rem !important;
+                }
+            }
+        </style>
 </head>
 
 <body>
@@ -34,41 +65,38 @@
                 <% } %>
 
                     <div style="max-width: 850px; margin: 0 auto;">
-                        <div class="card" data-aos="fade-up"
+                        <div class="card pastor-profile-card" data-aos="fade-up"
                             style="background: white; padding: 3rem; border-radius: 20px; box-shadow: var(--shadow-medium); border: 1px solid var(--glass-border); text-align: center; margin-bottom: 3rem;">
                             <div style="margin-bottom: 2rem;">
                                 <img src="<%= (typeof pastor !== 'undefined' && pastor.image) ? pastor.image : '/images/pastor.jpg' %>"
+                                    class="pastor-img"
                                     alt="<%= typeof pastor !== 'undefined' ? pastor.name : '김정배' %> 목사님"
                                     style="width: 280px; height: 280px; object-fit: cover; border-radius: 50%; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border: 8px solid white;">
                             </div>
-                            <h3
+                            <h3 class="pastor-name"
                                 style="font-size: 2rem; color: var(--color-primary); margin-bottom: 0.5rem; font-weight: 800;">
                                 <%= typeof pastor !=='undefined' ? pastor.name : '김정배' %>
-                                    <span
+                                    <span class="pastor-role"
                                         style="font-size: 1.25rem; color: var(--color-text-light); font-weight: 500; margin-left: 5px;">
                                         <%= typeof pastor !=='undefined' ? pastor.role : '담임목사' %>
                                     </span>
                             </h3>
                         </div>
 
-                        <div data-aos="fade-up" data-aos-delay="100"
+                        <div class="pastor-description" data-aos="fade-up" data-aos-delay="100"
                             style="font-size: 1.15rem; color: var(--color-text); text-align: left; background: white; padding: 3rem; border-radius: 20px; box-shadow: var(--shadow-soft); border-left: 8px solid var(--color-primary); line-height: 2;">
                             <%- typeof pastor !=='undefined' ? pastor.description
                                 : '"오직 말씀과 기도로 거룩하여짐이라" (딤전 4:5)<br><br>정배교회를 섬기는 김정배 목사입니다.' %>
                         </div>
 
                         <!-- Related Action -->
-                        <div style="border-top: 1px solid #eee; margin-top: 5rem; padding-top: 3rem; text-align: center;"
-                            data-aos="fade-up">
+                        <div class="related-info-section" data-aos="fade-up">
                             <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 교회 안내
                                 보기</h4>
-                            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                                <a href="/church/philosophy" class="btn btn-outline"
-                                    style="border-radius: 50px; padding: 12px 25px;">목회철학</a>
-                                <a href="/church/worship" class="btn btn-outline"
-                                    style="border-radius: 50px; padding: 12px 25px;">예배 안내</a>
-                                <a href="/church/location" class="btn btn-outline"
-                                    style="border-radius: 50px; padding: 12px 25px;">오시는 길</a>
+                            <div class="church-info-links">
+                                <a href="/church/philosophy" class="btn btn-outline">교회 소개</a>
+                                <a href="/church/worship" class="btn btn-outline">예배 안내</a>
+                                <a href="/church/location" class="btn btn-outline">오시는 길</a>
                             </div>
                         </div>
                     </div>

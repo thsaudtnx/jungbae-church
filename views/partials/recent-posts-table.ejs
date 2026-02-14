@@ -1,0 +1,50 @@
+<div style="margin-top: 5rem; padding-top: 3rem; border-top: 1px solid #eee;" data-aos="fade-up">
+    <h3 style="font-size: 1.5rem; color: var(--color-text); margin-bottom: 2rem;">최근 게시물</h3>
+    <div class="card" style="padding: 1.5rem; border-radius: 12px; box-shadow: var(--shadow-soft); background: white;">
+        <table class="meditation-table">
+            <thead>
+                <tr>
+                    <th style="width: 75%;">제목</th>
+                    <th style="width: 25%;">날짜</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (locals.recentItems && recentItems.length> 0) { %>
+                    <% recentItems.forEach(function(item) { %>
+                        <tr class="<%= item.id === currentId ? 'active-row' : '' %>">
+                            <td>
+                                <a href="/<%= basePath %>/<%= item.id %>"
+                                    class="board-title <%= item.id === currentId ? 'text-primary' : '' %>"
+                                    style="font-weight: 600;">
+                                    <%= item.title %>
+                                </a>
+                                <% if (item.id===currentId) { %>
+                                    <span
+                                        style="font-size: 0.75rem; background: var(--color-primary); color: white; padding: 2px 6px; border-radius: 4px; margin-left: 8px;">현재글</span>
+                                    <% } %>
+                            </td>
+                            <td style="color: #666; font-size: 0.9rem;">
+                                <%= item.date %>
+                            </td>
+                        </tr>
+                        <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="2" style="text-align: center; padding: 2rem; color: #aaa;">게시물이 없습니다.
+                                    </td>
+                                </tr>
+                                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .active-row {
+        background-color: #f0f7ff;
+    }
+
+    .text-primary {
+        color: var(--color-primary) !important;
+    }
+</style>

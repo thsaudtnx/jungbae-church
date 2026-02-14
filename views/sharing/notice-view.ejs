@@ -50,6 +50,36 @@
             .back-btn:hover {
                 text-decoration: underline;
             }
+
+            @media (max-width: 768px) {
+                .container {
+                    padding-top: 85px !important;
+                }
+
+                .notice-view {
+                    padding: 1.5rem 1rem !important;
+                }
+
+                .notice-title {
+                    font-size: 1.4rem !important;
+                }
+
+                .notice-meta {
+                    font-size: 0.85rem !important;
+                }
+
+                .notice-content {
+                    font-size: 1rem !important;
+                    line-height: 1.7;
+                    min-height: 200px;
+                }
+
+                .btn-outline,
+                .btn-primary {
+                    padding: 8px 18px !important;
+                    font-size: 0.85rem !important;
+                }
+            }
         </style>
 </head>
 
@@ -57,7 +87,17 @@
     <%- include('../partials/header') %>
 
         <div class="container" style="padding-top: 100px; padding-bottom: 80px;">
-
+            <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+                <a href="/sharing/notices" class="btn btn-outline" style="border-radius: 50px; padding: 10px 25px;">
+                    <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> 목록으로
+                </a>
+                <% if (locals.user && user.isAdmin) { %>
+                    <a href="/admin/edit/notices/<%= notice.id %>" class="btn btn-primary"
+                        style="border-radius: 50px; padding: 10px 25px;">
+                        <i class="fas fa-edit" style="margin-right: 8px;"></i> 수정하기
+                    </a>
+                    <% } %>
+            </div>
 
             <div class="notice-view">
                 <div class="notice-header">
@@ -93,6 +133,15 @@
                     </a>
                 </div>
             </div>
+
+            <div class="related-info-section" data-aos="fade-up">
+                <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 나눔 안내 보기</h4>
+                <div class="sharing-info-links">
+                    <a href="/sharing/bulletin" class="btn btn-outline">주보 안내</a>
+                    <a href="/sharing/gallery" class="btn btn-outline">교회 앨범</a>
+                </div>
+            </div>
+        </div>
         </div>
 
         <%- include('../partials/footer') %>

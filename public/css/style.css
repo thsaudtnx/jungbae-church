@@ -285,6 +285,8 @@ footer {
   display: none;
   font-size: 1.5rem;
   cursor: pointer;
+  color: var(--color-primary);
+  z-index: 1001;
 }
 
 /* Responsive */
@@ -348,7 +350,7 @@ footer {
   .admin-form-container,
   .file-upload-container,
   .category-group>div {
-    padding: 1.25rem !important;
+    padding: 0.75rem !important;
   }
 
   /* Specific fix for detailed views where padding was too rigid */
@@ -373,16 +375,16 @@ footer {
   }
 
   h1 {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     letter-spacing: -0.5px;
   }
 
   h2 {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
 
   h3 {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
   }
 
   .hero-content h1 {
@@ -399,8 +401,8 @@ footer {
   .info-box,
   .notice-detail,
   .diary-detail {
-    font-size: 1rem !important;
-    line-height: 1.7 !important;
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
   }
 
   .nav-menu {
@@ -434,11 +436,11 @@ footer {
     }
 
     h1 {
-      font-size: 1.4rem !important;
+      font-size: 1.35rem !important;
     }
 
     h2 {
-      font-size: 1.25rem !important;
+      font-size: 1.2rem !important;
     }
 
     .card {
@@ -478,10 +480,81 @@ footer {
     min-width: auto;
   }
 
-  .dropdown li a {
+  .footer-church-name {
+    font-size: 1.3rem;
+  }
+
+  .footer-denomination {
+    font-size: 0.85rem;
+  }
+
+  .footer-contact-item {
+    font-size: 0.95rem;
+  }
+
+  .footer-social-title {
     font-size: 1rem;
-    padding: 0.4rem 0;
-    color: #666;
+  }
+
+  .footer-copyright {
+    font-size: 0.9rem;
+  }
+
+  .footer-admin-links {
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 768px) {
+    .footer-church-name {
+      font-size: 1.1rem;
+    }
+
+    .footer-denomination {
+      font-size: 0.75rem;
+    }
+
+    .footer-contact-item {
+      font-size: 0.8rem;
+    }
+
+    .footer-social-title {
+      font-size: 0.85rem;
+    }
+
+    .footer-copyright {
+      font-size: 0.75rem;
+    }
+
+    .footer-admin-links {
+      font-size: 0.75rem;
+    }
+  }
+
+  /* Reduce Icon Sizes on Mobile */
+  i.fas,
+  i.far,
+  i.fab {
+    font-size: 0.9em;
+  }
+
+  /* Global Footer Font Reduction for Mobile */
+  footer {
+    padding: 2.5rem 0 !important;
+  }
+
+  .footer-info h3 {
+    font-size: 1.1rem !important;
+  }
+
+  .footer-info p,
+  .footer-social h4,
+  .footer-content p,
+  .footer-content div {
+    font-size: 0.8rem !important;
+  }
+
+  .footer-social a i {
+    font-size: 1.4rem !important;
   }
 }
 
@@ -696,6 +769,122 @@ footer {
   opacity: 0.9;
   max-width: 600px;
   margin: 0 auto;
+}
+
+.church-info-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.church-info-links a {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .church-info-links {
+    gap: 0.5rem;
+  }
+
+  .church-info-links a {
+    padding: 8px 15px !important;
+    font-size: 0.85rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header h1 {
+    font-size: 1.8rem !important;
+  }
+
+  .page-header {
+    padding: 3rem 0 !important;
+  }
+
+  .content-wrapper {
+    padding: 0 1rem !important;
+  }
+
+  .philosophy-content {
+    font-size: 1rem !important;
+    line-height: 1.8 !important;
+  }
+
+  .philosophy-content blockquote {
+    padding: 1rem !important;
+    font-size: 1.1rem !important;
+  }
+
+  /* Worship table mobile optimization */
+  .worship-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .worship-table th,
+  .worship-table td {
+    padding: 1rem 0.75rem !important;
+    font-size: 0.85rem !important;
+    white-space: nowrap !important;
+  }
+
+  .board-table th,
+  .board-table td,
+  .meditation-table th,
+  .meditation-table td {
+    padding: 1rem 0.75rem !important;
+    font-size: 0.85rem !important;
+    white-space: normal !important;
+    word-break: keep-all;
+  }
+}
+
+.related-info-section {
+  border-top: 1px solid #eee;
+  margin-top: 5rem;
+  padding-top: 3rem;
+  margin-bottom: 5rem;
+  text-align: center;
+}
+
+.church-info-links,
+.word-info-links,
+.sharing-info-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.church-info-links a,
+.word-info-links a,
+.sharing-info-links a {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+
+  .church-info-links,
+  .word-info-links,
+  .sharing-info-links {
+    gap: 0.5rem;
+  }
+
+  .church-info-links a,
+  .word-info-links a,
+  .sharing-info-links a {
+    padding: 8px 15px !important;
+    font-size: 0.85rem !important;
+  }
 }
 
 /* Breadcrumbs */

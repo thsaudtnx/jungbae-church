@@ -130,55 +130,57 @@
         </div>
         <% } %>
 
-          <table class="board-table transition-all">
-            <thead>
-              <tr>
-                <th style="width: 60%;">공지 정보</th>
-                <th style="width: 25%;">날짜</th>
-                <% if (locals.user && user.isAdmin) { %>
-                  <th style="width: 15%; text-align: center;">관리</th>
-                  <% } %>
-              </tr>
-            </thead>
-            <tbody>
-              <% if (locals.notices && notices.length> 0) { %>
-                <% notices.forEach(function(item) { %>
-                  <tr>
-                    <td>
-                      <a href="/sharing/notices/<%= item.id %>" class="board-title">
-                        <%= item.title %>
-                      </a>
-                      <% if (item.content) { %>
-                        <div class="board-meta">
-                          <%= item.content.replace(/<[^>]*>?/gm, '').substring(0, 100) %>...
-                        </div>
-                        <% } %>
-                    </td>
-                    <td>
-                      <span class="date-badge">
-                        <%= item.date %>
-                      </span>
-                    </td>
-                    <% if (locals.user && user.isAdmin) { %>
-                      <td style="text-align: center; font-size: 0.85rem;">
-                        <a href="#" onclick="openAdminModal('/admin/edit/notices/<%= item.id %>', '공지 수정')"
-                          style="color: var(--color-secondary); margin-right: 8px;"><i class="fas fa-edit"></i></a>
-                        <a href="/admin/delete/notices/<%= item.id %>" onclick="return confirm('정말 삭제하시겠습니까?')"
-                          style="color: #e74c3c;"><i class="fas fa-trash"></i></a>
+          <div class="board-table-wrapper">
+            <table class="board-table transition-all">
+              <thead>
+                <tr>
+                  <th style="width: 60%;">공지 정보</th>
+                  <th style="width: 25%;">날짜</th>
+                  <% if (locals.user && user.isAdmin) { %>
+                    <th style="width: 15%; text-align: center;">관리</th>
+                    <% } %>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (locals.notices && notices.length> 0) { %>
+                  <% notices.forEach(function(item) { %>
+                    <tr>
+                      <td>
+                        <a href="/sharing/notices/<%= item.id %>" class="board-title">
+                          <%= item.title %>
+                        </a>
+                        <% if (item.content) { %>
+                          <div class="board-meta">
+                            <%= item.content.replace(/<[^>]*>?/gm, '').substring(0, 100) %>...
+                          </div>
+                          <% } %>
                       </td>
-                      <% } %>
-                  </tr>
-                  <% }); %>
-                    <% } else { %>
-                      <tr>
-                        <td colspan="<%= (locals.user && user.isAdmin) ? 3 : 2 %>" class="text-center"
-                          style="padding: 3rem; color: #aaa;">
-                          등록된 공지가 없습니다.
+                      <td>
+                        <span class="date-badge">
+                          <%= item.date %>
+                        </span>
+                      </td>
+                      <% if (locals.user && user.isAdmin) { %>
+                        <td style="text-align: center; font-size: 0.85rem;">
+                          <a href="#" onclick="openAdminModal('/admin/edit/notices/<%= item.id %>', '공지 수정')"
+                            style="color: var(--color-secondary); margin-right: 8px;"><i class="fas fa-edit"></i></a>
+                          <a href="/admin/delete/notices/<%= item.id %>" onclick="return confirm('정말 삭제하시겠습니까?')"
+                            style="color: #e74c3c;"><i class="fas fa-trash"></i></a>
                         </td>
-                      </tr>
-                      <% } %>
-            </tbody>
-          </table>
+                        <% } %>
+                    </tr>
+                    <% }); %>
+                      <% } else { %>
+                        <tr>
+                          <td colspan="<%= (locals.user && user.isAdmin) ? 3 : 2 %>" class="text-center"
+                            style="padding: 3rem; color: #aaa;">
+                            등록된 공지가 없습니다.
+                          </td>
+                        </tr>
+                        <% } %>
+              </tbody>
+            </table>
+          </div>
 
           <% if (totalPages> 1) { %>
             <div class="pagination">
@@ -207,6 +209,14 @@
                               <% } %>
             </div>
             <% } %>
+              <!-- Related Action -->
+              <div class="related-info-section" data-aos="fade-up">
+                <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 나눔 안내 보기</h4>
+                <div class="sharing-info-links">
+                  <a href="/sharing/bulletin" class="btn btn-outline">주보 안내</a>
+                  <a href="/sharing/gallery" class="btn btn-outline">교회 앨범</a>
+                </div>
+              </div>
     </div>
     <%- include("../partials/footer") %>
       <script src="/js/main.js"></script>

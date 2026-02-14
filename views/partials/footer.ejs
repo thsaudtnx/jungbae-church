@@ -4,16 +4,18 @@
             <div
                 style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
                 <div class="footer-info" style="text-align: center;">
-                    <h3 style="margin-bottom: 0.8rem; color: var(--color-text);">정배교회 <span
-                            style="font-size: 0.85rem; font-weight: normal; color: var(--color-text-light); margin-left: 10px;">대한예수교장로회(통합)</span>
+                    <h3 class="footer-church-name" style="margin-bottom: 0.8rem; color: var(--color-text);">정배교회 <span
+                            class="footer-denomination"
+                            style="font-weight: normal; color: var(--color-text-light); margin-left: 10px;">대한예수교장로회(통합)</span>
                     </h3>
-                    <p style="margin-bottom: 0.4rem; font-size: 0.95rem; color: #555;"><i class="fas fa-map-marker-alt"
-                            style="width: 20px; color: var(--color-primary);"></i> <b>주소:</b> 경기도 양평군 서종면 중미산로 773</p>
-                    <p style="margin-bottom: 1rem; font-size: 0.95rem; color: #555;"><i class="fas fa-envelope"
+                    <p class="footer-contact-item" style="margin-bottom: 0.4rem; color: #555;"><i
+                            class="fas fa-map-marker-alt" style="width: 20px; color: var(--color-primary);"></i>
+                        <b>주소:</b> 경기도 양평군 서종면 중미산로 773</p>
+                    <p class="footer-contact-item" style="margin-bottom: 1rem; color: #555;"><i class="fas fa-envelope"
                             style="width: 20px; color: var(--color-primary);"></i> <b>이메일:</b> ypjbch@gmail.com</p>
                 </div>
                 <div class="footer-social" style="text-align: center;">
-                    <h4 style="margin-bottom: 1rem; font-size: 1rem; color: var(--color-text);">소셜 네트워크</h4>
+                    <h4 class="footer-social-title" style="margin-bottom: 1rem; color: var(--color-text);">소셜 네트워크</h4>
                     <div style="display: flex; gap: 15px; align-items: center; justify-content: center;">
                         <a href="https://www.youtube.com/@jeongBaeChurch" target="_blank" title="유튜브"
                             style="font-size: 1.6rem; color: #FF0000; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"><i
@@ -24,20 +26,21 @@
                         <a href="https://www.threads.net/@yp_jbchurch" target="_blank" title="스레드"
                             style="font-size: 1.6rem; color: #000000; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"><i
                                 class="fab fa-threads"></i></a>
-                        <a href="https://www.facebook.com/search/top/?q=정배교회" target="_blank" title="페이스북"
+                        <a href="https://www.facebook.com/profile.php?id=61584571918393" target="_blank" title="페이스북"
                             style="font-size: 1.6rem; color: #1877F2; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"><i
                                 class="fab fa-facebook-f"></i></a>
                     </div>
                 </div>
             </div>
 
-            <div
+            <div class="footer-bottom-area"
                 style="border-top: 1px solid #ddd; padding-top: 1.5rem; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 1rem; text-align: center;">
-                <p style="color: #777; font-size: 0.9rem;">&copy; 2026 정배교회. <b>일상·여백·하나님 나라</b></p>
-                <div style="font-size: 0.85rem;">
+                <p class="footer-copyright" style="color: #777;">&copy; 2026 정배교회. <b>일상·여백·하나님 나라</b></p>
+                <div class="footer-admin-links">
                     <% if (locals.user && user.isAdmin) { %>
-                        <span style="color: var(--color-primary); margin-right: 15px;"><i
-                                class="fas fa-user-shield"></i> 관리자 모드</span>
+                        <a href="/admin/dashboard"
+                            style="color: var(--color-primary); font-weight: bold; margin-right: 15px;"><i
+                                class="fas fa-tachometer-alt"></i> 관리자 페이지</a>
                         <a href="/admin/change-password"
                             style="color: #666; text-decoration: underline; margin-right: 10px;">비밀번호 변경</a>
                         <a href="/logout" style="color: #666; text-decoration: underline;">로그아웃</a>
