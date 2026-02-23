@@ -3,8 +3,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const navMenu = document.getElementById('nav-menu');
 
     if (menuToggle && navMenu) {
-        menuToggle.addEventListener('click', () => {
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
             navMenu.classList.toggle('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!navMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+                if (navMenu.classList.contains('active')) {
+                    navMenu.classList.remove('active');
+                }
+            }
+        });
+
+        // Close menu when clicking on a link (optional but good for UX)
+        navMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
         });
     }
 

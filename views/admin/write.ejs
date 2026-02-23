@@ -57,6 +57,118 @@
                             <input type="hidden" name="id" value="<%= item.id %>">
                             <% } %>
 
+                                <script>
+                                    function handleDragOver(e, element) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        element.style.borderColor = 'var(--color-primary)';
+                                        element.style.background = '#f0f7ff';
+                                    }
+
+                                    function handleDragLeave(e, element) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        element.style.borderColor = '#eee';
+                                        element.style.background = '#fafafa';
+                                    }
+
+                                    async function handleDrop(e, element, fieldName) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        element.style.borderColor = '#eee';
+                                        element.style.background = '#fafafa';
+
+                                        const files = e.dataTransfer.files;
+                                        if (files && files.length > 0) {
+                                            const input = document.getElementById(fieldName);
+                                            input.files = files;
+                                            handleFileSelect(input, fieldName);
+                                        }
+                                    }
+
+                                    async function handleFileSelect(input, fieldName) {
+                                        const container = document.getElementById('preview-container-' + fieldName);
+                                        const placeholder = document.getElementById('upload-placeholder-' + fieldName);
+                                        const previewList = document.getElementById('file-previews-' + fieldName);
+
+                                        if (input.files && input.files.length > 0) {
+                                            // Image Compression Options
+                                            const options = {
+                                                maxSizeMB: 1,
+                                                maxWidthOrHeight: 1200,
+                                                useWebWorker: true
+                                            };
+
+                                            // Create new DataTransfer to hold compressed files
+                                            const dataTransfer = new DataTransfer();
+
+                                            placeholder.style.display = 'none';
+                                            container.style.display = 'block';
+                                            previewList.innerHTML = '';
+
+                                            // Process files
+                                            for (let file of input.files) {
+                                                let fileToUpload = file;
+
+                                                if (file.type.startsWith('image/')) {
+                                                    try {
+                                                        // Compress image
+                                                        const compressedFile = await imageCompression(file, options);
+                                                        // Create a new File object with correct name and type
+                                                        fileToUpload = new File([compressedFile], file.name, { type: file.type });
+                                                        console.log(`Compressed: ${file.size / 1024 / 1024}MB -> ${fileToUpload.size / 1024 / 1024}MB`);
+                                                    } catch (error) {
+                                                        console.error('Compression failed:', error);
+                                                    }
+                                                }
+
+                                                dataTransfer.items.add(fileToUpload);
+
+                                                // Preview Logic
+                                                const itemWrapper = document.createElement('div');
+                                                itemWrapper.style.width = '120px';
+                                                itemWrapper.style.textAlign = 'center';
+
+                                                if (fileToUpload.type.startsWith('image/')) {
+                                                    const reader = new FileReader();
+                                                    const img = document.createElement('img');
+                                                    img.style.width = '120px';
+                                                    img.style.height = '120px';
+                                                    img.style.objectFit = 'cover';
+                                                    img.style.borderRadius = '8px';
+                                                    img.style.border = '3px solid white';
+                                                    img.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+
+                                                    reader.onload = function (e) {
+                                                        img.src = e.target.result;
+                                                    }
+                                                    reader.readAsDataURL(fileToUpload);
+                                                    itemWrapper.appendChild(img);
+                                                } else {
+                                                    const icon = document.createElement('i');
+                                                    icon.className = 'fas fa-file-alt';
+                                                    icon.style.fontSize = '2.5rem';
+                                                    icon.style.color = 'var(--color-primary)';
+
+                                                    const name = document.createElement('p');
+                                                    name.style.fontSize = '0.8rem';
+                                                    name.style.color = '#333';
+                                                    name.style.marginTop = '0.5rem';
+                                                    name.style.wordBreak = 'break-all';
+                                                    name.textContent = fileToUpload.name;
+
+                                                    itemWrapper.appendChild(icon);
+                                                    itemWrapper.appendChild(name);
+                                                }
+                                                previewList.appendChild(itemWrapper);
+                                            }
+
+                                            // Update input files with compressed ones
+                                            input.files = dataTransfer.files;
+                                        }
+                                    }
+                                </script>
+
                                 <% fields.forEach(function(field) { %>
                                     <div style="margin-bottom: 1.5rem;">
                                         <label for="<%= field.name %>"
@@ -68,9 +180,12 @@
                                             <textarea id="<%= field.name %>" name="<%= field.name %>" rows="10"
                                                 style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px;"><%- item ? item[field.name] : '' %></textarea>
                                             <% } else if (field.type==='file' ) { %>
-                                                <div class="file-upload-container"
+                                                <div class="file-upload-container" id="drop-zone-<%= field.name %>"
                                                     style="text-align: center; border: 2px dashed #eee; padding: 2.5rem; border-radius: 15px; background: #fafafa; transition: all 0.3s ease; cursor: pointer;"
-                                                    onclick="document.getElementById('<%= field.name %>').click()">
+                                                    onclick="document.getElementById('<%= field.name %>').click()"
+                                                    ondragover="handleDragOver(event, this)"
+                                                    ondragleave="handleDragLeave(event, this)"
+                                                    ondrop="handleDrop(event, this, '<%= field.name %>')">
 
                                                     <div id="preview-container-<%= field.name %>"
                                                         style="<%= (item && item[field.name]) ? 'margin-bottom: 1.5rem;' : 'display:none; margin-bottom: 1.5rem;' %>">
@@ -127,89 +242,6 @@
                                                         onclick="event.stopPropagation()">
                                                 </div>
 
-                                                <script>
-                                                    async function handleFileSelect(input, fieldName) {
-                                                        const container = document.getElementById('preview-container-' + fieldName);
-                                                        const placeholder = document.getElementById('upload-placeholder-' + fieldName);
-                                                        const previewList = document.getElementById('file-previews-' + fieldName);
-
-                                                        if (input.files && input.files.length > 0) {
-                                                            // Image Compression Options
-                                                            const options = {
-                                                                maxSizeMB: 1,
-                                                                maxWidthOrHeight: 1200,
-                                                                useWebWorker: true
-                                                            };
-
-                                                            // Create new DataTransfer to hold compressed files
-                                                            const dataTransfer = new DataTransfer();
-
-                                                            placeholder.style.display = 'none';
-                                                            container.style.display = 'block';
-                                                            previewList.innerHTML = '';
-
-                                                            // Process files
-                                                            for (let file of input.files) {
-                                                                let fileToUpload = file;
-
-                                                                if (file.type.startsWith('image/')) {
-                                                                    try {
-                                                                        // Compress image
-                                                                        const compressedFile = await imageCompression(file, options);
-                                                                        // Create a new File object with correct name and type
-                                                                        fileToUpload = new File([compressedFile], file.name, { type: file.type });
-                                                                        console.log(`Compressed: ${file.size / 1024 / 1024}MB -> ${fileToUpload.size / 1024 / 1024}MB`);
-                                                                    } catch (error) {
-                                                                        console.error('Compression failed:', error);
-                                                                    }
-                                                                }
-
-                                                                dataTransfer.items.add(fileToUpload);
-
-                                                                // Preview Logic
-                                                                const itemWrapper = document.createElement('div');
-                                                                itemWrapper.style.width = '120px';
-                                                                itemWrapper.style.textAlign = 'center';
-
-                                                                if (fileToUpload.type.startsWith('image/')) {
-                                                                    const reader = new FileReader();
-                                                                    const img = document.createElement('img');
-                                                                    img.style.width = '120px';
-                                                                    img.style.height = '120px';
-                                                                    img.style.objectFit = 'cover';
-                                                                    img.style.borderRadius = '8px';
-                                                                    img.style.border = '3px solid white';
-                                                                    img.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
-
-                                                                    reader.onload = function (e) {
-                                                                        img.src = e.target.result;
-                                                                    }
-                                                                    reader.readAsDataURL(fileToUpload);
-                                                                    itemWrapper.appendChild(img);
-                                                                } else {
-                                                                    const icon = document.createElement('i');
-                                                                    icon.className = 'fas fa-file-alt';
-                                                                    icon.style.fontSize = '2.5rem';
-                                                                    icon.style.color = 'var(--color-primary)';
-
-                                                                    const name = document.createElement('p');
-                                                                    name.style.fontSize = '0.8rem';
-                                                                    name.style.color = '#333';
-                                                                    name.style.marginTop = '0.5rem';
-                                                                    name.style.wordBreak = 'break-all';
-                                                                    name.textContent = fileToUpload.name;
-
-                                                                    itemWrapper.appendChild(icon);
-                                                                    itemWrapper.appendChild(name);
-                                                                }
-                                                                previewList.appendChild(itemWrapper);
-                                                            }
-
-                                                            // Update input files with compressed ones
-                                                            input.files = dataTransfer.files;
-                                                        }
-                                                    }
-                                                </script>
                                                 <% } else { %>
                                                     <input type="<%= field.type || 'text' %>" id="<%= field.name %>"
                                                         name="<%= field.name %>"
