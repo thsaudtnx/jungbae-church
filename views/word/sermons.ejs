@@ -68,45 +68,7 @@
                 }
             }
 
-            .pagination {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 0.5rem;
-                margin-top: 2rem;
-                padding: 1rem 0;
-            }
 
-            .pagination a,
-            .pagination span {
-                padding: 0.5rem 1rem;
-                border: 1px solid #ddd;
-                border-radius: 6px;
-                text-decoration: none;
-                color: var(--color-text);
-                transition: all 0.3s ease;
-                min-width: 40px;
-                text-align: center;
-            }
-
-            .pagination a:hover {
-                background: var(--color-primary);
-                color: white;
-                border-color: var(--color-primary);
-            }
-
-            .pagination .active {
-                background: var(--color-primary);
-                color: white;
-                border-color: var(--color-primary);
-                font-weight: 600;
-            }
-
-            .pagination .disabled {
-                opacity: 0.5;
-                cursor: not-allowed;
-                pointer-events: none;
-            }
 
             @media (max-width: 768px) {
                 .board-table-wrapper {
@@ -214,10 +176,10 @@
                         </table>
                     </div>
 
-                    <% if (totalPages> 1) { %>
-                        <div class="pagination">
+                    <% if (locals.totalPages> 1) { %>
+                        <div class="premium-pagination">
                             <% if (currentPage> 1) { %>
-                                <a href="/word/sermons?page=<%= currentPage - 1 %>">
+                                <a href="/word/sermons?page=<%= currentPage - 1 %>" class="nav-btn">
                                     <i class="fas fa-chevron-left"></i>
                                 </a>
                                 <% } %>
@@ -228,17 +190,24 @@
                                                 <%= i %>
                                             </span>
                                             <% } else { %>
-                                                <a href="/word/sermons?page=<%= i %>">
-                                                    <%= i %>
-                                                </a>
-                                                <% } %>
-                                                    <% } %>
-
-                                                        <% if (currentPage < totalPages) { %>
-                                                            <a href="/word/sermons?page=<%= currentPage + 1 %>">
-                                                                <i class="fas fa-chevron-right"></i>
-                                                            </a>
+                                                <% if (i===1 || i===totalPages || (i>= currentPage - 2 && i <=
+                                                        currentPage + 2)) { %>
+                                                        <a href="/word/sermons?page=<%= i %>">
+                                                            <%= i %>
+                                                        </a>
+                                                        <% } else if (i===currentPage - 3 || i===currentPage + 3) { %>
+                                                            <span
+                                                                style="border:none; box-shadow:none; background:none; min-width:20px;">...</span>
                                                             <% } %>
+                                                                <% } %>
+                                                                    <% } %>
+
+                                                                        <% if (currentPage < totalPages) { %>
+                                                                            <a href="/word/sermons?page=<%= currentPage + 1 %>"
+                                                                                class="nav-btn">
+                                                                                <i class="fas fa-chevron-right"></i>
+                                                                            </a>
+                                                                            <% } %>
                         </div>
                         <% } %>
 

@@ -6,91 +6,94 @@
     <style>
       .diary-card {
         background: white;
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 2.5rem;
+        border-radius: 25px;
+        box-shadow: var(--shadow-soft);
         margin-bottom: 2rem;
-        transition: all 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         cursor: pointer;
         position: relative;
+        border: 1px solid var(--glass-border);
       }
 
       .diary-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-medium);
       }
 
       .diary-card-header {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        border-left: 5px solid var(--color-primary);
-        padding-left: 1.5rem;
-        margin-bottom: 1rem;
+        border-left: 6px solid var(--color-primary);
+        padding-left: 1.8rem;
+        margin-bottom: 1.5rem;
       }
 
       .diary-title {
-        font-size: 1.4rem;
-        font-weight: 700;
+        font-size: 1.6rem;
+        font-weight: 800;
         color: var(--color-text);
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.6rem;
         text-decoration: none;
+        letter-spacing: -0.02em;
       }
 
       .diary-date {
         color: var(--color-text-light);
-        font-size: 0.95rem;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
 
       .diary-snippet {
-        color: #555;
+        color: #4b5563;
         line-height: 1.8;
         display: -webkit-box;
         -webkit-line-clamp: 3;
         line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        margin-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
       }
 
       .diary-admin-btns {
         display: flex;
         gap: 15px;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
       }
 
       .diary-admin-btns a {
         text-decoration: none;
         transition: opacity 0.2s;
+        padding: 5px 10px;
+        border-radius: 8px;
+        background: #f8f9fa;
       }
 
       .diary-admin-btns a:hover {
-        opacity: 0.7;
+        background: #eee;
       }
 
       @media (max-width: 768px) {
         .diary-card {
-          padding: 1.5rem !important;
+          padding: 1.8rem;
         }
 
         .diary-title {
-          font-size: 1.15rem !important;
+          font-size: 1.3rem;
         }
 
         .diary-date {
-          font-size: 0.85rem !important;
+          font-size: 0.9rem;
         }
 
         .diary-snippet {
-          font-size: 0.95rem !important;
+          font-size: 1rem;
           -webkit-line-clamp: 2;
           line-clamp: 2;
-        }
-
-        .btn-outline,
-        .btn-primary {
-          padding: 8px 18px !important;
-          font-size: 0.85rem !important;
         }
       }
     </style>
@@ -98,6 +101,7 @@
 
 <body>
   <%- include("../partials/header") %>
+
     <section class="page-header" data-aos="fade">
       <div class="container">
         <h1 data-aos="fade-up" data-aos-delay="100">목양 일기</h1>
@@ -111,21 +115,22 @@
 
     <div class="container" style="padding-bottom: var(--spacing-xl);">
       <% if (locals.user && user.isAdmin) { %>
-        <div style="text-align: right; margin-bottom: 3rem;">
+        <div style="text-align: right; margin-bottom: 3.5rem;">
           <a href="#" onclick="openAdminModal('/admin/write/diaries', '일기 등록')" class="btn btn-primary">일기 등록</a>
         </div>
         <% } %>
 
-          <div>
+          <div class="diary-list">
             <% if (locals.diaries && diaries.length> 0) { %>
               <% diaries.forEach(function(item) { %>
-                <div class="diary-card" onclick="location.href='/word/diary/<%= item.id %>'">
+                <div class="diary-card" onclick="location.href='/word/diary/<%= item.id %>'" data-aos="fade-up">
                   <div class="diary-card-header">
                     <div>
                       <div class="diary-title">
                         <%= item.title %>
                       </div>
-                      <div class="diary-date"><i class="far fa-calendar-alt"></i>
+                      <div class="diary-date">
+                        <i class="far fa-calendar-alt"></i>
                         <%= item.date %>
                       </div>
                     </div>
@@ -148,25 +153,67 @@
                     <%= item.content.replace(/<[^>]*>?/gm, '') %>
                   </p>
 
-                  <div style="text-align: right; color: var(--color-primary); font-size: 0.9rem; font-weight: 500;">
+                  <div
+                    style="text-align: right; color: var(--color-primary); font-size: 1rem; font-weight: 700; display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
                     자세히 보기 <i class="fas fa-arrow-right"></i>
                   </div>
                 </div>
                 <% }); %>
-                  <% } else { %>
-                    <p class="text-center" style="padding: 3rem; color: #aaa;">등록된 일기가 없습니다.</p>
+
+                  <% if (locals.totalPages> 1) { %>
+                    <div class="premium-pagination" style="margin-top: 5rem;">
+                      <% if (currentPage> 1) { %>
+                        <a href="/word/diary?page=<%= currentPage - 1 %>" class="nav-btn">
+                          <i class="fas fa-chevron-left"></i>
+                        </a>
+                        <% } %>
+
+                          <% for (let i=1; i <=totalPages; i++) { %>
+                            <% if (i===currentPage) { %>
+                              <span class="active">
+                                <%= i %>
+                              </span>
+                              <% } else { %>
+                                <% if (i===1 || i===totalPages || (i>= currentPage - 2 && i <= currentPage + 2)) { %>
+                                    <a href="/word/diary?page=<%= i %>">
+                                      <%= i %>
+                                    </a>
+                                    <% } else if (i===currentPage - 3 || i===currentPage + 3) { %>
+                                      <span
+                                        style="border:none; box-shadow:none; background:none; min-width:20px;">...</span>
+                                      <% } %>
+                                        <% } %>
+                                          <% } %>
+
+                                            <% if (currentPage < totalPages) { %>
+                                              <a href="/word/diary?page=<%= currentPage + 1 %>" class="nav-btn">
+                                                <i class="fas fa-chevron-right"></i>
+                                              </a>
+                                              <% } %>
+                    </div>
                     <% } %>
 
-                      <!-- Related Action -->
-                      <div class="related-info-section" data-aos="fade-up">
-                        <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 말씀 안내 보기
-                        </h4>
-                        <div class="word-info-links">
-                          <a href="/word/sermons" class="btn btn-outline">주일 설교</a>
-                          <a href="/word/meditation" class="btn btn-outline">새벽 묵상</a>
-                          <a href="/word/bible-study" class="btn btn-outline">수요 성경공부</a>
+                      <% } else { %>
+                        <div
+                          style="padding: 10rem 0; text-align: center; color: #94a3b8; background: white; border-radius: 30px; border: 1px dashed #cbd5e1;">
+                          <i class="far fa-folder-open"
+                            style="font-size: 3rem; margin-bottom: 1.5rem; opacity: 0.5;"></i>
+                          <p style="font-size: 1.2rem;">등록된 일기가 없습니다.</p>
                         </div>
-                      </div>
+                        <% } %>
+          </div>
+
+          <!-- Related Action -->
+          <div class="related-info-section" data-aos="fade-up" style="margin-top: 6rem;">
+            <h4 style="margin-bottom: 2.5rem; color: var(--color-text-light); font-weight: 700; font-size: 1.3rem;">다른
+              말씀 안내 보기</h4>
+            <div class="word-info-links">
+              <a href="/word/sermons" class="btn btn-outline" style="border-radius: 15px; padding: 12px 25px;">주일 설교</a>
+              <a href="/word/meditation" class="btn btn-outline" style="border-radius: 15px; padding: 12px 25px;">새벽
+                묵상</a>
+              <a href="/word/bible-study" class="btn btn-outline" style="border-radius: 15px; padding: 12px 25px;">수요
+                성경공부</a>
+            </div>
           </div>
     </div>
 

@@ -558,8 +558,26 @@ app.get('/word/sermons/:id', async (req, res) => {
     });
 });
 app.get('/word/meditation', async (req, res) => {
-    const meditations = await getCollection('meditations');
-    res.render('word/meditation', { title: '새벽묵상 - 정배교회', page: 'word-meditation', meditations });
+    let allMeditations = await getCollection('meditations');
+
+    // Sort by date (descending)
+    allMeditations.sort((a, b) => (a.date < b.date ? 1 : -1));
+
+    const page = parseInt(req.query.page as string) || 1;
+    const itemsPerPage = 15;
+    const totalPages = Math.ceil(allMeditations.length / itemsPerPage);
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const meditations = allMeditations.slice(startIndex, endIndex);
+
+    res.render('word/meditation', {
+        title: '새벽묵상 - 정배교회',
+        page: 'word-meditation',
+        meditations,
+        currentPage: page,
+        totalPages,
+        totalMeditations: allMeditations.length
+    });
 });
 app.get('/word/meditation/:id', async (req, res) => {
     const meditation = await getItem('meditations', req.params.id);
@@ -605,8 +623,26 @@ app.get('/word/bible-study/:id', async (req, res) => {
     });
 });
 app.get('/word/diary', async (req, res) => {
-    const diaries = await getCollection('diaries');
-    res.render('word/diary', { title: '목양일기 - 정배교회', page: 'word-diary', diaries });
+    let allDiaries = await getCollection('diaries');
+
+    // Sort by date (descending)
+    allDiaries.sort((a, b) => (a.date < b.date ? 1 : -1));
+
+    const page = parseInt(req.query.page as string) || 1;
+    const itemsPerPage = 15;
+    const totalPages = Math.ceil(allDiaries.length / itemsPerPage);
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const diaries = allDiaries.slice(startIndex, endIndex);
+
+    res.render('word/diary', {
+        title: '목양일기 - 정배교회',
+        page: 'word-diary',
+        diaries,
+        currentPage: page,
+        totalPages,
+        totalDiaries: allDiaries.length
+    });
 });
 app.get('/word/diary/:id', async (req, res) => {
     const diary = await getItem('diaries', req.params.id);
@@ -659,8 +695,26 @@ app.get('/sharing/notices/:id', async (req, res) => {
     });
 });
 app.get('/sharing/bulletin', async (req, res) => {
-    const bulletins = await getCollection('bulletins');
-    res.render('sharing/bulletin', { title: '주보 - 정배교회', page: 'sharing-bulletin', bulletins });
+    let allBulletins = await getCollection('bulletins');
+
+    // Sort by date (descending)
+    allBulletins.sort((a, b) => (a.date < b.date ? 1 : -1));
+
+    const page = parseInt(req.query.page as string) || 1;
+    const itemsPerPage = 15;
+    const totalPages = Math.ceil(allBulletins.length / itemsPerPage);
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const bulletins = allBulletins.slice(startIndex, endIndex);
+
+    res.render('sharing/bulletin', {
+        title: '주보 - 정배교회',
+        page: 'sharing-bulletin',
+        bulletins,
+        currentPage: page,
+        totalPages,
+        totalBulletins: allBulletins.length
+    });
 });
 app.get('/sharing/bulletin/:id', async (req, res) => {
     const bulletin = await getItem('bulletins', req.params.id);
@@ -677,8 +731,26 @@ app.get('/sharing/bulletin/:id', async (req, res) => {
     });
 });
 app.get('/sharing/gallery', async (req, res) => {
-    const galleryItems = await getCollection('galleryItems');
-    res.render('sharing/gallery', { title: '교회앨범 - 정배교회', page: 'sharing-gallery', galleryItems });
+    let allGalleryItems = await getCollection('galleryItems');
+
+    // Sort by date or createdAt if available
+    allGalleryItems.sort((a, b) => (new Date(b.createdAt || b.date) as any) - (new Date(a.createdAt || a.date) as any));
+
+    const page = parseInt(req.query.page as string) || 1;
+    const itemsPerPage = 12; // 3x4 grid fits better
+    const totalPages = Math.ceil(allGalleryItems.length / itemsPerPage);
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const galleryItems = allGalleryItems.slice(startIndex, endIndex);
+
+    res.render('sharing/gallery', {
+        title: '교회앨범 - 정배교회',
+        page: 'sharing-gallery',
+        galleryItems,
+        currentPage: page,
+        totalPages,
+        totalItems: allGalleryItems.length
+    });
 });
 
 // Admin Routes

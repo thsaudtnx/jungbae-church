@@ -4,75 +4,164 @@
 <head>
   <%- include("../partials/head") %>
     <style>
+      .location-grid {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 3rem;
+        margin-bottom: 5rem;
+      }
+
+      .map-section {
+        position: relative;
+      }
+
+      .map-wrapper {
+        background: white;
+        padding: 12px;
+        border-radius: 40px;
+        box-shadow: var(--shadow-medium);
+        border: 1px solid var(--glass-border);
+        height: 650px;
+        overflow: hidden;
+        position: sticky;
+        top: calc(var(--header-height) + 30px);
+      }
+
+      .map-wrapper iframe {
+        border-radius: 30px;
+      }
+
+      .info-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .location-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 35px;
+        box-shadow: var(--shadow-soft);
+        border: 1px solid var(--glass-border);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      }
+
+      .location-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-medium);
+        border-color: rgba(0, 69, 140, 0.1);
+      }
+
+      .card-icon {
+        width: 56px;
+        height: 56px;
+        background: rgba(0, 69, 140, 0.05);
+        color: var(--color-primary);
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1.8rem;
+      }
+
+      .card-title {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--color-text);
+        margin-bottom: 1.2rem;
+        letter-spacing: -0.02em;
+      }
+
+      .address-text {
+        font-size: 1.15rem;
+        line-height: 1.7;
+        color: var(--color-text);
+        margin-bottom: 1.8rem;
+        word-break: keep-all;
+      }
+
+      .map-shortcuts {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 1.5rem;
+      }
+
+      .shortcut-btn {
+        padding: 14px;
+        border-radius: 18px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+      }
+
+      .btn-naver {
+        background: #03C75A;
+        color: white;
+      }
+
+      .btn-kakao {
+        background: #FFCD00;
+        color: #3C1E1E;
+      }
+
+      .transport-item {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 1.5rem;
+      }
+
+      .transport-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .transport-icon {
+        color: var(--color-primary);
+        font-size: 1.1rem;
+        margin-top: 3px;
+      }
+
+      .transport-content h5 {
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 0.4rem;
+        color: var(--color-text);
+      }
+
+      .transport-content p {
+        font-size: 0.95rem;
+        color: var(--color-text-light);
+        line-height: 1.6;
+      }
+
+      @media (max-width: 1200px) {
+        .location-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .map-wrapper {
+          height: 500px;
+          position: static;
+        }
+
+        .info-sidebar {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
       @media (max-width: 768px) {
-        .page-header {
-          padding: 3rem 0 !important;
+        .info-sidebar {
+          grid-template-columns: 1fr;
         }
 
-        .page-header h1 {
-          font-size: 1.8rem !important;
-        }
-
-        .breadcrumb {
-          font-size: 0.8rem !important;
-        }
-
-        .map-container {
-          height: 250px !important;
-          padding: 0.5rem !important;
-          margin-bottom: 1.5rem !important;
-          border-radius: 12px !important;
-        }
-
-        .shortcut-btn {
-          padding: 0.7rem 1.2rem !important;
-          font-size: 0.9rem !important;
-          width: 100%;
-          justify-content: center;
-          gap: 8px !important;
-        }
-
-        .shortcut-btn span,
-        .shortcut-btn i {
-          font-size: 1rem !important;
-        }
-
-        .address-box {
-          padding: 2rem 1rem !important;
-          margin-bottom: 1.5rem !important;
-          border-radius: 15px !important;
-        }
-
-        .address-box div:first-child {
-          width: 50px !important;
-          height: 50px !important;
-        }
-
-        .address-box i.fa-map-marker-alt {
-          font-size: 1.2rem !important;
-        }
-
-        .address-box h3 {
-          font-size: 1.15rem !important;
-          margin-bottom: 0.5rem !important;
-        }
-
-        .address-box p {
-          font-size: 0.95rem !important;
-          margin-bottom: 1.5rem !important;
-        }
-
-        .btn-outline {
-          padding: 10px 18px !important;
-          font-size: 0.85rem !important;
-        }
-
-        .container {
-          padding-bottom: 2rem !important;
-        }
-
-        section.page-header+.container {
-          padding-top: 2rem !important;
+        .location-card {
+          padding: 2rem;
         }
       }
     </style>
@@ -93,57 +182,89 @@
     </section>
 
     <div class="container" style="padding-bottom: var(--spacing-xl);">
-      <div style="max-width: 1000px; margin: 0 auto;">
-        <!-- Map Preview Container -->
-        <div class="map-container" data-aos="fade-up"
-          style="background: white; padding: 1rem; border-radius: 20px; box-shadow: var(--shadow-medium); margin-bottom: 3rem; border: 1px solid var(--glass-border); position: relative; overflow: hidden; height: 500px;">
-          <iframe width="100%" height="100%" style="border:0; border-radius: 12px;" loading="lazy" allowfullscreen
-            referrerpolicy="no-referrer-when-downgrade"
-            src="https://www.google.com/maps?q=경기도+양평군+서종면+중미산로+773&output=embed">
-          </iframe>
+      <div class="location-grid">
+        <!-- Map Section -->
+        <div class="map-section" data-aos="fade-right">
+          <div class="map-wrapper">
+            <iframe width="100%" height="100%" style="border:0;" loading="lazy" allowfullscreen
+              referrerpolicy="no-referrer-when-downgrade"
+              src="https://www.google.com/maps?q=경기도+양평군+서종면+중미산로+773&output=embed">
+            </iframe>
+          </div>
         </div>
 
-        <!-- Shortcut Buttons -->
-        <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 5rem; flex-wrap: wrap;"
-          data-aos="fade-up" data-aos-delay="100">
-          <a href="https://naver.me/5jBJuuQh" target="_blank" class="btn shortcut-btn"
-            style="background-color: #03C75A; color: white; border: none; display: flex; align-items: center; gap: 12px; padding: 1rem 2.5rem; font-size: 1.1rem; border-radius: 50px; box-shadow: 0 10px 20px rgba(3, 199, 90, 0.15); transition: all 0.3s ease;">
-            <span
-              style="background: white; color: #03C75A; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: 900; font-size: 0.9rem;">N</span>
-            네이버 지도
-          </a>
-          <a href="https://map.kakao.com/link/search/경기도 양평군 서종면 중미산로 773" target="_blank" class="btn shortcut-btn"
-            style="background-color: #FFCD00; color: #3C1E1E; border: none; display: flex; align-items: center; gap: 12px; padding: 1rem 2.5rem; font-size: 1.1rem; border-radius: 50px; box-shadow: 0 10px 20px rgba(255, 205, 0, 0.15); transition: all 0.3s ease;">
-            <i class="fas fa-comment" style="font-size: 1.3rem;"></i> 카카오맵
-          </a>
-        </div>
+        <!-- Info Sidebar -->
+        <div class="info-sidebar">
+          <!-- Address Card -->
+          <div class="location-card" data-aos="fade-left" data-aos-delay="200">
+            <div class="card-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div class="card-title">교회 위치 안내</div>
+            <p class="address-text">
+              경기도 양평군 서종면<br>
+              <strong>중미산로 773</strong><br>
+              <span style="font-size: 0.9rem; color: var(--color-text-light);">(지번: 정배리 401-2)</span>
+            </p>
 
-        <!-- Address Section -->
-        <div style="max-width: 500px; margin: 0 auto;" data-aos="fade-up" data-aos-delay="200">
-          <div class="address-box"
-            style="background: white; padding: 3rem; border-radius: 20px; border-top: 6px solid var(--color-primary); box-shadow: var(--shadow-soft); text-align: center; border-left: 1px solid var(--glass-border); border-right: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border);">
-            <div
-              style="width: 60px; height: 60px; background: rgba(0, 69, 140, 0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
-              <i class="fas fa-map-marker-alt" style="color: var(--color-primary); font-size: 1.5rem;"></i>
-            </div>
-            <h3 style="margin-bottom: 1rem; color: var(--color-text); font-size: 1.4rem; font-weight: 800;">교회 주소</h3>
-            <p style="font-size: 1.15rem; line-height: 1.6; color: var(--color-text); margin-bottom: 2rem;">경기도 양평군 서종면
-              중미산로 773</p>
-            <button onclick="copyAddress()" class="btn btn-outline" style="padding: 10px 25px; font-size: 0.95rem;">
+            <button onclick="copyAddress()" class="btn btn-outline"
+              style="width: 100%; justify-content: center; margin-bottom: 1.2rem; border-radius: 18px;">
               <i class="far fa-copy" style="margin-right: 8px;"></i> 주소 복사하기
             </button>
+
+            <div class="map-shortcuts">
+              <a href="https://naver.me/5jBJuuQh" target="_blank" class="shortcut-btn btn-naver">
+                네이버 지도
+              </a>
+              <a href="https://map.kakao.com/link/search/경기도 양평군 서종면 중미산로 773" target="_blank"
+                class="shortcut-btn btn-kakao">
+                카카오맵
+              </a>
+            </div>
+          </div>
+
+          <!-- Transport Card -->
+          <div class="location-card" data-aos="fade-left" data-aos-delay="400">
+            <div class="card-icon"><i class="fas fa-directions"></i></div>
+            <div class="card-title">교통편 안내</div>
+
+            <div class="transport-item">
+              <div class="transport-icon"><i class="fas fa-bus"></i></div>
+              <div class="transport-content">
+                <h5>버스 이용 시</h5>
+                <p>지하철 경의중앙선 웅수역 하차 후 8-8번 버스 이용, '정배리마을회관' 정류장에서 하차하시면 됩니다.</p>
+              </div>
+            </div>
+
+            <div class="transport-item">
+              <div class="transport-icon"><i class="fas fa-car"></i></div>
+              <div class="transport-content">
+                <h5>자가용 이용 시</h5>
+                <p>서종 IC에서 중미산 방면으로 약 15분 거리입니다. 교회 내 넓은 주차 공간이 마련되어 있습니다.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Simple Contact Card -->
+          <div class="location-card" data-aos="fade-left" data-aos-delay="600"
+            style="padding: 1.8rem 2.5rem; background: var(--color-primary); color: white; border: none;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+              <i class="fas fa-phone-alt" style="font-size: 1.2rem; opacity: 0.8;"></i>
+              <div>
+                <div style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 2px;">안내 전화</div>
+                <div style="font-size: 1.2rem; font-weight: 700;">031-772-2316</div>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
 
-        <!-- Related Action -->
-        <div class="related-info-section" data-aos="fade-up">
-          <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 교회 안내 보기</h4>
-          <div class="church-info-links">
-            <a href="/church/philosophy" class="btn btn-outline">교회 소개</a>
-            <a href="/church/history" class="btn btn-outline">교회 연혁</a>
-            <a href="/church/pastor" class="btn btn-outline">담임목사 소개</a>
-            <a href="/church/worship" class="btn btn-outline">예배 안내</a>
-          </div>
+      <!-- Related Action -->
+      <div class="related-info-section" data-aos="fade-up">
+        <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 교회 안내 보기</h4>
+        <div class="church-info-links">
+          <a href="/church/philosophy" class="btn btn-outline">교회 소개</a>
+          <a href="/church/history" class="btn btn-outline">교회 연혁</a>
+          <a href="/church/pastor" class="btn btn-outline">담임목사 소개</a>
+          <a href="/church/worship" class="btn btn-outline">예배 안내</a>
         </div>
       </div>
     </div>
@@ -152,7 +273,7 @@
       function copyAddress() {
         const addr = '경기도 양평군 서종면 중미산로 773';
         navigator.clipboard.writeText(addr).then(() => {
-          alert('주소가 복사되었습니다.');
+          alert('주소가 성공적으로 복사되었습니다.');
         });
       }
     </script>

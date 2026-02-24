@@ -3,6 +3,117 @@
 
 <head>
   <%- include("../partials/head") %>
+    <style>
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2.5rem;
+        margin-top: 3rem;
+      }
+
+      .gallery-card {
+        background: white;
+        border-radius: 25px;
+        overflow: hidden;
+        box-shadow: var(--shadow-soft);
+        border: 1px solid var(--glass-border);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        cursor: pointer;
+      }
+
+      .gallery-card:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-medium);
+      }
+
+      .gallery-thumb-wrapper {
+        height: 280px;
+        background-color: #f8fafc;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .gallery-thumb-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+      }
+
+      .gallery-card:hover .gallery-thumb-wrapper img {
+        transform: scale(1.1);
+      }
+
+      .image-count-badge {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        padding: 6px 14px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        backdrop-filter: blur(8px);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .gallery-content {
+        padding: 2rem;
+      }
+
+      .gallery-title {
+        margin-bottom: 0.8rem;
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--color-text);
+        letter-spacing: -0.02em;
+        line-height: 1.4;
+      }
+
+      .gallery-date {
+        color: var(--color-text-light);
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .gallery-admin-footer {
+        font-size: 0.9rem;
+        border-top: 1px solid #f1f5f9;
+        padding-top: 1.2rem;
+        display: flex;
+        gap: 15px;
+      }
+
+      .gallery-admin-footer a {
+        text-decoration: none;
+        font-weight: 600;
+        transition: opacity 0.2s;
+      }
+
+      @media (max-width: 1100px) {
+        .card-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 2rem;
+        }
+      }
+
+      @media (max-width: 650px) {
+        .card-grid {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+
+        .gallery-thumb-wrapper {
+          height: 240px;
+        }
+      }
+    </style>
 </head>
 
 <body>
@@ -20,7 +131,7 @@
 
     <div class="container" style="padding-bottom: var(--spacing-xl);">
       <% if (locals.user && user.isAdmin) { %>
-        <div style="text-align: right; margin-bottom: 2rem;">
+        <div style="text-align: right; margin-bottom: 1rem;">
           <a href="#" onclick="openAdminModal('/admin/write/galleryItems', '앨범 등록')" class="btn btn-primary">앨범 등록</a>
         </div>
         <% } %>
@@ -29,64 +140,92 @@
             <% if (locals.galleryItems && galleryItems.length> 0) { %>
               <% galleryItems.forEach(function(item) { const images=Array.isArray(item.images) ? item.images :
                 (item.images ? [item.images] : (item.image ? [item.image] : [])); %>
-                <div class="card gallery-card" style="padding: 0; overflow: hidden; cursor: pointer;"
-                  data-title="<%= item.title %>" data-date="<%= item.date %>"
+                <div class="gallery-card" data-aos="fade-up" data-title="<%= item.title %>" data-date="<%= item.date %>"
                   data-images="<%= JSON.stringify(images) %>" onclick="openLightboxFromData(this)">
-                  <div style="height: 250px; background-color: #eee; overflow: hidden; position: relative;">
+                  <div class="gallery-thumb-wrapper">
                     <% if (images.length> 0) { %>
-                      <img src="<%= images[0] %>"
-                        style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;"
-                        alt="<%= item.title %>">
+                      <img src="<%= images[0] %>" alt="<%= item.title %>">
                       <% if (images.length> 1) { %>
-                        <div
-                          style="position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.85rem; backdrop-filter: blur(5px);">
+                        <div class="image-count-badge">
                           <i class="fas fa-images"></i> +<%= images.length - 1 %>
                         </div>
                         <% } %>
                           <% } else { %>
                             <div
-                              style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #aaa;">
-                              <i class="fas fa-image" style="font-size: 3rem;"></i>
+                              style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #cbd5e1;">
+                              <i class="fas fa-image" style="font-size: 3.5rem;"></i>
                             </div>
                             <% } %>
                   </div>
-                  <div style="padding: 1.5rem;">
-                    <h3 style="margin-bottom: 0.5rem; font-size: 1.2rem;">
+                  <div class="gallery-content">
+                    <h3 class="gallery-title">
                       <%= item.title %>
                     </h3>
-                    <p style="color: #888; margin-bottom: 1rem; font-size: 0.9rem;">
+                    <p class="gallery-date">
                       <i class="far fa-calendar-alt"></i>
                       <%= item.date %>
                     </p>
                     <% if (locals.user && user.isAdmin) { %>
-                      <div style="font-size: 0.85rem; border-top: 1px solid #eee; padding-top: 1rem;"
-                        onclick="event.stopPropagation()">
+                      <div class="gallery-admin-footer" onclick="event.stopPropagation()">
                         <a href="#" onclick="openAdminModal('/admin/edit/galleryItems/<%= item.id %>', '앨범 수정')"
-                          style="color: var(--color-primary); margin-right: 10px;"><i class="fas fa-edit"></i> 수정</a>
+                          style="color: var(--color-secondary);"><i class="fas fa-edit"></i> 수정</a>
                         <a href="/admin/delete/galleryItems/<%= item.id %>" onclick="return confirm('정말 삭제하시겠습니까?')"
-                          style="color: #e74c3c;"><i class="fas fa-trash-alt"></i> 삭제</a>
+                          style="color: #ef4444;"><i class="fas fa-trash-alt"></i> 삭제</a>
                       </div>
                       <% } %>
                   </div>
                 </div>
                 <% }); %>
                   <% } else { %>
-                    <div style="grid-column: 1 / -1; text-align: center; padding: 7rem 0; color: #aaa; width: 100%;">
-                      <i class="fas fa-image"
-                        style="font-size: 4rem; color: #eee; margin-bottom: 1.5rem; display: block;"></i>
-                      <p style="font-size: 1.1rem; color: #999;">등록된 사진이 없습니다.</p>
+                    <div
+                      style="grid-column: 1 / -1; text-align: center; padding: 10rem 0; color: #94a3b8; background: white; border-radius: 30px; border: 1px dashed #cbd5e1;">
+                      <i class="far fa-images"
+                        style="font-size: 4rem; margin-bottom: 2rem; display: block; opacity: 0.3;"></i>
+                      <p style="font-size: 1.2rem;">등록된 사진이 없습니다.</p>
                     </div>
                     <% } %>
           </div>
 
-          <!-- Related Action -->
-          <div class="related-info-section" data-aos="fade-up">
-            <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 나눔 안내 보기</h4>
-            <div class="sharing-info-links">
-              <a href="/sharing/notices" class="btn btn-outline">공지 사항</a>
-              <a href="/sharing/bulletin" class="btn btn-outline">주보 안내</a>
+          <% if (locals.totalPages> 1) { %>
+            <div class="premium-pagination" style="margin-top: 5rem;">
+              <% if (currentPage> 1) { %>
+                <a href="/sharing/gallery?page=<%= currentPage - 1 %>" class="nav-btn">
+                  <i class="fas fa-chevron-left"></i>
+                </a>
+                <% } %>
+
+                  <% for (let i=1; i <=totalPages; i++) { %>
+                    <% if (i===currentPage) { %>
+                      <span class="active">
+                        <%= i %>
+                      </span>
+                      <% } else { %>
+                        <% if (i===1 || i===totalPages || (i>= currentPage - 2 && i <= currentPage + 2)) { %>
+                            <a href="/sharing/gallery?page=<%= i %>">
+                              <%= i %>
+                            </a>
+                            <% } else if (i===currentPage - 3 || i===currentPage + 3) { %>
+                              <span style="border:none; box-shadow:none; background:none; min-width:20px;">...</span>
+                              <% } %>
+                                <% } %>
+                                  <% } %>
+
+                                    <% if (currentPage < totalPages) { %>
+                                      <a href="/sharing/gallery?page=<%= currentPage + 1 %>" class="nav-btn">
+                                        <i class="fas fa-chevron-right"></i>
+                                      </a>
+                                      <% } %>
             </div>
-          </div>
+            <% } %>
+
+              <!-- Related Action -->
+              <div class="related-info-section" data-aos="fade-up" style="margin-top: 6rem;">
+                <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 700;">다른 나눔 안내 보기</h4>
+                <div class="sharing-info-links">
+                  <a href="/sharing/notices" class="btn btn-outline">공지 사항</a>
+                  <a href="/sharing/bulletin" class="btn btn-outline">주보 안내</a>
+                </div>
+              </div>
     </div>
 
     <!-- Lightbox Structure -->
@@ -104,22 +243,6 @@
         </div>
       </div>
     </div>
-
-    <style>
-      .gallery-card:hover img {
-        transform: scale(1.1);
-      }
-
-      .gallery-card {
-        transition: all 0.3s ease;
-      }
-
-      .gallery-card:hover {
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-        transform: translateY(-5px);
-      }
-    </style>
-
 
     <script>
       let currentImages = [];
@@ -190,7 +313,6 @@
         if (e.key === 'ArrowRight') changeImage(1);
       });
     </script>
-
 
     <%- include("../partials/footer") %>
       <script src="/js/main.js"></script>
