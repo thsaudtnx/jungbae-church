@@ -35,7 +35,6 @@ app.use(session({
     }
 }));
 
-// Make user session available in all views
 app.use((req, res, next) => {
     // Debug log
     if (req.path !== '/favicon.ico' && !req.path.startsWith('/images') && !req.path.startsWith('/css')) {
@@ -260,6 +259,11 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
+    // Explicitly clear any existing session user info at the start of a login attempt
+    if (req.session) {
+        (req.session as any).user = null;
+    }
+
     const { password } = req.body;
 
     if (!db) {
@@ -280,13 +284,30 @@ app.post('/login', async (req, res) => {
 
         if (isMatch) {
             (req.session as any).user = { id: 'admin', isAdmin: true };
-            res.redirect('/');
+            req.session.save(() => {
+                if (req.headers.accept && req.headers.accept.includes('application/json')) {
+                    return res.json({ success: true, message: '로그인 성공' });
+                }
+                res.redirect('/');
+            });
         } else {
-            res.send('<script>alert("비밀번호가 틀렸습니다."); history.back();</script>');
+            (req.session as any).user = null;
+            req.session.save(() => {
+                if (req.headers.accept && req.headers.accept.includes('application/json')) {
+                    return res.json({ success: false, message: '비밀번호가 틀렸습니다.' });
+                }
+                res.send('<script>alert("비밀번호가 틀렸습니다."); history.back();</script>');
+            });
         }
     } catch (err) {
         console.error('Login error:', err);
-        res.send('<script>alert("로그인 중 오류가 발생했습니다."); history.back();</script>');
+        (req.session as any).user = null;
+        req.session.save(() => {
+            if (req.headers.accept && req.headers.accept.includes('application/json')) {
+                return res.json({ success: false, message: '로그인 중 오류가 발생했습니다.' });
+            }
+            res.send('<script>alert("로그인 중 오류가 발생했습니다."); history.back();</script>');
+        });
     }
 });
 

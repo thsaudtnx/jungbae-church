@@ -58,12 +58,18 @@
 <%- include('../partials/admin-modal') %>
 
   <script>
-    // Live Indicator Logic
+    // Live Indicator Logic (Based on KST - Korean Standard Time)
     function checkLiveStatus() {
+      // Create a date object for the current time
       const now = new Date();
-      const day = now.getDay(); // 0 is Sunday
-      const hours = now.getHours();
-      const minutes = now.getMinutes();
+
+      // Calculate KST (UTC+9)
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const kstTime = new Date(utc + (3600000 * 9));
+
+      const day = kstTime.getDay(); // 0 is Sunday
+      const hours = kstTime.getHours();
+      const minutes = kstTime.getMinutes();
       const timeVal = hours * 100 + minutes;
 
       let isLive = false;
