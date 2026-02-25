@@ -26,13 +26,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // Unregister existing Service Workers (to fix caching issues in development)
+    // Register PWA Service Worker
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(function (registrations) {
-            for (let registration of registrations) {
-                registration.unregister();
-                console.log('Service Worker unregistered');
-            }
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').then(registration => {
+                console.log('SW registered: ', registration);
+            }).catch(registrationError => {
+                console.log('SW registration failed: ', registrationError);
+            });
         });
     }
 
