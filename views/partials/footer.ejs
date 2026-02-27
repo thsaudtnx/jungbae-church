@@ -1,49 +1,342 @@
-<footer>
+<footer class="premium-footer">
     <div class="container">
-        <div class="footer-content" style="display: block;">
-            <div
-                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
-                <div class="footer-info" style="text-align: left;">
-                    <h3 style="margin-bottom: 0.8rem; color: var(--color-text);">정배교회 <span
-                            style="font-size: 0.85rem; font-weight: normal; color: var(--color-text-light); margin-left: 10px;">대한예수교장로회(통합)</span>
-                    </h3>
-                    <p style="margin-bottom: 0.4rem; font-size: 0.95rem; color: #555;"><i class="fas fa-map-marker-alt"
-                            style="width: 20px; color: var(--color-primary);"></i> <b>주소:</b> 경기도 양평군 서종면 중미산로 773</p>
-                    <p style="margin-bottom: 1rem; font-size: 0.95rem; color: #555;"><i class="fas fa-envelope"
-                            style="width: 20px; color: var(--color-primary);"></i> <b>이메일:</b> ypjbch@gmail.com</p>
+        <div class="footer-top">
+            <div class="footer-brand" data-aos="fade-up">
+                <div class="footer-logo">
+                    <img src="/images/main-logo.png" alt="정배교회 로고" style="height: 50px;">
                 </div>
-                <div class="footer-social" style="text-align: left;">
-                    <h4 style="margin-bottom: 1rem; font-size: 1rem; color: var(--color-text);">소셜 네트워크</h4>
-                    <div style="display: flex; gap: 12px; align-items: center;">
-                        <a href="https://www.youtube.com/@jeongBaeChurch" target="_blank" title="유튜브"
-                            style="font-size: 1.6rem; color: #FF0000; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"><i
-                                class="fab fa-youtube"></i></a>
-                        <a href="https://www.instagram.com/yp_jbchurch" target="_blank" title="인스타그램"
-                            style="font-size: 1.6rem; color: #E1306C; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"><i
-                                class="fab fa-instagram"></i></a>
-                        <a href="https://www.threads.net/@yp_jbchurch" target="_blank" title="스레드"
-                            style="font-size: 1.6rem; color: #000000; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"><i
-                                class="fab fa-threads"></i></a>
-                        <a href="#" target="_blank" title="페이스북"
-                            style="font-size: 1.6rem; color: #1877F2; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"><i
-                                class="fab fa-facebook-f"></i></a>
-                    </div>
+                <p class="footer-description">
+                    일상에 스미는 하나님 나라를 깨닫고 누리고 전하는 공동체입니다.
+                </p>
+            </div>
+
+            <div class="footer-nav-grid" data-aos="fade-up" data-aos-delay="100">
+                <div class="footer-nav-col">
+                    <h4>교회</h4>
+                    <ul>
+                        <li><a href="/church/philosophy">교회 소개</a></li>
+                        <li><a href="/church/history">교회 연혁</a></li>
+                        <li><a href="/church/pastor">담임 목사</a></li>
+                        <li><a href="/church/worship">예배 안내</a></li>
+                        <li><a href="/church/location">오시는 길</a></li>
+                    </ul>
+                </div>
+                <div class="footer-nav-col">
+                    <h4>말씀</h4>
+                    <ul>
+                        <li><a href="/word/sermons">주일 설교</a></li>
+                        <li><a href="/word/meditation">새벽 묵상</a></li>
+                        <li><a href="/word/bible-study">수요 성경공부</a></li>
+                        <li><a href="/word/diary">목양 일기</a></li>
+                    </ul>
+                </div>
+                <div class="footer-nav-col">
+                    <h4>나눔</h4>
+                    <ul>
+                        <li><a href="/sharing/notices">공지 사항</a></li>
+                        <li><a href="/sharing/bulletin">주보</a></li>
+                        <li><a href="/sharing/gallery">교회 앨범</a></li>
+                    </ul>
                 </div>
             </div>
 
-            <div
-                style="border-top: 1px solid #ddd; padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-                <p style="color: #777; font-size: 0.9rem;">&copy; 2026 정배교회. <b>일상·여백·하나님 나라</b></p>
-                <div style="font-size: 0.85rem;">
-                    <% if (locals.user && user.isAdmin) { %>
-                        <span style="color: var(--color-primary); margin-right: 15px;"><i
-                                class="fas fa-user-shield"></i> 관리자 모드</span>
-                        <a href="/logout" style="color: #666; text-decoration: underline;">로그아웃</a>
-                        <% } else { %>
-                            <a href="/login" style="color: #bbb; text-decoration: none;">관리자 로그인</a>
-                            <% } %>
+            <div class="footer-contact-info" data-aos="fade-up" data-aos-delay="200">
+                <h4>문의 및 연락처</h4>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>경기도 양평군 서종면 중미산로 773</span>
                 </div>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>ypjbch@gmail.com</span>
+                </div>
+                <div class="footer-social-premium">
+                    <a href="https://www.youtube.com/@jeongBaeChurch" target="_blank" class="yt"><i
+                            class="fab fa-youtube"></i></a>
+                    <a href="https://www.instagram.com/yp_jbchurch/#" target="_blank" class="ig"><i
+                            class="fab fa-instagram"></i></a>
+                    <a href="https://www.threads.net/@yp_jbchurch" target="_blank" class="th"><i
+                            class="fab fa-threads"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=61584571918393" target="_blank" class="fb"><i
+                            class="fab fa-facebook-f"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="footer-copyright">
+                &copy; 2026 정배교회. All Rights Reserved.
+            </div>
+            <div class="footer-admin-area">
+                <% if (locals.user && user.isAdmin) { %>
+                    <a href="/admin/dashboard" class="admin-link active">관리자 대시보드</a>
+                    <a href="/admin/change-password" class="admin-link">비밀번호 변경</a>
+                    <a href="/logout" class="admin-link">로그아웃</a>
+                    <% } else { %>
+                        <a href="/login" class="admin-login-link" onclick="openLoginModal(event)">ADMIN LOGIN</a>
+                        <% } %>
             </div>
         </div>
     </div>
 </footer>
+<%- include('../partials/login-modal') %>
+
+    <style>
+        .premium-footer {
+            background-color: #f9fafb;
+            color: #4b5563;
+            padding: 5rem 0 3rem;
+            font-size: 0.95rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1.2fr 2.5fr 1fr;
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.2rem;
+        }
+
+        .footer-church-name-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-text);
+            letter-spacing: -0.02em;
+        }
+
+        .footer-slogan {
+            color: var(--color-primary);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-description {
+            line-height: 1.7;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .footer-nav-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .footer-nav-col h4,
+        .footer-contact-info h4 {
+            color: var(--color-text);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+
+        .footer-nav-col h4::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            width: 30px;
+            height: 2px;
+            background: var(--color-primary);
+            opacity: 0.6;
+        }
+
+        .footer-nav-col ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-nav-col ul li a {
+            transition: all 0.3s ease;
+            display: inline-block;
+            color: #6b7280;
+        }
+
+        .footer-nav-col ul li a:hover {
+            color: var(--color-primary);
+            transform: translateX(5px);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 1.2rem;
+            color: #4b5563;
+        }
+
+        .contact-item span {
+            white-space: nowrap;
+        }
+
+        .contact-item i {
+            color: var(--color-primary);
+            opacity: 0.7;
+            margin-top: 4px;
+            font-size: 1.1rem;
+        }
+
+        .footer-social-premium {
+            display: flex;
+            gap: 12px;
+            margin-top: 2rem;
+        }
+
+        .footer-social-premium a {
+            width: 38px;
+            height: 38px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1.1rem;
+        }
+
+        .footer-social-premium a:hover {
+            background: #ffffff;
+            color: #ffffff;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: transparent;
+        }
+
+        .footer-social-premium a.yt:hover {
+            background: #ff0000;
+        }
+
+        .footer-social-premium a.ig:hover {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        }
+
+        .footer-social-premium a.fb:hover {
+            background: #1877f2;
+        }
+
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-copyright {
+            font-size: 0.85rem;
+            color: #9ca3af;
+        }
+
+        .footer-admin-area {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .admin-link,
+        .admin-login-link {
+            font-size: 0.85rem;
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .admin-link:hover,
+        .admin-login-link:hover {
+            color: var(--color-primary);
+        }
+
+        .admin-link.active {
+            color: var(--color-primary);
+            font-weight: 700;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 992px) {
+            .footer-top {
+                grid-template-columns: 1fr 1fr;
+                gap: 3rem;
+            }
+
+            .footer-brand {
+                grid-column: span 2;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .premium-footer {
+                padding: 4rem 1.5rem 2.5rem;
+            }
+
+            .footer-top {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                text-align: center;
+            }
+
+            .footer-brand {
+                grid-column: auto;
+            }
+
+            .footer-nav-grid {
+                gap: 2rem;
+            }
+
+            .footer-nav-col h4::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .contact-item {
+                justify-content: center;
+            }
+
+            .footer-social-premium {
+                justify-content: center;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-admin-area {
+                justify-content: center;
+            }
+        }
+    </style>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof AOS !== 'undefined') {
+                AOS.init({
+                    duration: 800,
+                    easing: 'ease-out-cubic',
+                    once: true,
+                    offset: 50
+                });
+            }
+        });
+
+        window.addEventListener('beforeunload', () => {
+            if (typeof NProgress !== 'undefined') {
+                NProgress.start();
+            }
+        });
+    </script>

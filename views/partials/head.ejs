@@ -1,9 +1,48 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>
-    <%= title %>
-</title>
+<title>정배교회</title>
+<meta name="description" content="<%= typeof description !== 'undefined' ? description : '일상에 스미는 하나님 나라, 정배교회입니다.' %>">
+
+<!-- Open Graph / SEO -->
+<meta property="og:type" content="website">
+<meta property="og:title"
+    content="<%= typeof ogTitle !== 'undefined' ? ogTitle : (typeof title !== 'undefined' ? title : '정배교회') %>">
+<meta property="og:description"
+    content="<%= typeof ogDescription !== 'undefined' ? ogDescription : (typeof description !== 'undefined' ? description : '일상에 스미는 하나님 나라, 정배교회입니다.') %>">
+<meta property="og:image" content="<%= typeof ogImage !== 'undefined' ? ogImage : '/images/main-logo.png' %>">
+<meta property="og:url" content="<%= typeof ogUrl !== 'undefined' ? ogUrl : 'https://jungbae-church.vercel.app' %>">
+<meta property="og:site_name" content="정배교회">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="/css/style.css">
 <link rel="icon" type="image/jpeg" href="/images/church-favicon.jpeg?v=2">
+<link rel="apple-touch-icon" href="/images/church-favicon.jpeg">
+<link rel="stylesheet" as="style" crossorigin
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+
+<!-- PWA Management -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#00458C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="정배교회">
+
+<style>
+    /* NProgress Customization */
+    #nprogress .bar {
+        background: var(--color-primary) !important;
+        height: 3px !important;
+    }
+
+    #nprogress .peg {
+        box-shadow: 0 0 10px var(--color-primary), 0 0 5px var(--color-primary) !important;
+    }
+
+    #nprogress .spinner-icon {
+        border-top-color: var(--color-primary) !important;
+        border-left-color: var(--color-primary) !important;
+    }
+</style>

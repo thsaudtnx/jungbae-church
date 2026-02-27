@@ -3,39 +3,263 @@
 
 <head>
     <%- include('../partials/head') %>
+        <style>
+            :root {
+                --pastor-card-bg: #ffffff;
+                --pastor-accent: var(--color-primary);
+            }
+
+            .pastor-hero {
+                display: flex;
+                align-items: center;
+                gap: 4rem;
+                margin-bottom: 5rem;
+                position: relative;
+            }
+
+            .pastor-img-wrapper {
+                flex: 0 0 320px;
+                position: relative;
+                z-index: 1;
+            }
+
+            .pastor-img-wrapper::before {
+                content: '';
+                position: absolute;
+                top: 20px;
+                left: 20px;
+                right: -20px;
+                bottom: -20px;
+                background: var(--color-bg-alt);
+                border-radius: 30px;
+                z-index: -1;
+                transition: all 0.5s ease;
+            }
+
+            .pastor-img {
+                width: 100%;
+                height: 420px;
+                object-fit: cover;
+                border-radius: 30px;
+                box-shadow: var(--shadow-medium);
+                transition: transform 0.5s ease;
+            }
+
+            .pastor-hero:hover .pastor-img {
+                transform: translateY(-10px);
+            }
+
+            .pastor-hero:hover .pastor-img-wrapper::before {
+                transform: translate(10px, 10px);
+                background: rgba(0, 69, 140, 0.05);
+            }
+
+            .pastor-info-header {
+                flex: 1;
+            }
+
+            .pastor-role-badge {
+                display: inline-block;
+                padding: 8px 20px;
+                background: rgba(0, 69, 140, 0.1);
+                color: var(--color-primary);
+                border-radius: 50px;
+                font-weight: 700;
+                font-size: 0.9rem;
+                letter-spacing: 0.1em;
+                margin-bottom: 1.5rem;
+                text-transform: uppercase;
+            }
+
+            .pastor-name-main {
+                font-size: 4rem;
+                font-weight: 900;
+                color: var(--color-text);
+                margin-bottom: 1.5rem;
+                line-height: 1;
+                letter-spacing: -0.04em;
+            }
+
+            .pastor-name-main span {
+                color: var(--color-primary);
+            }
+
+            .pastor-intro-text {
+                font-size: 1.4rem;
+                color: var(--color-text-light);
+                line-height: 1.5;
+                font-weight: 500;
+                margin-bottom: 2rem;
+                max-width: 500px;
+            }
+
+            .pastor-message-card {
+                background: white;
+                padding: 4rem;
+                border-radius: 40px;
+                box-shadow: var(--shadow-soft);
+                position: relative;
+                margin-bottom: 5rem;
+                border: 1px solid var(--glass-border);
+            }
+
+            .pastor-message-card::after {
+                content: '"';
+                position: absolute;
+                top: -20px;
+                right: 40px;
+                font-size: 12rem;
+                color: var(--color-primary);
+                opacity: 0.05;
+                font-family: serif;
+                line-height: 1;
+            }
+
+            .message-title {
+                font-size: 1.8rem;
+                font-weight: 800;
+                color: var(--color-primary);
+                margin-bottom: 2.5rem;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .message-title::before {
+                content: '';
+                width: 40px;
+                height: 4px;
+                background: var(--color-primary);
+                border-radius: 2px;
+            }
+
+            .pastor-description-content {
+                font-size: 1.25rem;
+                line-height: 2.2;
+                color: var(--color-text);
+                word-break: keep-all;
+            }
+
+            .pastor-description-content p {
+                margin-bottom: 1.5rem;
+            }
+
+            @media (max-width: 992px) {
+                .pastor-hero {
+                    flex-direction: column;
+                    gap: 3rem;
+                    text-align: center;
+                }
+
+                .pastor-img-wrapper {
+                    flex: 0 0 auto;
+                    width: 320px;
+                    margin: 0 auto;
+                }
+
+                .pastor-img {
+                    height: 400px;
+                }
+
+                .pastor-name-main {
+                    font-size: 3rem;
+                }
+
+                .pastor-intro-text {
+                    margin: 0 auto 2rem;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .pastor-message-card {
+                    padding: 2.5rem 1.5rem;
+                    border-radius: 25px;
+                }
+
+                .pastor-name-main {
+                    font-size: 2.5rem;
+                }
+
+                .pastor-description-content {
+                    font-size: 1.1rem;
+                    line-height: 1.8;
+                }
+
+                .message-title {
+                    font-size: 1.4rem;
+                }
+            }
+        </style>
 </head>
 
 <body>
     <%- include('../partials/header') %>
 
-        <div class="container" style="padding-top: 100px; padding-bottom: 50px;">
-            <h1 class="text-center">담임목사 소개</h1>
-            <div class="section-title"></div>
+        <section class="page-header" data-aos="fade">
+            <div class="container">
+                <h1 data-aos="fade-up" data-aos-delay="100">섬기는 사람들</h1>
+                <ul class="breadcrumb" data-aos="fade-up" data-aos-delay="300">
+                    <li><a href="/">홈</a></li>
+                    <li>교회</li>
+                    <li class="active">담임목사</li>
+                </ul>
+            </div>
+        </section>
 
+        <div class="container" style="padding-bottom: var(--spacing-xl);">
             <% if (locals.user && user.isAdmin) { %>
-                <div style="text-align: right; margin-bottom: 1rem;">
+                <div style="text-align: right; margin-bottom: 3rem;">
                     <% if (typeof pastor !=='undefined' && pastor.id) { %>
-                        <a href="/admin/edit/pastorProfiles/<%= pastor.id %>" class="btn btn-primary">수정하기</a>
+                        <a href="#"
+                            onclick="openAdminModal('/admin/edit/pastorProfiles/<%= pastor.id %>', '담임목사 소개 수정')"
+                            class="btn btn-primary">프로필 수정하기</a>
                         <% } else { %>
-                            <a href="/admin/write/pastorProfiles" class="btn btn-primary">작성하기</a>
+                            <a href="#" onclick="openAdminModal('/admin/write/pastorProfiles', '담임목사 소개 작성')"
+                                class="btn btn-primary">프로필 작성하기</a>
                             <% } %>
                 </div>
                 <% } %>
 
-                    <div style="max-width: 800px; margin: 0 auto; text-align: center;">
-                        <div style="margin-bottom: 2rem;">
-                            <img src="/images/pastor.jpg"
-                                alt="<%= typeof pastor !== 'undefined' ? pastor.name : '김정배' %> 목사님"
-                                style="width: 250px; height: 250px; object-fit: cover; border-radius: 50%; box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 5px solid white;">
+                    <div style="max-width: 1000px; margin: 0 auto;">
+                        <!-- Hero Section -->
+                        <div class="pastor-hero">
+                            <div class="pastor-img-wrapper" data-aos="fade-right">
+                                <img src="<%= (typeof pastor !== 'undefined' && pastor.image) ? pastor.image : '/images/pastor.jpg' %>"
+                                    class="pastor-img"
+                                    alt="<%= typeof pastor !== 'undefined' ? pastor.name : '홍길동' %> 목사님">
+                            </div>
+                            <div class="pastor-info-header" data-aos="fade-left" data-aos-delay="200">
+                                <span class="pastor-role-badge">
+                                    <%= typeof pastor !=='undefined' ? pastor.role : 'Senior Pastor' %>
+                                </span>
+                                <h2 class="pastor-name-main">
+                                    <%= typeof pastor !=='undefined' ? pastor.name : '김정배' %>
+                                </h2>
+                                <p class="pastor-intro-text">
+                                    하나님의 은혜와 평강이 정배교회 모든 성도님들의 삶속에 함께하시길 기도합니다.
+                                </p>
+                            </div>
                         </div>
-                        <h3 style="font-size: 1.8rem; color: var(--color-primary); margin-bottom: 0.5rem;">
-                            <%= typeof pastor !=='undefined' ? pastor.name : '김정배' %>
-                                <%= typeof pastor !=='undefined' ? pastor.role : '담임목사' %>
-                        </h3>
-                        <div
-                            style="white-space: pre-wrap; font-size: 1.1rem; color: #444; text-align: left; background: #f9f9f9; padding: 2rem; border-radius: 15px; border-left: 5px solid var(--color-primary);">
-                            <%= typeof pastor !=='undefined' ? pastor.description
-                                : '"오직 말씀과 기도로 거룩하여짐이라" (딤전 4:5)\n\n정배교회를 섬기는 김정배 목사입니다.' %>
+
+                        <!-- Message Card -->
+                        <div class="pastor-message-card" data-aos="fade-up" data-aos-delay="400">
+                            <div class="pastor-description-content">
+                                <%- typeof pastor !=='undefined' ? pastor.description
+                                    : '<p>"오직 말씀과 기도로 거룩하여짐이라" (딤전 4:5)</p><p>정배교회를 섬기는 김정배 목사입니다.</p><p>우리 교회는 지역사회를 섬기고, 복음의 기쁨을 함께 나누는 따뜻한 공동체입니다.</p>'
+                                    %>
+                            </div>
+                        </div>
+
+                        <!-- Related Action -->
+                        <div class="related-info-section" data-aos="fade-up">
+                            <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 교회 안내
+                                보기</h4>
+                            <div class="church-info-links">
+                                <a href="/church/philosophy" class="btn btn-outline">교회 소개</a>
+                                <a href="/church/history" class="btn btn-outline">교회 연혁</a>
+                                <a href="/church/worship" class="btn btn-outline">예배 안내</a>
+                                <a href="/church/location" class="btn btn-outline">오시는 길</a>
+                            </div>
                         </div>
                     </div>
         </div>

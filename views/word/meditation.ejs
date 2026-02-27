@@ -7,13 +7,21 @@
 
 <body>
   <%- include("../partials/header") %>
-    <div class="container" style="padding-top: 100px; padding-bottom: 50px;">
-      <h1 class="text-center">새벽묵상</h1>
-      <div class="section-title"></div>
+    <section class="page-header" data-aos="fade">
+      <div class="container">
+        <h1 data-aos="fade-up" data-aos-delay="100">새벽 묵상</h1>
+        <ul class="breadcrumb" data-aos="fade-up" data-aos-delay="300">
+          <li><a href="/">홈</a></li>
+          <li>말씀</li>
+          <li class="active">새벽 묵상</li>
+        </ul>
+      </div>
+    </section>
 
+    <div class="container" style="padding-bottom: var(--spacing-xl);">
       <% if (locals.user && user.isAdmin) { %>
-        <div style="text-align: right; margin-bottom: 1rem;">
-          <a href="/admin/write/meditations" class="btn btn-primary">묵상 등록</a>
+        <div style="text-align: right; margin-bottom: 2rem;">
+          <a href="#" onclick="openAdminModal('/admin/write/meditations', '묵상 등록')" class="btn btn-primary">묵상 등록</a>
         </div>
         <% } %>
 
@@ -80,55 +88,120 @@
                 display: none;
               }
             }
+
+            @media (max-width: 768px) {
+              .meditation-table-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+              }
+
+              .meditation-title {
+                font-size: 0.95rem !important;
+              }
+
+              .meditation-summary {
+                font-size: 0.8rem !important;
+              }
+
+              .btn-outline,
+              .btn-primary {
+                padding: 8px 18px !important;
+                font-size: 0.85rem !important;
+              }
+            }
           </style>
 
-          <table class="meditation-table">
-            <thead>
-              <tr>
-                <th style="width: 60%;">주제</th>
-                <th style="width: 25%;">날짜</th>
-                <% if (locals.user && user.isAdmin) { %>
-                  <th style="width: 15%; text-align: center;">관리</th>
-                  <% } %>
-              </tr>
-            </thead>
-            <tbody>
-              <% if (locals.meditations && meditations.length> 0) { %>
-                <% meditations.forEach(function(item) { %>
-                  <tr>
-                    <td>
-                      <a href="#" class="meditation-title">
-                        <%= item.title %>
-                      </a>
-                      <div class="meditation-summary">
-                        <%= item.summary %>
-                      </div>
-                    </td>
-                    <td>
-                      <span class="date-badge">
-                        <%= item.date %>
-                      </span>
-                    </td>
-                    <% if (locals.user && user.isAdmin) { %>
-                      <td style="text-align: center; font-size: 0.85rem;">
-                        <a href="/admin/edit/meditations/<%= item.id %>"
-                          style="color: var(--color-secondary); margin-right: 8px;"><i class="fas fa-edit"></i></a>
-                        <a href="/admin/delete/meditations/<%= item.id %>" onclick="return confirm('정말 삭제하시겠습니까?')"
-                          style="color: #e74c3c;"><i class="fas fa-trash"></i></a>
+          <div class="meditation-table-wrapper">
+            <table class="meditation-table">
+              <thead>
+                <tr>
+                  <th style="width: 60%;">본문, 제목</th>
+                  <th style="width: 25%;">날짜</th>
+                  <% if (locals.user && user.isAdmin) { %>
+                    <th style="width: 15%; text-align: center;">관리</th>
+                    <% } %>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (locals.meditations && meditations.length> 0) { %>
+                  <% meditations.forEach(function(item) { %>
+                    <tr>
+                      <td>
+                        <a href="/word/meditation/<%= item.id %>" class="meditation-title">
+                          <%= item.title %>
+                        </a>
+                        <div class="meditation-summary">
+                          <%= item.summary ? item.summary.replace(/<[^>]*>?/gm, '') : '' %>
+                        </div>
                       </td>
-                      <% } %>
-                  </tr>
-                  <% }); %>
-                    <% } else { %>
-                      <tr>
-                        <td colspan="<%= (locals.user && user.isAdmin) ? 3 : 2 %>" class="text-center"
-                          style="padding: 3rem; color: #aaa;">
-                          등록된 묵상이 없습니다.
+                      <td>
+                        <span class="date-badge">
+                          <%= item.date %>
+                        </span>
+                      </td>
+                      <% if (locals.user && user.isAdmin) { %>
+                        <td style="text-align: center; font-size: 0.85rem;">
+                          <a href="#" onclick="openAdminModal('/admin/edit/meditations/<%= item.id %>', '묵상 수정')"
+                            style="color: var(--color-secondary); margin-right: 8px;"><i class="fas fa-edit"></i></a>
+                          <a href="/admin/delete/meditations/<%= item.id %>" onclick="return confirm('정말 삭제하시겠습니까?')"
+                            style="color: #e74c3c;"><i class="fas fa-trash"></i></a>
                         </td>
-                      </tr>
-                      <% } %>
-            </tbody>
-          </table>
+                        <% } %>
+                    </tr>
+                    <% }); %>
+                      <% } else { %>
+                        <tr>
+                          <td colspan="<%= (locals.user && user.isAdmin) ? 3 : 2 %>" class="text-center"
+                            style="padding: 3rem; color: #aaa;">
+                            등록된 묵상이 없습니다.
+                          </td>
+                        </tr>
+                        <% } %>
+              </tbody>
+            </table>
+          </div>
+
+          <% if (locals.totalPages> 1) { %>
+            <div class="premium-pagination">
+              <% if (currentPage> 1) { %>
+                <a href="/word/meditation?page=<%= currentPage - 1 %>" class="nav-btn">
+                  <i class="fas fa-chevron-left"></i>
+                </a>
+                <% } %>
+
+                  <% for (let i=1; i <=totalPages; i++) { %>
+                    <% if (i===currentPage) { %>
+                      <span class="active">
+                        <%= i %>
+                      </span>
+                      <% } else { %>
+                        <% if (i===1 || i===totalPages || (i>= currentPage - 2 && i <= currentPage + 2)) { %>
+                            <a href="/word/meditation?page=<%= i %>">
+                              <%= i %>
+                            </a>
+                            <% } else if (i===currentPage - 3 || i===currentPage + 3) { %>
+                              <span style="border:none; box-shadow:none; background:none; min-width:20px;">...</span>
+                              <% } %>
+                                <% } %>
+                                  <% } %>
+
+                                    <% if (currentPage < totalPages) { %>
+                                      <a href="/word/meditation?page=<%= currentPage + 1 %>" class="nav-btn">
+                                        <i class="fas fa-chevron-right"></i>
+                                      </a>
+                                      <% } %>
+            </div>
+            <% } %>
+
+              <!-- Related Action -->
+              <div class="related-info-section" data-aos="fade-up">
+                <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 말씀 안내 보기</h4>
+                <div class="word-info-links">
+                  <a href="/word/sermons" class="btn btn-outline">주일 설교</a>
+                  <a href="/word/bible-study" class="btn btn-outline">수요 성경공부</a>
+                  <a href="/word/diary" class="btn btn-outline">목양 일기</a>
+                </div>
+              </div>
     </div>
     <%- include("../partials/footer") %>
       <script src="/js/main.js"></script>

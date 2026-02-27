@@ -1,0 +1,41 @@
+{
+    "id": "/",
+    "name": "정배교회",
+    "short_name": "정배교회",
+    "description": "일상에 스미는 하나님 나라, 정배교회입니다.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#00458C",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "/images/pwa-icon.png",
+            "sizes": "640x640",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/images/pwa-icon.png",
+            "sizes": "640x640",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/images/desktop-screenshot.png",
+            "sizes": "2560x1358",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Homescreen of Jungbae Church"
+        },
+        {
+            "src": "/images/mobile-screenshot.png",
+            "sizes": "1000x1446",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Mobile view of Jungbae Church"
+        }
+    ]
+}

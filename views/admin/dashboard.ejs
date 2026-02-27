@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <%- include('../partials/head') %>
+        <style>
+            :root {
+                --admin-primary: #00458C;
+                --admin-secondary: #3498DB;
+                --admin-accent: #E67E22;
+                --admin-bg: #f8fafc;
+                --admin-card-bg: rgba(255, 255, 255, 0.9);
+                --admin-text: #1e293b;
+                --admin-text-light: #64748b;
+                --admin-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+                --admin-border: rgba(255, 255, 255, 0.7);
+            }
+
+            .dashboard-wrapper {
+                padding-top: 100px;
+                padding-bottom: 80px;
+                min-height: 100vh;
+                background: radial-gradient(circle at 0% 0%, #f1f5f9 0%, #f8fafc 100%);
+            }
+
+            /* Dashboard Welcome Hero */
+            .welcome-hero {
+                background: linear-gradient(135deg, #00458C 0%, #002d5b 100%);
+                border-radius: 30px;
+                padding: 3.5rem;
+                color: white;
+                position: relative;
+                overflow: hidden;
+                margin-bottom: 3.5rem;
+                box-shadow: 0 20px 50px rgba(0, 69, 140, 0.2);
+            }
+
+            .welcome-hero::after {
+                content: '';
+                position: absolute;
+                top: -20%;
+                right: -10%;
+                width: 400px;
+                height: 400px;
+                background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+                border-radius: 50%;
+            }
+
+            .welcome-hero h1 {
+                font-size: 2.8rem;
+                font-weight: 800;
+                margin-bottom: 0.8rem;
+                color: white;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                letter-spacing: -0.04em;
+            }
+
+            .welcome-hero p {
+                font-size: 1.15rem;
+                opacity: 0.85;
+                font-weight: 400;
+                max-width: 600px;
+            }
+
+            /* Stats Section */
+            .stats-row {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
+                margin-bottom: 4rem;
+            }
+
+            .stat-glass-card {
+                background: var(--admin-card-bg);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border-radius: 24px;
+                padding: 2rem;
+                border: 1px solid var(--admin-border);
+                box-shadow: var(--admin-shadow);
+                display: flex;
+                align-items: center;
+                gap: 1.8rem;
+                transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .stat-glass-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 20px 45px rgba(0, 0, 0, 0.08);
+                border-color: var(--admin-primary);
+            }
+
+            .stat-icon-box {
+                width: 70px;
+                height: 70px;
+                border-radius: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.8rem;
+                position: relative;
+                z-index: 1;
+            }
+
+            .stat-info-box h4 {
+                font-size: 0.95rem;
+                color: var(--admin-text-light);
+                font-weight: 600;
+                margin-bottom: 0.3rem;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+
+            .stat-info-box .stat-number {
+                font-size: 2.25rem;
+                font-weight: 800;
+                color: var(--admin-text);
+                line-height: 1;
+            }
+
+            /* Action Grid */
+            .action-section-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 1.8rem;
+            }
+
+            .action-section-header h2 {
+                font-size: 1.6rem;
+                font-weight: 800;
+                color: var(--admin-text);
+                margin: 0;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .action-section-header h2::before {
+                content: '';
+                width: 6px;
+                height: 24px;
+                background: var(--admin-accent);
+                border-radius: 10px;
+            }
+
+            .action-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 1.2rem;
+                margin-bottom: 4rem;
+            }
+
+            .action-tile {
+                background: white;
+                border-radius: 20px;
+                padding: 2rem 1.5rem;
+                text-align: center;
+                text-decoration: none;
+                color: var(--admin-text);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+                border: 1px solid #f1f5f9;
+                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .action-tile i {
+                font-size: 2rem;
+                padding: 15px;
+                border-radius: 15px;
+                background: #f8fafc;
+                color: var(--admin-primary);
+                transition: all 0.3s ease;
+            }
+
+            .action-tile span {
+                font-weight: 700;
+                font-size: 1rem;
+            }
+
+            .action-tile:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 30px rgba(0, 69, 140, 0.1);
+                border-color: var(--admin-primary);
+                background: #fff;
+            }
+
+            .action-tile:hover i {
+                background: var(--admin-primary);
+                color: white;
+                transform: scale(1.1);
+            }
+
+            /* Recent Content Tables */
+            .dashboard-content-grid {
+                display: grid;
+                grid-template-columns: 1.2fr 1fr;
+                gap: 2.5rem;
+            }
+
+            .content-panel {
+                background: white;
+                border-radius: 24px;
+                padding: 2.5rem;
+                box-shadow: var(--admin-shadow);
+                border: 1px solid #f1f5f9;
+            }
+
+            .content-panel h3 {
+                font-size: 1.3rem;
+                font-weight: 800;
+                margin-bottom: 2rem;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .clean-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .clean-table tr {
+                border-bottom: 1px solid #f1f5f9;
+            }
+
+            .clean-table tr:last-child {
+                border-bottom: none;
+            }
+
+            .clean-table td {
+                padding: 1.25rem 0;
+            }
+
+            .item-info {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .item-title {
+                font-weight: 700;
+                font-size: 1.05rem;
+                color: var(--admin-text);
+                display: -webkit-box;
+                -webkit-line-clamp: 1;
+                line-clamp: 1;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .item-meta {
+                font-size: 0.85rem;
+                color: var(--admin-text-light);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .action-btns {
+                text-align: right;
+                white-space: nowrap;
+            }
+
+            .btn-minimal {
+                padding: 8px 16px;
+                border-radius: 10px;
+                font-size: 0.85rem;
+                font-weight: 700;
+                text-decoration: none;
+                transition: all 0.2s;
+                background: #f1f5f9;
+                color: var(--admin-text);
+                border: none;
+            }
+
+            .btn-minimal:hover {
+                background: var(--admin-primary);
+                color: white;
+                box-shadow: 0 4px 10px rgba(0, 69, 140, 0.15);
+            }
+
+            @media (max-width: 1100px) {
+                .stats-row {
+                    grid-template-columns: 1fr 1fr;
+                }
+
+                .dashboard-content-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .stats-row {
+                    grid-template-columns: 1fr;
+                }
+
+                .welcome-hero {
+                    padding: 2rem;
+                }
+
+                .welcome-hero h1 {
+                    font-size: 2rem;
+                }
+
+                .action-grid {
+                    grid-template-columns: 1fr 1fr;
+                }
+            }
+        </style>
+</head>
+
+<body>
+    <%- include('../partials/header') %>
+
+        <div class="dashboard-wrapper">
+            <div class="container">
+                <!-- Hero Welcome -->
+                <div class="welcome-hero" data-aos="fade-down">
+                    <h1>
+                        <i class="fas fa-user-shield"></i>
+                        관리자 대시보드
+                    </h1>
+                    <p>정배교회 웹사이트의 모든 콘텐츠를 관리할 수 있는 통합 관리 센터입니다. 새로운 소식을 등록하고 소중한 기록들을 안전하게 보관하세요.</p>
+                </div>
+
+                <!-- Dashboard Stats -->
+                <div class="stats-row" data-aos="fade-up" data-aos-delay="100">
+                    <div class="stat-glass-card">
+                        <div class="stat-icon-box" style="background: rgba(0, 69, 140, 0.1); color: #00458C;">
+                            <i class="fas fa-microphone-alt"></i>
+                        </div>
+                        <div class="stat-info-box">
+                            <h4>주일 설교</h4>
+                            <div class="stat-number">
+                                <%= stats.sermons %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-glass-card">
+                        <div class="stat-icon-box" style="background: rgba(52, 152, 219, 0.1); color: #3498DB;">
+                            <i class="fas fa-moon"></i>
+                        </div>
+                        <div class="stat-info-box">
+                            <h4>새벽 묵상</h4>
+                            <div class="stat-number">
+                                <%= stats.meditations %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-glass-card">
+                        <div class="stat-icon-box" style="background: rgba(230, 126, 34, 0.1); color: #E67E22;">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <div class="stat-info-box">
+                            <h4>최근 공지</h4>
+                            <div class="stat-number">
+                                <%= stats.notices %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Action Tiles -->
+                <div class="action-section-header" data-aos="fade-right">
+                    <h2>빠른 관리 액션</h2>
+                </div>
+                <div class="action-grid" data-aos="fade-up" data-aos-delay="200">
+                    <a href="#" onclick="openAdminModal('/admin/write/sermons', '설교 등록')" class="action-tile">
+                        <i class="fas fa-video"></i>
+                        <span>설교 등록</span>
+                    </a>
+                    <a href="#" onclick="openAdminModal('/admin/write/meditations', '묵상 등록')" class="action-tile">
+                        <i class="fas fa-leaf"></i>
+                        <span>묵상 등록</span>
+                    </a>
+                    <a href="#" onclick="openAdminModal('/admin/write/diaries', '일기 등록')" class="action-tile">
+                        <i class="fas fa-feather"></i>
+                        <span>일기 등록</span>
+                    </a>
+                    <a href="#" onclick="openAdminModal('/admin/write/notices', '공지 등록')" class="action-tile">
+                        <i class="fas fa-flag"></i>
+                        <span>공지 등록</span>
+                    </a>
+                    <a href="#" onclick="openAdminModal('/admin/write/bulletins', '주보 등록')" class="action-tile">
+                        <i class="fas fa-print"></i>
+                        <span>주보 등록</span>
+                    </a>
+                    <a href="#" onclick="openAdminModal('/admin/write/galleryItems', '앨범 등록')" class="action-tile">
+                        <i class="fas fa-image"></i>
+                        <span>앨범 등록</span>
+                    </a>
+                </div>
+
+                <!-- Content Management Grid -->
+                <div class="dashboard-content-grid" data-aos="fade-up" data-aos-delay="300">
+                    <!-- Recent Sermons -->
+                    <div class="content-panel">
+                        <h3><i class="fas fa-history" style="color: var(--admin-primary);"></i> 최근 설교 관리</h3>
+                        <table class="clean-table">
+                            <% if (recentContent.sermons && recentContent.sermons.length> 0) { %>
+                                <% recentContent.sermons.forEach(function(sermon) { %>
+                                    <tr>
+                                        <td>
+                                            <div class="item-info">
+                                                <div class="item-title">
+                                                    <%= sermon.title %>
+                                                </div>
+                                                <div class="item-meta">
+                                                    <span><i class="far fa-calendar-alt"></i>
+                                                        <%= sermon.date %>
+                                                    </span>
+                                                    <span><i class="far fa-user"></i>
+                                                        <%= sermon.preacher %>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="action-btns">
+                                            <a href="#"
+                                                onclick="openAdminModal('/admin/edit/sermons/<%= sermon.id %>', '설교 수정')"
+                                                class="btn-minimal">수정</a>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td style="text-align: center; color: #94a3b8; padding: 3rem 0;">데이터가
+                                                    없습니다.</td>
+                                            </tr>
+                                            <% } %>
+                        </table>
+                    </div>
+
+                    <!-- Recent Notices -->
+                    <div class="content-panel">
+                        <h3><i class="fas fa-bell" style="color: var(--admin-accent);"></i> 최근 공지 관리</h3>
+                        <table class="clean-table">
+                            <% if (recentContent.notices && recentContent.notices.length> 0) { %>
+                                <% recentContent.notices.forEach(function(notice) { %>
+                                    <tr>
+                                        <td>
+                                            <div class="item-info">
+                                                <div class="item-title">
+                                                    <%= notice.title %>
+                                                </div>
+                                                <div class="item-meta">
+                                                    <span><i class="far fa-calendar-alt"></i>
+                                                        <%= notice.date %>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="action-btns">
+                                            <a href="#"
+                                                onclick="openAdminModal('/admin/edit/notices/<%= notice.id %>', '공지 수정')"
+                                                class="btn-minimal">수정</a>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td style="text-align: center; color: #94a3b8; padding: 3rem 0;">데이터가
+                                                    없습니다.</td>
+                                            </tr>
+                                            <% } %>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Secondary Stats / Info Row -->
+                <div class="stats-row" style="margin-top: 2.5rem;" data-aos="fade-up" data-aos-delay="400">
+                    <div class="stat-glass-card" style="padding: 1.5rem 2rem;">
+                        <div class="stat-icon-box"
+                            style="width: 50px; height: 50px; border-radius: 12px; background: rgba(155, 89, 182, 0.1); color: #9b59b6; font-size: 1.2rem;">
+                            <i class="fas fa-pen-nib"></i>
+                        </div>
+                        <div class="stat-info-box">
+                            <h4 style="font-size: 0.8rem;">목양일기</h4>
+                            <div class="stat-number" style="font-size: 1.6rem;">
+                                <%= stats.diaries %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-glass-card" style="padding: 1.5rem 2rem;">
+                        <div class="stat-icon-box"
+                            style="width: 50px; height: 50px; border-radius: 12px; background: rgba(243, 156, 18, 0.1); color: #f39c12; font-size: 1.2rem;">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="stat-info-box">
+                            <h4 style="font-size: 0.8rem;">주보 발행</h4>
+                            <div class="stat-number" style="font-size: 1.6rem;">
+                                <%= stats.bulletins %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-glass-card" style="padding: 1.5rem 2rem;">
+                        <div class="stat-icon-box"
+                            style="width: 50px; height: 50px; border-radius: 12px; background: rgba(22, 160, 133, 0.1); color: #16a085; font-size: 1.2rem;">
+                            <i class="fas fa-images"></i>
+                        </div>
+                        <div class="stat-info-box">
+                            <h4 style="font-size: 0.8rem;">앨범 사진</h4>
+                            <div class="stat-number" style="font-size: 1.6rem;">
+                                <%= stats.gallery %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>

@@ -6,27 +6,126 @@
         <style>
             /* Hero Section specific styles */
             .hero {
-                height: 80vh;
-                background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/images/church-background.jpeg') center/cover no-repeat;
+                height: 85vh;
+                background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url('/images/jbchurch-background.png') center/cover no-repeat;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 text-align: center;
                 color: white;
                 padding-top: var(--header-height);
+                position: relative;
+            }
+
+            .hero::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 100px;
+                background: linear-gradient(to top, var(--color-bg), transparent);
             }
 
             .hero-content h1 {
-                font-size: 3.5rem;
+                font-size: 3rem;
                 margin-bottom: 1rem;
-                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
                 color: white;
+                line-height: 1.2;
             }
 
             .hero-content p {
-                font-size: 1.5rem;
+                font-size: 1.2rem;
                 margin-bottom: 2rem;
                 opacity: 0.9;
+            }
+
+            @media (max-width: 768px) {
+                .hero-content h1 {
+                    font-size: 1.8rem;
+                }
+
+                .hero-content p {
+                    font-size: 0.95rem;
+                }
+
+                .section-container h2 {
+                    font-size: 1.5rem !important;
+                }
+
+                .section-container p {
+                    font-size: 0.9rem !important;
+                }
+
+                .card h3 {
+                    font-size: 1rem !important;
+                }
+
+                .card p {
+                    font-size: 0.85rem !important;
+                }
+
+                .card i {
+                    font-size: 1.5rem !important;
+                    margin-bottom: 0.5rem !important;
+                }
+
+                .notice-item h4 {
+                    font-size: 0.95rem !important;
+                }
+
+                .notice-item p {
+                    font-size: 0.8rem !important;
+                }
+
+                /* Homepage Specific Box Reductions */
+                .sermon-box-content {
+                    padding: 1.25rem !important;
+                }
+
+                .sermon-meta-text {
+                    font-size: 0.85rem !important;
+                }
+
+                .meditation-card {
+                    padding: 1.5rem 1.25rem !important;
+                }
+
+                .meditation-card h3 {
+                    font-size: 1rem !important;
+                    margin-bottom: 0.8rem !important;
+                }
+
+                .meditation-card .meditation-summary {
+                    font-size: 0.85rem !important;
+                    line-height: 1.6 !important;
+                    margin-bottom: 1rem !important;
+                }
+
+                .meditation-card .view-more {
+                    font-size: 0.85rem !important;
+                }
+
+                .notice-box {
+                    border-radius: 12px !important;
+                }
+
+                .notice-item {
+                    padding: 1rem 1.25rem !important;
+                }
+
+                .bulletin-box {
+                    padding: 1.75rem 1.25rem !important;
+                }
+
+                .bulletin-box i.fas.fa-file-pdf {
+                    font-size: 3rem !important;
+                }
+
+                .bulletin-box h3 {
+                    font-size: 1.1rem !important;
+                }
             }
 
             .quick-links {
@@ -41,27 +140,86 @@
             }
 
             .card {
-                background: white;
-                padding: 2rem;
-                border-radius: 10px;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-                transition: transform 0.3s ease;
+                background: var(--glass-bg);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                padding: 2.5rem 2rem;
+                border-radius: 16px;
+                border: 1px solid var(--glass-border);
+                box-shadow: var(--shadow-soft);
+                transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
                 text-align: center;
+                text-decoration: none;
+                color: inherit;
+                display: block;
+                cursor: pointer;
             }
 
             .card:hover {
-                transform: translateY(-5px);
+                transform: translateY(-8px);
+                box-shadow: var(--shadow-medium), 0 0 25px rgba(0, 69, 140, 0.12);
+                border-color: var(--color-primary);
+                background: white;
+            }
+
+            .card h3 {
+                color: var(--color-text);
+            }
+
+            .card p {
+                color: var(--color-text-light);
+            }
+
+            .nav-link {
+                font-weight: 500;
+                color: var(--color-text);
+                padding: 0.5rem 0;
+                position: relative;
+                transition: all 0.3s ease;
+            }
+
+            .nav-link::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: var(--gradient-primary);
+                transition: width 0.3s ease;
+            }
+
+            .nav-link:hover {
+                color: var(--color-primary);
+            }
+
+            .nav-link:hover::after {
+                width: 100%;
             }
 
             .card i {
-                font-size: 2.5rem;
+                font-size: 2rem;
                 color: var(--color-primary);
                 margin-bottom: 1rem;
+                opacity: 0.9;
             }
 
             .card h3 {
                 font-size: 1.2rem;
                 margin-bottom: 0.5rem;
+            }
+
+            .notice-item {
+                border-bottom: 1px solid #f5f5f5;
+                transition: background 0.2s;
+            }
+
+            .notice-item:last-child {
+                border-bottom: none;
+            }
+
+            .notice-item:hover {
+                background-color: #f8f9fa;
             }
         </style>
 </head>
@@ -73,7 +231,7 @@
         <section class="hero">
             <div class="container hero-content">
                 <h1>환영합니다<br>정배교회입니다</h1>
-                <p>하나님의 사랑이 함께하는 곳</p>
+                <p>일상에 스미는 하나님 나라</p>
                 <a href="/church/philosophy" class="btn btn-outline" style="border-color: white; color: white;">교회 소개
                     보기</a>
             </div>
@@ -82,31 +240,265 @@
         <!-- Quick Links -->
         <section class="quick-links">
             <div class="container">
-                <div class="section-title text-center">
-                    <h2>예배 안내</h2>
-                </div>
                 <div class="card-grid">
-                    <div class="card">
+                    <a href="/church/worship" class="card">
                         <i class="fas fa-church"></i>
                         <h3>주일 예배</h3>
-                        <p>오전 11:00</p>
-                    </div>
-                    <div class="card">
+                        <p>1부 9:00 / 2부 11:00</p>
+                    </a>
+                    <a href="https://www.youtube.com/@jeongBaeChurch" target="_blank" class="card">
                         <i class="fas fa-video"></i>
                         <h3>온라인 예배</h3>
-                        <p>유튜브 실시간 송출</p>
-                    </div>
-                    <div class="card">
+                        <p>유튜브 실시간 방송</p>
+                    </a>
+                    <a href="/church/location" class="card">
                         <i class="fas fa-map-marker-alt"></i>
                         <h3>오시는 길</h3>
-                        <p>경기도 양평군 서종면 정배리</p>
-                    </div>
+                        <p>경기도 양평군 서종면 중미산로 773</p>
+                    </a>
                 </div>
             </div>
         </section>
 
-        <%- include('partials/footer') %>
-            <script src="/js/main.js"></script>
+        <!-- Latest Sermons Section -->
+        <% if (latestSermons && latestSermons.length> 0) { %>
+            <section style="padding: var(--spacing-xl) 0; background: white;" data-aos="fade-up">
+                <div class="container section-container">
+                    <div style="text-align: center; margin-bottom: 3rem;" data-aos="fade-up">
+                        <h2 style="font-size: 2rem; color: var(--color-text); margin-bottom: 0.5rem;">주일 설교</h2>
+                        <p style="color: var(--color-text-light);">정배교회의 주일 말씀을 만나보세요</p>
+                    </div>
+                    <!-- Card grid content remains same... -->
+                    <div class="card-grid"
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem;">
+                        <% latestSermons.forEach(function(sermon, index) { %>
+                            <a href="/word/sermons/<%= sermon.id %>" class="card"
+                                style="display: block; padding: 0; border-radius: 20px; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); text-decoration: none; color: inherit; background: white; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden; position: relative;"
+                                onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 20px 40px rgba(0,69,140,0.15)';"
+                                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.08)';"
+                                data-aos="fade-up" data-aos-delay="<%= index * 100 %>">
+
+                                <!-- Thumbnail or Gradient Header -->
+                                <% if (sermon.videoId) { %>
+                                    <div
+                                        style="position: relative; padding-bottom: 56.25%; background: #000; overflow: hidden;">
+                                        <img src="https://img.youtube.com/vi/<%= sermon.videoId %>/maxresdefault.jpg"
+                                            alt="<%= sermon.title %>"
+                                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: transform 0.6s ease;"
+                                            onerror="this.src='https://img.youtube.com/vi/<%= sermon.videoId %>/hqdefault.jpg'"
+                                            onmouseover="this.style.transform='scale(1.1)';">
+                                        <div
+                                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.6)); pointer-events: none;">
+                                        </div>
+                                        <div
+                                            style="position: absolute; bottom: 1.5rem; left: 1.5rem; right: 1.5rem; z-index: 2;">
+                                            <div
+                                                style="display: inline-flex; align-items: center; gap: 6px; background: rgba(0,69,140,0.9); padding: 5px 12px; border-radius: 4px; margin-bottom: 0.8rem;">
+                                                <i class="fas fa-video"
+                                                    style="font-size: 0.75rem; color: white; margin: 0;"></i>
+                                                <span
+                                                    style="font-size: 0.7rem; color: white; font-weight: 700; letter-spacing: 0.5px;">주일
+                                                    설교</span>
+                                            </div>
+                                            <h3
+                                                style="font-size: 1.25rem; font-weight: 700; color: white; line-height: 1.4; margin: 0; text-shadow: 0 2px 8px rgba(0,0,0,0.3); display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                                <%= sermon.title %>
+                                            </h3>
+                                        </div>
+                                    </div>
+                                    <% } else { %>
+                                        <div
+                                            style="background: linear-gradient(135deg, #00458C 0%, #3498DB 100%); padding: 3rem 2rem; position: relative; overflow: hidden;">
+                                            <div
+                                                style="position: absolute; top: -20px; right: -20px; width: 120px; height: 120px; background: rgba(255,255,255,0.1); border-radius: 50%; filter: blur(40px);">
+                                            </div>
+                                            <div style="position: relative; z-index: 1;">
+                                                <div
+                                                    style="display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 8px 16px; border-radius: 50px; margin-bottom: 1rem;">
+                                                    <i class="fas fa-bible"
+                                                        style="font-size: 0.9rem; color: white; margin: 0;"></i>
+                                                    <span
+                                                        style="font-size: 0.85rem; color: white; font-weight: 600; letter-spacing: 0.5px; line-height: 1;">주일
+                                                        설교</span>
+                                                </div>
+                                                <h3
+                                                    style="font-size: 1.4rem; font-weight: 800; color: white; line-height: 1.4; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                                                    <%= sermon.title %>
+                                                </h3>
+                                            </div>
+                                        </div>
+                                        <% } %>
+
+
+                                            <!-- Content Area -->
+                                            <div class="sermon-box-content" style="padding: 2rem;">
+                                                <div
+                                                    style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
+                                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                                        <div
+                                                            style="width: 36px; height: 36px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                                            <i class="far fa-calendar-alt"
+                                                                style="font-size: 0.95rem; color: var(--color-primary); margin: 0;"></i>
+                                                        </div>
+                                                        <span class="sermon-meta-text"
+                                                            style="font-size: 0.95rem; color: #495057; font-weight: 500; line-height: 1;">
+                                                            <%= sermon.date %>
+                                                        </span>
+                                                    </div>
+
+                                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                                        <div
+                                                            style="width: 36px; height: 36px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                                            <i class="far fa-user"
+                                                                style="font-size: 0.95rem; color: var(--color-primary); margin: 0;"></i>
+                                                        </div>
+                                                        <span class="sermon-meta-text"
+                                                            style="font-size: 0.95rem; color: #495057; font-weight: 500; line-height: 1;">
+                                                            <%= sermon.preacher || '정배교회' %>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                            </a>
+                            <% }); %>
+                    </div>
+                    <div style="text-align: center; margin-top: 4rem;">
+                        <a href="/word/sermons" class="btn btn-primary"
+                            style="padding: 1.2rem 4rem; font-size: 1.05rem; border-radius: 50px; box-shadow: 0 8px 24px rgba(0, 69, 140, 0.25);">
+                            모든 설교 보기
+                        </a>
+                    </div>
+                </div>
+            </section>
+            <% } %>
+
+                <!-- Meditations Section (Moved up) -->
+                <section style="padding: var(--spacing-xl) 0; background: var(--color-bg-alt);" data-aos="fade-up">
+                    <div class="container section-container">
+                        <div style="text-align: center; margin-bottom: 3rem;" data-aos="fade-up">
+                            <h2 style="font-size: 2rem; color: var(--color-text); margin-bottom: 0.5rem;">새벽 묵상</h2>
+                            <p style="color: var(--color-text-light);">매일 아침, 하나님의 말씀으로 시작하는 은혜의 시간입니다</p>
+                        </div>
+
+                        <div class="card-grid"
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                            <% if (locals.latestMeditations && latestMeditations.length> 0) { %>
+                                <% latestMeditations.forEach(function(item, index) { %>
+                                    <a href="/word/meditation/<%= item.id %>" class="card meditation-card"
+                                        style="display: block; padding: 2.5rem 2rem; border-radius: 20px; transition: all 0.3s ease; text-decoration: none; color: inherit; background: white; border: 1px solid transparent; box-shadow: var(--shadow-soft);"
+                                        onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='var(--color-primary)'; this.style.boxShadow='var(--shadow-medium)';"
+                                        onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='transparent'; this.style.boxShadow='var(--shadow-soft)';"
+                                        data-aos="fade-up" data-aos-delay="<%= index * 100 %>">
+                                        <div style="display: flex; align-items: center; margin-bottom: 1.2rem;">
+                                            <span
+                                                style="display: inline-flex; align-items: center; padding: 4px 12px; background: #f1f3f5; border-radius: 50px; font-size: 0.8rem; color: var(--color-text-light); font-weight: 600;">
+                                                <%= item.date %>
+                                            </span>
+                                        </div>
+                                        <h3
+                                            style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem; color: var(--color-text); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 1; line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">
+                                            <%= item.title %>
+                                        </h3>
+                                        <div class="meditation-summary"
+                                            style="font-size: 0.95rem; color: #666; line-height: 1.8; margin-bottom: 0; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                            <%= item.summary ? item.summary.replace(/<[^>]*>?/gm, '') : '' %>
+                                        </div>
+                                    </a>
+                                    <% }); %>
+                                        <% } %>
+                        </div>
+
+                        <div style="text-align: center; margin-top: 4rem;">
+                            <a href="/word/meditation" class="btn btn-outline" style="padding: 1rem 3.5rem;">
+                                새벽 묵상 전체보기
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Latest Notices & Bulletin Section -->
+                <section style="padding: 4rem 0; background: white;">
+                    <div class="container">
+                        <div
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+
+                            <!-- Latest Notices -->
+                            <% if (latestNotices && latestNotices.length> 0) { %>
+                                <div data-aos="fade-right">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                                        <h2 style="font-size: 1.5rem; color: var(--color-text);">
+                                            <i class="fas fa-bullhorn"
+                                                style="color: var(--color-primary); margin-right: 8px;"></i>
+                                            최근 공지
+                                        </h2>
+                                        <a href="/sharing/notices"
+                                            style="color: var(--color-primary); font-size: 0.9rem;">더보기 →</a>
+                                    </div>
+                                    <div class="notice-box"
+                                        style="background: #f8f9fa; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-soft); border: 1px solid rgba(0,0,0,0.05);">
+                                        <% latestNotices.forEach(function(notice, index) { %>
+                                            <a href="/sharing/notices/<%= notice.id %>" class="notice-item"
+                                                style="display: block; padding: 1.25rem 1.5rem; text-decoration: none; color: inherit; border-bottom: 1px solid rgba(0,0,0,0.05);">
+                                                <h4
+                                                    style="font-size: 1rem; margin-bottom: 0.3rem; color: var(--color-text);">
+                                                    <%= notice.title %>
+                                                </h4>
+                                                <p
+                                                    style="font-size: 0.85rem; color: var(--color-text-light); margin: 0;">
+                                                    <i class="far fa-calendar-alt"></i>
+                                                    <%= notice.date %>
+                                                </p>
+                                            </a>
+                                            <% }); %>
+                                    </div>
+                                </div>
+                                <% } %>
+
+                                    <!-- Latest Bulletin -->
+                                    <% if (latestBulletin) { %>
+                                        <div data-aos="fade-left">
+                                            <div
+                                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                                                <h2 style="font-size: 1.5rem; color: var(--color-text);">
+                                                    <i class="fas fa-file-alt"
+                                                        style="color: var(--color-secondary); margin-right: 8px;"></i>
+                                                    이번 주 주보
+                                                </h2>
+                                                <a href="/sharing/bulletin"
+                                                    style="color: var(--color-primary); font-size: 0.9rem;">전체보기
+                                                    →</a>
+                                            </div>
+                                            <a href="<%= latestBulletin.file %>" target="_blank" class="bulletin-box"
+                                                style="display: block; background: #f8f9fa; border-radius: 16px; padding: 2.5rem 2rem; 
+                                               text-align: center; text-decoration: none; box-shadow: var(--shadow-soft); border: 1px solid rgba(0,0,0,0.05);
+                                               transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);"
+                                                onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='var(--shadow-medium)'; this.style.background='white'; this.style.borderColor='var(--color-primary)';"
+                                                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow-soft)'; this.style.background='#f8f9fa'; this.style.borderColor='rgba(0,0,0,0.05)';">
+                                                <i class="fas fa-file-pdf"
+                                                    style="font-size: 4rem; color: #e74c3c; margin-bottom: 1rem;"></i>
+                                                <h3
+                                                    style="font-size: 1.2rem; color: var(--color-text); margin-bottom: 0.5rem;">
+                                                    <%= latestBulletin.title %>
+                                                </h3>
+                                                <p
+                                                    style="font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 1rem;">
+                                                    <i class="far fa-calendar-alt"></i>
+                                                    <%= latestBulletin.date %>
+                                                </p>
+                                                <span class="btn btn-primary" style="display: inline-block;">
+                                                    <i class="fas fa-download"></i> 주보 다운로드
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <% } %>
+
+                        </div>
+                    </div>
+                </section>
+
+                <%- include('partials/footer') %>
+                    <script src="/js/main.js"></script>
 </body>
 
 </html>
