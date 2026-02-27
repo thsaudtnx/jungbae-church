@@ -175,54 +175,19 @@
                             </div>
                 </div>
 
-                <!-- Sidebar -->
-                <div style="width: 320px;" class="desktop-only">
-                    <div class="recent-list-card" data-aos="fade-left">
-                        <h3
-                            style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; border-bottom: 2px solid var(--color-primary); padding-bottom: 0.8rem;">
-                            최근 성경공부
-                        </h3>
-                        <div>
-                            <% if (locals.recentItems && recentItems.length> 0) { %>
-                                <% recentItems.forEach(function(item) { %>
-                                    <a href="/word/bible-study/<%= item.id %>" class="recent-item">
-                                        <% if (item.videoId) { %>
-                                            <img src="https://img.youtube.com/vi/<%= item.videoId %>/mqdefault.jpg"
-                                                class="recent-thumb">
-                                            <% } else { %>
-                                                <div class="recent-thumb"
-                                                    style="display:flex; align-items:center; justify-content:center; background:#f8f9fa;">
-                                                    <i class="fas fa-bible" style="color:#ddd;"></i>
-                                                </div>
-                                                <% } %>
-                                                    <div class="recent-info">
-                                                        <h4>
-                                                            <%= item.title %>
-                                                        </h4>
-                                                        <span>
-                                                            <%= item.date %>
-                                                        </span>
-                                                    </div>
-                                    </a>
-                                    <% }); %>
-                                        <% } %>
-                        </div>
+            </div>
+
+            <%- include('../partials/recent-posts-table', { prevItem, nextItem, basePath: 'word/bible-study' }) %>
+
+                <!-- Related Action -->
+                <div class="related-info-section" data-aos="fade-up" style="margin-top: 8rem;">
+                    <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 말씀 안내 보기</h4>
+                    <div class="word-info-links">
+                        <a href="/word/sermons" class="btn btn-outline">주일 설교</a>
+                        <a href="/word/meditation" class="btn btn-outline">새벽 묵상</a>
+                        <a href="/word/diary" class="btn btn-outline">목양 일기</a>
                     </div>
                 </div>
-
-            </div>
-
-        </div>
-
-        <!-- Related Action -->
-        <div class="related-info-section" data-aos="fade-up" style="margin-top: 8rem;">
-            <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 말씀 안내 보기</h4>
-            <div class="word-info-links">
-                <a href="/word/sermons" class="btn btn-outline">주일 설교</a>
-                <a href="/word/meditation" class="btn btn-outline">새벽 묵상</a>
-                <a href="/word/diary" class="btn btn-outline">목양 일기</a>
-            </div>
-        </div>
         </div>
 
         <%- include('../partials/footer') %>

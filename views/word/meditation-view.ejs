@@ -240,8 +240,7 @@
                     </div>
                 </article>
 
-                <%- include('../partials/recent-posts-table', { recentItems, currentId: meditation.id,
-                    basePath: 'word/meditation' }) %>
+                <%- include('../partials/recent-posts-table', { prevItem, nextItem, basePath: 'word/meditation' }) %>
 
                     <!-- Related Action -->
                     <div class="related-info-section" data-aos="fade-up" style="margin-top: 5rem;">

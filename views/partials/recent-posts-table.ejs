@@ -1,154 +1,144 @@
-<div class="recent-posts-section" data-aos="fade-up">
-    <h3 class="section-title">최근 게시물</h3>
-    <div class="recent-posts-list">
-        <% if (locals.recentItems && recentItems.length> 0) { %>
-            <% recentItems.forEach(function(item) { %>
-                <a href="/<%= basePath %>/<%= item.id %>"
-                    class="recent-post-item <%= item.id === currentId ? 'current' : '' %>">
-                    <div class="post-info">
-                        <span class="post-title">
-                            <%= item.title %>
-                        </span>
-                        <span class="post-date">
-                            <%= item.date %>
-                        </span>
-                    </div>
-                    <% if (item.id===currentId) { %>
-                        <span class="current-label">현재글</span>
-                        <% } else { %>
-                            <i class="fas fa-chevron-right arrow-icon"></i>
-                            <% } %>
-                </a>
-                <% }); %>
+<div class="post-nav-section" data-aos="fade-up">
+    <% if (locals.prevItem) { %>
+        <a href="/<%= basePath %>/<%= prevItem.id %>" class="post-nav-item post-nav-prev">
+            <div class="post-nav-direction">
+                <i class="fas fa-chevron-up"></i>
+                <span>이전 글</span>
+            </div>
+            <div class="post-nav-info">
+                <span class="post-nav-title">
+                    <%= prevItem.title %>
+                </span>
+                <span class="post-nav-date">
+                    <%= prevItem.date %>
+                </span>
+            </div>
+        </a>
+        <% } else { %>
+            <div class="post-nav-item post-nav-empty">
+                <div class="post-nav-direction">
+                    <i class="fas fa-chevron-up"></i>
+                    <span>이전 글</span>
+                </div>
+                <span class="post-nav-none">이전 글이 없습니다</span>
+            </div>
+            <% } %>
+
+                <% if (locals.nextItem) { %>
+                    <a href="/<%= basePath %>/<%= nextItem.id %>" class="post-nav-item post-nav-next">
+                        <div class="post-nav-direction">
+                            <i class="fas fa-chevron-down"></i>
+                            <span>다음 글</span>
+                        </div>
+                        <div class="post-nav-info">
+                            <span class="post-nav-title">
+                                <%= nextItem.title %>
+                            </span>
+                            <span class="post-nav-date">
+                                <%= nextItem.date %>
+                            </span>
+                        </div>
+                    </a>
                     <% } else { %>
-                        <div class="no-posts">최근 게시물이 없습니다.</div>
+                        <div class="post-nav-item post-nav-empty">
+                            <div class="post-nav-direction">
+                                <i class="fas fa-chevron-down"></i>
+                                <span>다음 글</span>
+                            </div>
+                            <span class="post-nav-none">다음 글이 없습니다</span>
+                        </div>
                         <% } %>
-    </div>
 </div>
 
 <style>
-    .recent-posts-section {
-        margin-top: 6rem;
-        padding-top: 4rem;
+    .post-nav-section {
+        margin-top: 4rem;
         border-top: 1px solid #f1f5f9;
         max-width: 850px;
         margin-left: auto;
         margin-right: auto;
     }
 
-    .recent-posts-section .section-title {
-        font-size: 1.4rem;
-        font-weight: 800;
-        color: var(--color-text);
-        margin-bottom: 2rem;
-        text-align: center;
-        letter-spacing: -0.02em;
-    }
-
-    .recent-posts-list {
-        background: white;
-        border-radius: 20px;
-        overflow: hidden;
-        border: 1px solid #f1f5f9;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-    }
-
-    .recent-post-item {
+    .post-nav-item {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        padding: 1.5rem 2rem;
-        text-decoration: none;
-        transition: all 0.2s ease;
+        gap: 1.5rem;
+        padding: 1.4rem 2rem;
         border-bottom: 1px solid #f1f5f9;
+        text-decoration: none;
+        transition: background 0.2s ease;
+        background: white;
     }
 
-    .recent-post-item:last-child {
-        border-bottom: none;
+    .post-nav-item:first-child {
+        border-top: 1px solid #f1f5f9;
     }
 
-    .recent-post-item:hover {
-        background-color: #f8fafc;
+    a.post-nav-item:hover {
+        background: #f8fafc;
     }
 
-    .recent-post-item.current {
-        background-color: #f0f7ff;
-        pointer-events: none;
+    a.post-nav-item:hover .post-nav-title {
+        color: var(--color-primary);
     }
 
-    .post-info {
+    .post-nav-direction {
         display: flex;
         flex-direction: column;
-        gap: 6px;
-        flex: 1;
-        margin-right: 20px;
+        align-items: center;
+        gap: 4px;
+        min-width: 52px;
+        color: var(--color-primary);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        opacity: 0.75;
     }
 
-    .post-title {
-        font-size: 1.05rem;
+    .post-nav-direction i {
+        font-size: 0.85rem;
+    }
+
+    .post-nav-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .post-nav-title {
+        font-size: 1rem;
         font-weight: 600;
         color: #334155;
-        line-height: 1.4;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         transition: color 0.2s ease;
     }
 
-    .recent-post-item:hover .post-title {
-        color: var(--color-primary);
-    }
-
-    .recent-post-item.current .post-title {
-        color: var(--color-primary);
-    }
-
-    .post-date {
-        font-size: 0.85rem;
+    .post-nav-date {
+        font-size: 0.83rem;
         color: #94a3b8;
     }
 
-    .current-label {
-        font-size: 0.75rem;
-        font-weight: 700;
-        background: var(--color-primary);
-        color: white;
-        padding: 4px 10px;
-        border-radius: 50px;
-        flex-shrink: 0;
+    .post-nav-empty {
+        cursor: default;
     }
 
-    .arrow-icon {
+    .post-nav-none {
+        font-size: 0.95rem;
         color: #cbd5e1;
-        font-size: 0.9rem;
-        transition: transform 0.2s ease, color 0.2s ease;
-    }
-
-    .recent-post-item:hover .arrow-icon {
-        color: var(--color-primary);
-        transform: translateX(4px);
-    }
-
-    .no-posts {
-        padding: 4rem;
-        text-align: center;
-        color: #94a3b8;
-        font-size: 1rem;
     }
 
     @media (max-width: 768px) {
-        .recent-posts-section {
-            margin-top: 4rem;
-            padding-top: 2rem;
+        .post-nav-item {
+            padding: 1.2rem 1.25rem;
+            gap: 1rem;
         }
 
-        .recent-post-item {
-            padding: 1.25rem 1.5rem;
-        }
-
-        .post-title {
-            font-size: 0.95rem;
-        }
-
-        .post-date {
-            font-size: 0.8rem;
+        .post-nav-title {
+            font-size: 0.92rem;
         }
     }
 </style>

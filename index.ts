@@ -557,9 +557,12 @@ app.get('/word/sermons/:id', async (req, res) => {
     const sermon = await getItem('sermons', req.params.id);
     if (!sermon) return res.status(404).send('Sermon not found');
 
-    // Fetch recent sermons for bottom list
+    // Fetch all sermons sorted by date desc and find prev/next
     const allSermons = await getCollection('sermons');
-    const recentSermons = allSermons.slice(0, 10);
+    allSermons.sort((a, b) => (a.date < b.date ? 1 : -1));
+    const idx = allSermons.findIndex((s: any) => s.id === req.params.id);
+    const prevItem = idx < allSermons.length - 1 ? allSermons[idx + 1] : null;
+    const nextItem = idx > 0 ? allSermons[idx - 1] : null;
 
     // OG Data
     const title = (sermon as any).title;
@@ -571,7 +574,8 @@ app.get('/word/sermons/:id', async (req, res) => {
         title: title + ' - 정배교회',
         page: 'word-sermons',
         sermon,
-        recentItems: recentSermons,
+        prevItem,
+        nextItem,
         ogTitle: title,
         ogDescription: `${(sermon as any).date} | ${(sermon as any).preacher}`,
         ogImage: ogImage,
@@ -604,9 +608,12 @@ app.get('/word/meditation/:id', async (req, res) => {
     const meditation = await getItem('meditations', req.params.id);
     if (!meditation) return res.status(404).send('Meditation not found');
 
-    // Fetch recent meditations for bottom list
+    // Find prev/next meditations
     const allMeditations = await getCollection('meditations');
-    const recentMeditations = allMeditations.slice(0, 10);
+    allMeditations.sort((a, b) => (a.date < b.date ? 1 : -1));
+    const idx = allMeditations.findIndex((m: any) => m.id === req.params.id);
+    const prevItem = idx < allMeditations.length - 1 ? allMeditations[idx + 1] : null;
+    const nextItem = idx > 0 ? allMeditations[idx - 1] : null;
 
     const title = (meditation as any).title;
 
@@ -614,7 +621,8 @@ app.get('/word/meditation/:id', async (req, res) => {
         title: title + ' - 정배교회',
         page: 'word-meditation',
         meditation,
-        recentItems: recentMeditations,
+        prevItem,
+        nextItem,
         ogTitle: title,
         ogDescription: `${(meditation as any).date} 새벽묵상`,
         ogUrl: `https://jungbae-church.vercel.app/word/meditation/${req.params.id}`
@@ -629,7 +637,10 @@ app.get('/word/bible-study/:id', async (req, res) => {
     if (!study) return res.status(404).send('Bible Study not found');
 
     const allStudies = await getCollection('bibleStudies');
-    const recentItems = allStudies.slice(0, 10);
+    allStudies.sort((a, b) => (a.date < b.date ? 1 : -1));
+    const idx = allStudies.findIndex((s: any) => s.id === req.params.id);
+    const prevItem = idx < allStudies.length - 1 ? allStudies[idx + 1] : null;
+    const nextItem = idx > 0 ? allStudies[idx - 1] : null;
 
     const title = (study as any).title;
 
@@ -637,7 +648,8 @@ app.get('/word/bible-study/:id', async (req, res) => {
         title: title + ' - 정배교회',
         page: 'word-bible-study',
         study,
-        recentItems,
+        prevItem,
+        nextItem,
         ogTitle: title,
         ogDescription: `${(study as any).date} 수요 성경공부`,
         ogUrl: `https://jungbae-church.vercel.app/word/bible-study/${req.params.id}`
@@ -669,15 +681,19 @@ app.get('/word/diary/:id', async (req, res) => {
     const diary = await getItem('diaries', req.params.id);
     if (!diary) return res.status(404).send('Diary not found');
 
-    // Fetch recent diaries
+    // Find prev/next diaries
     const allDiaries = await getCollection('diaries');
-    const recentDiaries = allDiaries.slice(0, 10);
+    allDiaries.sort((a, b) => (a.date < b.date ? 1 : -1));
+    const idx = allDiaries.findIndex((d: any) => d.id === req.params.id);
+    const prevItem = idx < allDiaries.length - 1 ? allDiaries[idx + 1] : null;
+    const nextItem = idx > 0 ? allDiaries[idx - 1] : null;
 
     res.render('word/diary-view', {
         title: (diary as any).title + ' - 정배교회',
         page: 'word-diary',
         diary,
-        recentItems: recentDiaries
+        prevItem,
+        nextItem
     });
 });
 

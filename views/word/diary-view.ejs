@@ -118,8 +118,7 @@
                 </div>
             </div>
 
-            <%- include('../partials/recent-posts-table', { recentItems, currentId: diary.id, basePath: 'word/diary' })
-                %>
+            <%- include('../partials/recent-posts-table', { prevItem, nextItem, basePath: 'word/diary' }) %>
 
                 <!-- Related Action -->
                 <div class="related-info-section" data-aos="fade-up" style="margin-top: 5rem;">
