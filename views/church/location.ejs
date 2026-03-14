@@ -27,7 +27,11 @@
         top: calc(var(--header-height) + 30px);
       }
 
+      .map-wrapper img,
       .map-wrapper iframe {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
         border-radius: 30px;
       }
 
@@ -186,10 +190,7 @@
         <!-- Map Section -->
         <div class="map-section" data-aos="fade-right">
           <div class="map-wrapper">
-            <iframe width="100%" height="100%" style="border:0;" loading="lazy" allowfullscreen
-              referrerpolicy="no-referrer-when-downgrade"
-              src="https://www.google.com/maps?q=경기도+양평군+서종면+중미산로+773&output=embed">
-            </iframe>
+            <img src="/images/map.png" alt="정배교회 오시는 길 안내도" />
           </div>
         </div>
 
@@ -221,39 +222,7 @@
             </div>
           </div>
 
-          <!-- Transport Card -->
-          <div class="location-card" data-aos="fade-left" data-aos-delay="400">
-            <div class="card-icon"><i class="fas fa-directions"></i></div>
-            <div class="card-title">교통편 안내</div>
 
-            <div class="transport-item">
-              <div class="transport-icon"><i class="fas fa-bus"></i></div>
-              <div class="transport-content">
-                <h5>버스 이용 시</h5>
-                <p>지하철 경의중앙선 웅수역 하차 후 8-8번 버스 이용, '정배리마을회관' 정류장에서 하차하시면 됩니다.</p>
-              </div>
-            </div>
-
-            <div class="transport-item">
-              <div class="transport-icon"><i class="fas fa-car"></i></div>
-              <div class="transport-content">
-                <h5>자가용 이용 시</h5>
-                <p>서종 IC에서 중미산 방면으로 약 15분 거리입니다. 교회 내 넓은 주차 공간이 마련되어 있습니다.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Simple Contact Card -->
-          <div class="location-card" data-aos="fade-left" data-aos-delay="600"
-            style="padding: 1.8rem 2.5rem; background: var(--color-primary); color: white; border: none;">
-            <div style="display: flex; align-items: center; gap: 15px;">
-              <i class="fas fa-phone-alt" style="font-size: 1.2rem; opacity: 0.8;"></i>
-              <div>
-                <div style="font-size: 0.8rem; opacity: 0.7; margin-bottom: 2px;">안내 전화</div>
-                <div style="font-size: 1.2rem; font-weight: 700;">031-772-2316</div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
