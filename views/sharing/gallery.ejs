@@ -144,7 +144,7 @@
                   data-images="<%= JSON.stringify(images) %>" onclick="openLightboxFromData(this)">
                   <div class="gallery-thumb-wrapper">
                     <% if (images.length> 0) { %>
-                      <img src="<%= images[0] %>" alt="<%= item.title %>">
+                      <img src="<%= images[0] %>" alt="<%= item.title %>" loading="lazy">
                       <% if (images.length> 1) { %>
                         <div class="image-count-badge">
                           <i class="fas fa-images"></i> +<%= images.length - 1 %>

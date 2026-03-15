@@ -753,20 +753,7 @@ app.get('/sharing/bulletin', async (req, res) => {
         totalBulletins: allBulletins.length
     });
 });
-app.get('/sharing/bulletin/:id', async (req, res) => {
-    const bulletin = await getItem('bulletins', req.params.id);
-    if (!bulletin) return res.status(404).send('Bulletin not found');
 
-    const allBulletins = await getCollection('bulletins');
-    const recentItems = allBulletins.slice(0, 10);
-
-    res.render('sharing/bulletin-view', {
-        title: (bulletin as any).title + ' - 정배교회',
-        page: 'sharing-bulletin',
-        bulletin,
-        recentItems
-    });
-});
 app.get('/sharing/gallery', async (req, res) => {
     let allGalleryItems = await getCollection('galleryItems');
 
@@ -791,6 +778,23 @@ app.get('/sharing/gallery', async (req, res) => {
 });
 
 // Admin Routes
+
+// WYSIWYG Image Upload endpoint
+app.post('/admin/upload-image', upload.single('image'), async (req, res) => {
+    if (!(req.session as any).user?.isAdmin) return res.status(403).json({ error: 'Unauthorized' });
+    
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'No image uploaded' });
+        }
+        console.log(`Uploading summernote image: ${req.file.originalname}`);
+        const publicUrl = await uploadToFirebase(req.file);
+        res.json({ url: publicUrl });
+    } catch (err) {
+        console.error('Summernote instance upload error:', err);
+        res.status(500).json({ error: 'Failed to upload image' });
+    }
+});
 
 // Create Page
 app.get('/admin/write/:type', (req, res) => {
