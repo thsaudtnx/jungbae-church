@@ -87,7 +87,37 @@
                                         }
                                     }
 
-                                    async function handleFileSelect(input, fieldName) {
+                                    // Helper function for Direct Upload to Firebase
+                                    async function uploadFileDirectly(file) {
+                                        try {
+                                            const response = await fetch('/api/get-signed-url', {
+                                                method: 'POST',
+                                                headers: { 'Content-Type': 'application/json' },
+                                                body: JSON.stringify({
+                                                    fileName: file.name,
+                                                    contentType: file.type
+                                                })
+                                            });
+
+                                            if (!response.ok) throw new Error('Signed URL 발급 실패');
+                                            const { uploadUrl, publicUrl } = await response.json();
+
+                                            // PUT to Firebase Storage
+                                            const uploadResponse = await fetch(uploadUrl, {
+                                                method: 'PUT',
+                                                headers: { 'Content-Type': file.type },
+                                                body: file
+                                            });
+
+                                            if (!uploadResponse.ok) throw new Error('Firebase 업로드 실패');
+                                            return publicUrl;
+                                        } catch (error) {
+                                            console.error('Direct upload error:', error);
+                                            throw error;
+                                        }
+                                    }
+
+                                    function handleFileSelect(input, fieldName) {
                                         const container = document.getElementById('preview-container-' + fieldName);
                                         const placeholder = document.getElementById('upload-placeholder-' + fieldName);
                                         const previewList = document.getElementById('file-previews-' + fieldName);
@@ -100,37 +130,17 @@
                                                 useWebWorker: true
                                             };
 
-                                            // Create new DataTransfer to hold compressed files
-                                            const dataTransfer = new DataTransfer();
-
                                             placeholder.style.display = 'none';
                                             container.style.display = 'block';
                                             previewList.innerHTML = '';
 
-                                            // Process files
+                                            // Process previews
                                             for (let file of input.files) {
-                                                let fileToUpload = file;
-
-                                                if (file.type.startsWith('image/')) {
-                                                    try {
-                                                        // Compress image
-                                                        const compressedFile = await imageCompression(file, options);
-                                                        // Create a new File object with correct name and type
-                                                        fileToUpload = new File([compressedFile], file.name, { type: file.type });
-                                                        console.log(`Compressed: ${file.size / 1024 / 1024}MB -> ${fileToUpload.size / 1024 / 1024}MB`);
-                                                    } catch (error) {
-                                                        console.error('Compression failed:', error);
-                                                    }
-                                                }
-
-                                                dataTransfer.items.add(fileToUpload);
-
-                                                // Preview Logic
                                                 const itemWrapper = document.createElement('div');
                                                 itemWrapper.style.width = '120px';
                                                 itemWrapper.style.textAlign = 'center';
 
-                                                if (fileToUpload.type.startsWith('image/')) {
+                                                if (file.type.startsWith('image/')) {
                                                     const reader = new FileReader();
                                                     const img = document.createElement('img');
                                                     img.style.width = '120px';
@@ -143,7 +153,7 @@
                                                     reader.onload = function (e) {
                                                         img.src = e.target.result;
                                                     }
-                                                    reader.readAsDataURL(fileToUpload);
+                                                    reader.readAsDataURL(file);
                                                     itemWrapper.appendChild(img);
                                                 } else {
                                                     const icon = document.createElement('i');
@@ -156,16 +166,13 @@
                                                     name.style.color = '#333';
                                                     name.style.marginTop = '0.5rem';
                                                     name.style.wordBreak = 'break-all';
-                                                    name.textContent = fileToUpload.name;
+                                                    name.textContent = file.name;
 
                                                     itemWrapper.appendChild(icon);
                                                     itemWrapper.appendChild(name);
                                                 }
                                                 previewList.appendChild(itemWrapper);
                                             }
-
-                                            // Update input files with compressed ones
-                                            input.files = dataTransfer.files;
                                         }
                                     }
                                 </script>
@@ -204,7 +211,7 @@
                                                                             style="font-size: 2.5rem; color: var(--color-primary);"></i>
                                                                         <p
                                                                             style="font-size: 0.8rem; color: #333; margin-top: 0.5rem; word-break: break-all;">
-                                                                            <%= fileUrl.split('/').pop() %>
+                                                                            <%= fileUrl.split('/').pop().split('-').slice(1).join('-') || fileUrl.split('/').pop() %>
                                                                         </p>
                                                                     </div>
                                                                     <% } }); } %>
@@ -241,6 +248,15 @@
                                                         style="display: none;" <%=field.multiple ? 'multiple' : '' %>
                                                     onchange="handleFileSelect(this, '<%= field.name %>')"
                                                         onclick="event.stopPropagation()">
+                                                    <!-- These hidden inputs will hold the final URLs -->
+                                                    <div id="hidden-urls-<%= field.name %>">
+                                                        <% if (item && item[field.name]) { 
+                                                            const existingFiles = Array.isArray(item[field.name]) ? item[field.name] : [item[field.name]];
+                                                            existingFiles.forEach(url => { %>
+                                                                <input type="hidden" name="<%= field.name %>" value="<%= url %>">
+                                                            <% });
+                                                        } %>
+                                                    </div>
                                                 </div>
 
                                                 <% } else { %>
@@ -260,13 +276,21 @@
                                                     <i class="fas fa-arrow-left"></i> 취소 및 목록으로
                                                 </a>
                                                 <% } %>
-                                                    <button type="submit" class="btn btn-primary"
+                                                    <button type="submit" id="submit-btn" class="btn btn-primary"
                                                         style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 2.5rem; width: <%= layout === 'iframe' ? '100%' : 'auto' %>; justify-content: center;">
                                                         <i class="fas fa-check"></i>
-                                                        <%= action==='create' ? '내용 등록' : '수정 완료' %>
+                                                        <span id="btn-text text-white"><%= action==='create' ? '내용 등록' : '수정 완료' %></span>
                                                     </button>
                                         </div>
                     </form>
+                </div>
+
+                <!-- Upload Progress Overlay -->
+                <div id="upload-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+                    <div class="spinner-border text-primary" role="status" style="width: 3.5rem; height: 3.5rem; margin-bottom: 1.5rem; border-width: 0.25em;">
+                    </div>
+                    <h3 id="upload-status-text" style="font-weight: 700; color: #333; margin-bottom: 0.5rem;">파일을 업로드 중입니다...</h3>
+                    <p style="color: #666; font-size: 1.1rem;">대용량 파일의 경우 수 분이 소요될 수 있습니다. 창을 닫지 마세요.</p>
                 </div>
 
                 <% if (layout !=='iframe' ) { %>
@@ -275,6 +299,71 @@
                             <script src="/js/main.js"></script>
                             <script>
                                 $(document).ready(function () {
+                                    const $form = $('.admin-form-container');
+                                    const $btn = $('#submit-btn');
+                                    const $overlay = $('#upload-overlay');
+                                    const $statusText = $('#upload-status-text');
+
+                                    $form.on('submit', async function(e) {
+                                        e.preventDefault();
+                                        
+                                        $btn.prop('disabled', true).css('opacity', '0.7');
+                                        $overlay.css('display', 'flex');
+                                        
+                                        try {
+                                            const fileFields = <%- JSON.stringify(fields.filter(f => f.type === 'file')) %>;
+                                            
+                                            for (const field of fileFields) {
+                                                const input = document.getElementById(field.name);
+                                                const hiddenContainer = document.getElementById('hidden-urls-' + field.name);
+                                                
+                                                if (input.files && input.files.length > 0) {
+                                                    // If new files selected and NOT multiple, clear previous hidden URLs
+                                                    if (!field.multiple) {
+                                                        hiddenContainer.innerHTML = '';
+                                                    }
+                                                    
+                                                    for (let i = 0; i < input.files.length; i++) {
+                                                        const file = input.files[i];
+                                                        $statusText.text(`${field.label} 업로드 중 (${i+1}/${input.files.length})...`);
+                                                        
+                                                        let fileToUpload = file;
+                                                        // Compress if it's a large image
+                                                        if (file.type.startsWith('image/') && file.size > 1024 * 1024) {
+                                                            try {
+                                                                const options = { maxSizeMB: 1, maxWidthOrHeight: 1200, useWebWorker: true };
+                                                                const compressedFile = await imageCompression(file, options);
+                                                                fileToUpload = new File([compressedFile], file.name, { type: file.type });
+                                                            } catch (err) { console.error('Compression error:', err); }
+                                                        }
+
+                                                        const publicUrl = await uploadFileDirectly(fileToUpload);
+                                                        
+                                                        const hiddenInput = document.createElement('input');
+                                                        hiddenInput.type = 'hidden';
+                                                        hiddenInput.name = field.name;
+                                                        hiddenInput.value = publicUrl;
+                                                        hiddenContainer.appendChild(hiddenInput);
+                                                    }
+                                                    
+                                                    // Disable the file input so it's not submitted as a file (avoiding 413)
+                                                    input.disabled = true;
+                                                }
+                                            }
+
+                                            $statusText.text('저장 중입니다...');
+                                            
+                                            // Final form submission
+                                            this.submit();
+                                            
+                                        } catch (error) {
+                                            console.error('Submit error:', error);
+                                            alert('업로드 중 오류가 발생했습니다: ' + error.message);
+                                            $btn.prop('disabled', false).css('opacity', '1');
+                                            $overlay.css('display', 'none');
+                                        }
+                                    });
+
                                     $('textarea').summernote({
                                         placeholder: '내용을 입력해주세요...',
                                         tabsize: 2,
@@ -290,29 +379,30 @@
                                             ['view', ['fullscreen', 'codeview', 'help']]
                                         ],
                                         callbacks: {
-                                            onImageUpload: function(files) {
-                                                const data = new FormData();
-                                                data.append("image", files[0]);
+                                            onImageUpload: async function(files) {
                                                 const $editor = $(this);
-                                                $.ajax({
-                                                    url: '/admin/upload-image',
-                                                    cache: false,
-                                                    contentType: false,
-                                                    processData: false,
-                                                    data: data,
-                                                    type: "POST",
-                                                    success: function(response) {
-                                                        if (response.url) {
-                                                            $editor.summernote('insertImage', response.url);
-                                                        } else {
-                                                            alert('이미지 업로드에 실패했습니다.');
-                                                        }
-                                                    },
-                                                    error: function(jqXHR, textStatus, errorThrown) {
-                                                        console.error(textStatus + " " + errorThrown);
-                                                        alert('이미지 업로드 중 오류가 발생했습니다.');
+                                                $overlay.css('display', 'flex');
+                                                $statusText.text('에디터 이미지를 업로드 중입니다...');
+
+                                                try {
+                                                    const file = files[0];
+                                                    let fileToUpload = file;
+                                                    
+                                                    // Image Compression for editor
+                                                    if (file.size > 1024 * 1024) {
+                                                        const options = { maxSizeMB: 1, maxWidthOrHeight: 1200, useWebWorker: true };
+                                                        const compressedFile = await imageCompression(file, options);
+                                                        fileToUpload = new File([compressedFile], file.name, { type: file.type });
                                                     }
-                                                });
+
+                                                    const publicUrl = await uploadFileDirectly(fileToUpload);
+                                                    $editor.summernote('insertImage', publicUrl);
+                                                } catch (err) {
+                                                    console.error('Summernote upload error:', err);
+                                                    alert('이미지 업로드 실패');
+                                                } finally {
+                                                    $overlay.css('display', 'none');
+                                                }
                                             }
                                         }
                                     });

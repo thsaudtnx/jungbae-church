@@ -15,8 +15,8 @@ const PORT = process.env.PORT || 3000;
 app.set('trust proxy', 1);
 
 // Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Setup Firestore Session Store
 app.use(session({
@@ -70,7 +70,29 @@ const upload = multer({
     }
 });
 
-// Helper function to upload to Firebase Storage
+// Helper function to generate a signed URL for client-side upload
+async function getSignedUploadUrl(fileName: string, contentType: string): Promise<{ uploadUrl: string, publicUrl: string }> {
+    if (!bucket) {
+        throw new Error('Firebase Storage bucket not initialized');
+    }
+
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const destination = `uploads/${uniqueSuffix}-${fileName}`;
+    const file = bucket.file(destination);
+
+    // Create a signed URL for PUT request
+    const [uploadUrl] = await file.getSignedUrl({
+        version: 'v4',
+        action: 'write',
+        expires: Date.now() + 15 * 60 * 1000, // 15 minutes
+        contentType: contentType,
+    });
+
+    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${destination}`;
+    return { uploadUrl, publicUrl };
+}
+
+// Helper function to upload to Firebase Storage (legacy/small files)
 async function uploadToFirebase(file: any): Promise<string> {
     if (!bucket) {
         throw new Error('Firebase Storage bucket not initialized');
@@ -90,7 +112,7 @@ async function uploadToFirebase(file: any): Promise<string> {
     return new Promise((resolve, reject) => {
         blobStream.on('error', (error: any) => reject(error));
         blobStream.on('finish', async () => {
-            // Make the file public
+            // Make the file public (optional, depending on bucket rules)
             await blob.makePublic();
             // Construct the public URL
             const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
@@ -793,6 +815,24 @@ app.post('/admin/upload-image', upload.single('image'), async (req, res) => {
     } catch (err) {
         console.error('Summernote instance upload error:', err);
         res.status(500).json({ error: 'Failed to upload image' });
+    }
+});
+
+// API to get signed URL for direct client upload
+app.post('/api/get-signed-url', async (req, res) => {
+    if (!(req.session as any).user?.isAdmin) return res.status(403).json({ error: 'Unauthorized' });
+    
+    const { fileName, contentType } = req.body;
+    if (!fileName || !contentType) {
+        return res.status(400).json({ error: 'Missing fileName or contentType' });
+    }
+
+    try {
+        const result = await getSignedUploadUrl(fileName, contentType);
+        res.json(result);
+    } catch (err) {
+        console.error('Error generating signed URL:', err);
+        res.status(500).json({ error: 'Failed to generate upload URL' });
     }
 });
 
