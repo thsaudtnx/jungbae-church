@@ -170,16 +170,15 @@ async function getCollection(collectionName: string) {
 
         // Sort by 'order' ASC if exists, then by 'date' DESC
         items.sort((a, b) => {
-            const orderA = a.order !== undefined ? Number(a.order) : Infinity;
-            const orderB = b.order !== undefined ? Number(b.order) : Infinity;
+            const orderA = a.order !== undefined && a.order !== '' ? Number(a.order) : Infinity;
+            const orderB = b.order !== undefined && b.order !== '' ? Number(b.order) : Infinity;
 
             if (orderA !== orderB) {
                 return orderA - orderB;
             }
-            if (a.date && b.date) {
-                return a.date < b.date ? 1 : -1;
-            }
-            return 0;
+            const dateA = a.date || '';
+            const dateB = b.date || '';
+            return dateA < dateB ? 1 : (dateA > dateB ? -1 : 0);
         });
 
         return items;
