@@ -53,12 +53,16 @@
 
 body {
   font-family: var(--font-main);
+  font-size: 1.0625rem; /* 17px base size for better readability */
   color: var(--color-text);
-  line-height: 1.75;
-  /* Increased for readability */
+  line-height: 1.6; /* Optimal line height for Korean text */
   background-color: var(--color-bg);
   -webkit-font-smoothing: antialiased;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+}
+
+p {
+  margin-bottom: 1.25rem;
 }
 
 a {
@@ -384,16 +388,16 @@ footer {
   }
 
   h1 {
-    font-size: 1.5rem;
+    font-size: 2rem;
     letter-spacing: -0.5px;
   }
 
   h2 {
-    font-size: 1.3rem;
+    font-size: 1.6rem;
   }
 
   h3 {
-    font-size: 1.05rem;
+    font-size: 1.25rem;
   }
 
   .hero-content h1 {
