@@ -986,10 +986,10 @@ app.post('/admin/update/:type', upload.any(), async (req, res) => {
 
         // Redirect logic
         const urlMap: any = {
-            sermons: '/word/sermons',
-            meditations: '/word/meditation',
-            diaries: '/word/diary',
-            notices: '/sharing/notices',
+            sermons: '/word/sermons/:id',
+            meditations: '/word/meditation/:id',
+            diaries: '/word/diary/:id',
+            notices: '/sharing/notices/:id',
             bulletins: '/sharing/bulletin',
             galleryItems: '/sharing/gallery',
             philosophies: '/church/philosophy',
@@ -997,14 +997,18 @@ app.post('/admin/update/:type', upload.any(), async (req, res) => {
             worshipServices: '/church/worship',
             worshipGuides: '/church/worship',
             histories: '/church/history',
-            bibleStudies: '/word/bible-study'
+            bibleStudies: '/word/bible-study/:id'
         };
-        const listUrl = urlMap[type] || '/';
+
+        let targetUrl = urlMap[type] || '/';
+        if (targetUrl.includes(':id')) {
+            targetUrl = targetUrl.replace(':id', id);
+        }
 
         if (req.query.layout === 'iframe') {
-            res.send('<script>window.parent.location.reload();</script>');
+            res.send(`<script>window.parent.location.href = "${targetUrl}";</script>`);
         } else {
-            res.redirect(listUrl);
+            res.redirect(targetUrl);
         }
     } catch (err) {
         console.error(`Update error in ${type}:`, err);
