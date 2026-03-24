@@ -3,68 +3,208 @@
 
 <head>
   <%- include("../partials/head") %>
+    <style>
+      .board-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 2rem;
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: var(--shadow-soft);
+        border: 1px solid var(--glass-border);
+      }
+
+      .board-table th {
+        background: #f8f9fa;
+        padding: 1.5rem 1.2rem;
+        font-weight: 700;
+        color: var(--color-text);
+        border-bottom: 2px solid #edf2f7;
+        text-align: left;
+      }
+
+      .board-table td {
+        padding: 1.5rem 1.2rem;
+        border-bottom: 1px solid #edf2f7;
+        vertical-align: middle;
+      }
+
+      .board-table tr:hover {
+        background-color: #fcfdfe;
+      }
+
+      .date-badge {
+        font-size: 0.9rem;
+        color: var(--color-text-light);
+        background: var(--color-bg-alt);
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-weight: 500;
+      }
+
+      .board-title {
+        font-weight: 700;
+        color: var(--color-primary);
+        font-size: 1.15rem;
+        display: block;
+        margin-bottom: 6px;
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      .board-title:hover {
+        color: #002d5b;
+      }
+
+      .board-meta {
+        font-size: 0.95rem;
+        color: #64748b;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.5;
+      }
+
+      @media (max-width: 768px) {
+
+        .board-table th:nth-child(2),
+        .board-table td:nth-child(2) {
+          display: none;
+        }
+
+        .board-title {
+          font-size: 1rem;
+        }
+
+        .board-meta {
+          font-size: 0.85rem;
+        }
+      }
+    </style>
 </head>
 
 <body>
   <%- include("../partials/header") %>
-    <div class="container" style="padding-top: 100px; padding-bottom: 50px;">
-      <h1 class="text-center">공지사항</h1>
-      <div class="section-title"></div>
+    <section class="page-header" data-aos="fade">
+      <div class="container">
+        <h1 data-aos="fade-up" data-aos-delay="100">공지 사항</h1>
+        <ul class="breadcrumb" data-aos="fade-up" data-aos-delay="300">
+          <li><a href="/">홈</a></li>
+          <li>나눔</li>
+          <li class="active">공지 사항</li>
+        </ul>
+      </div>
+    </section>
 
+    <div class="container" style="padding-bottom: var(--spacing-xl);">
       <% if (locals.user && user.isAdmin) { %>
-        <div style="text-align: right; margin-bottom: 1rem;">
-          <a href="/admin/write/notices" class="btn btn-primary">공지 등록</a>
+        <div style="text-align: right; margin-bottom: 2.5rem;">
+          <a href="#" onclick="openAdminModal('/admin/write/notices', '공지 등록')" class="btn btn-primary">공지 등록</a>
         </div>
         <% } %>
 
-          <div style="max-width: 1000px; margin: 0 auto; overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+          <div class="board-table-wrapper" data-aos="fade-up">
+            <table class="board-table">
               <thead>
-                <tr style="border-bottom: 2px solid var(--color-text);">
-                  <th style="padding: 1rem; width: 60px;">No.</th>
-                  <th style="padding: 1rem;">제목</th>
-                  <th style="padding: 1rem; width: 120px;">날짜</th>
-                  <th style="padding: 1rem; width: 80px;">조회</th>
+                <tr>
+                  <th style="width: 70%;">공지 제목</th>
+                  <th style="width: 20%;">날짜</th>
                   <% if (locals.user && user.isAdmin) { %>
-                    <th style="padding: 1rem; width: 120px;">관리</th>
+                    <th style="width: 10%; text-align: center;">관리</th>
                     <% } %>
                 </tr>
               </thead>
               <tbody>
-                <% if (locals.notices) { %>
-                  <% notices.forEach(function(item, index) { %>
-                    <tr style="border-bottom: 1px solid #eee;">
-                      <td style="padding: 1rem; text-align: center; color: #999;">
-                        <%= notices.length - index %>
-                      </td>
-                      <td style="padding: 1rem;"><a href="#" style="font-weight: 500;">
+                <% if (locals.notices && notices.length> 0) { %>
+                  <% notices.forEach(function(item) { %>
+                    <tr>
+                      <td>
+                        <a href="/sharing/notices/<%= item.id %>" class="board-title">
                           <%= item.title %>
-                        </a></td>
-                      <td style="padding: 1rem; text-align: center; color: #666;">
-                        <%= item.date %>
+                        </a>
+                        <% if (item.content) { %>
+                          <div class="board-meta">
+                            <%= item.content.replace(/<[^>]*>?/gm, '').substring(0, 120) %>...
+                          </div>
+                          <% } %>
                       </td>
-                      <td style="padding: 1rem; text-align: center; color: #666;">
-                        <%= item.views %>
+                      <td>
+                        <span class="date-badge">
+                          <i class="far fa-calendar-alt" style="margin-right: 5px; opacity: 0.7;"></i>
+                          <%= item.date %>
+                        </span>
                       </td>
                       <% if (locals.user && user.isAdmin) { %>
-                        <td style="padding: 1rem; text-align: center;">
-                          <a href="/admin/edit/notices/<%= item.id %>"
-                            style="color: var(--color-primary); margin-right: 5px;">수정</a>
-                          <a href="/admin/delete/notices/<%= item.id %>" onclick="return confirm('정말 삭제하시겠습니까?')"
-                            style="color: red;">삭제</a>
+                        <td style="text-align: center;">
+                          <div style="display: flex; gap: 12px; justify-content: center;">
+                            <a href="#" onclick="openAdminModal('/admin/edit/notices/<%= item.id %>', '공지 수정')"
+                              style="color: var(--color-secondary); font-size: 1.1rem;"><i class="fas fa-edit"></i></a>
+                            <a href="/admin/delete/notices/<%= item.id %>" onclick="return confirm('정말 삭제하시겠습니까?')"
+                              style="color: #e74c3c; font-size: 1.1rem;"><i class="fas fa-trash"></i></a>
+                          </div>
                         </td>
                         <% } %>
                     </tr>
                     <% }); %>
                       <% } else { %>
                         <tr>
-                          <td colspan="4" class="text-center" style="padding: 2rem;">등록된 공지가 없습니다.</td>
+                          <td colspan="<%= (locals.user && user.isAdmin) ? 3 : 2 %>" class="text-center"
+                            style="padding: 6rem 3rem; color: #94a3b8;">
+                            <i class="far fa-bell-slash"
+                              style="font-size: 3rem; margin-bottom: 1.5rem; display: block; opacity: 0.3;"></i>
+                            등록된 공지가 없습니다.
+                          </td>
                         </tr>
                         <% } %>
               </tbody>
             </table>
           </div>
+
+          <% if (locals.totalPages> 1) { %>
+            <div class="premium-pagination">
+              <% if (currentPage> 1) { %>
+                <a href="/sharing/notices?page=<%= currentPage - 1 %>" class="nav-btn">
+                  <i class="fas fa-chevron-left"></i>
+                </a>
+                <% } %>
+
+                  <% for (let i=1; i <=totalPages; i++) { %>
+                    <% if (i===currentPage) { %>
+                      <span class="active">
+                        <%= i %>
+                      </span>
+                      <% } else { %>
+                        <% if (i===1 || i===totalPages || (i>= currentPage - 2 && i <= currentPage + 2)) { %>
+                            <a href="/sharing/notices?page=<%= i %>">
+                              <%= i %>
+                            </a>
+                            <% } else if (i===currentPage - 3 || i===currentPage + 3) { %>
+                              <span style="border:none; box-shadow:none; background:none; min-width:20px;">...</span>
+                              <% } %>
+                                <% } %>
+                                  <% } %>
+
+                                    <% if (currentPage < totalPages) { %>
+                                      <a href="/sharing/notices?page=<%= currentPage + 1 %>" class="nav-btn">
+                                        <i class="fas fa-chevron-right"></i>
+                                      </a>
+                                      <% } %>
+            </div>
+            <% } %>
+
+              <!-- Related Action -->
+              <div class="related-info-section" data-aos="fade-up" style="margin-top: 5rem;">
+                <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 700;">다른 나눔 안내 보기</h4>
+                <div class="sharing-info-links">
+                  <a href="/sharing/bulletin" class="btn btn-outline">주보 안내</a>
+                  <a href="/sharing/gallery" class="btn btn-outline">교회 앨범</a>
+                </div>
+              </div>
     </div>
+
     <%- include("../partials/footer") %>
       <script src="/js/main.js"></script>
 </body>

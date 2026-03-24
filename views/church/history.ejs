@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <%- include('../partials/head') %>
+        <style>
+            .history-timeline {
+                position: relative;
+                max-width: 900px;
+                margin: 4rem auto;
+                padding: 2rem 0;
+            }
+
+            .history-timeline::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 50%;
+                width: 2px;
+                background: linear-gradient(to bottom, transparent, var(--color-primary), transparent);
+                transform: translateX(-50%);
+            }
+
+            .timeline-year {
+                position: relative;
+                text-align: center;
+                margin-bottom: 4rem;
+                z-index: 2;
+            }
+
+            .year-badge {
+                display: inline-block;
+                padding: 10px 30px;
+                background: var(--color-primary);
+                color: white;
+                border-radius: 50px;
+                font-size: 1.5rem;
+                font-weight: 800;
+                box-shadow: 0 4px 15px rgba(0, 69, 140, 0.3);
+            }
+
+            .timeline-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 3rem;
+                width: 100%;
+                position: relative;
+            }
+
+            .timeline-item:nth-child(even) {
+                flex-direction: row-reverse;
+            }
+
+            .timeline-content {
+                width: 45%;
+                padding: 2rem;
+                background: white;
+                border-radius: 20px;
+                box-shadow: var(--shadow-soft);
+                position: relative;
+                transition: transform 0.3s ease;
+                border: 1px solid var(--glass-border);
+            }
+
+            .timeline-content:hover {
+                transform: translateY(-5px);
+            }
+
+            .admin-actions {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                display: flex;
+                gap: 10px;
+                opacity: 0;
+                transition: opacity 0.2s;
+            }
+
+            .timeline-content:hover .admin-actions {
+                opacity: 1;
+            }
+
+            .admin-actions a {
+                color: #aaa;
+                font-size: 0.9rem;
+            }
+
+            .admin-actions a:hover {
+                color: var(--color-primary);
+            }
+
+            .timeline-dot {
+                position: absolute;
+                left: 50%;
+                top: 30px;
+                width: 16px;
+                height: 16px;
+                background: white;
+                border: 3px solid var(--color-primary);
+                border-radius: 50%;
+                transform: translateX(-50%);
+                z-index: 2;
+            }
+
+            .timeline-date {
+                display: block;
+                font-weight: 700;
+                color: var(--color-primary);
+                font-size: 1.1rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .timeline-text {
+                font-size: 1.05rem;
+                line-height: 1.7;
+                color: var(--color-text);
+            }
+
+            @media (max-width: 768px) {
+                .history-timeline::before {
+                    left: 20px;
+                }
+
+                .timeline-year {
+                    text-align: left;
+                    padding-left: 0;
+                }
+
+                .year-badge {
+                    font-size: 1.2rem;
+                    padding: 8px 20px;
+                }
+
+                .timeline-item,
+                .timeline-item:nth-child(even) {
+                    flex-direction: row;
+                    padding-left: 50px;
+                }
+
+                .timeline-content {
+                    width: 100%;
+                }
+
+                .timeline-dot {
+                    left: 20px;
+                    top: 25px;
+                }
+            }
+        </style>
+</head>
+
+<body>
+    <%- include('../partials/header') %>
+
+        <section class="page-header" data-aos="fade">
+            <div class="container">
+                <h1 data-aos="fade-up" data-aos-delay="100">교회 연혁</h1>
+                <ul class="breadcrumb" data-aos="fade-up" data-aos-delay="300">
+                    <li><a href="/">홈</a></li>
+                    <li>교회</li>
+                    <li class="active">교회 연혁</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="container" style="padding-bottom: var(--spacing-xl);">
+
+            <% if (locals.user && user.isAdmin) { %>
+                <div style="text-align: right; margin-bottom: 2rem;">
+                    <a href="#" onclick="openAdminModal('/admin/write/histories', '연혁 추가')" class="btn btn-primary">연혁
+                        추가</a>
+                </div>
+                <% } %>
+
+                    <div class="history-timeline">
+                        <% if (locals.yearRanges && yearRanges.length> 0) { %>
+                            <% yearRanges.forEach(function(range, rangeIndex) { %>
+                                <!-- Year Group -->
+                                <div class="timeline-year" data-aos="fade-up">
+                                    <span class="year-badge">
+                                        <%= range %>
+                                    </span>
+                                </div>
+
+                                <% groupedHistories[range].forEach(function(item, itemIndex) { %>
+                                    <div class="timeline-item"
+                                        data-aos="<%= (itemIndex + rangeIndex) % 2 === 0 ? 'fade-right' : 'fade-left' %>">
+                                        <div class="timeline-dot"></div>
+                                        <div class="timeline-content">
+                                            <% if (locals.user && user.isAdmin) { %>
+                                                <div class="admin-actions">
+                                                    <a href="#"
+                                                        onclick="openAdminModal('/admin/edit/histories/<%= item.id %>', '연혁 수정')">
+                                                        <i class="fas fa-edit"></i>
+                                                        </i=>
+                                                        <a href="/admin/delete/histories/<%= item.id %>"
+                                                            onclick="return confirm('정말 삭제하시겠습니까?')"
+                                                            style="color: #e74c3c;">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                </div>
+                                                <% } %>
+                                                    <span class="timeline-date">
+                                                        <%= item.date %>
+                                                    </span>
+                                                    <div class="timeline-text">
+                                                        <%- item.content %>
+                                                    </div>
+                                        </div>
+                                    </div>
+                                    <% }); %>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <div style="text-align: center; padding: 5rem 0; color: #aaa;">
+                                                    <i class="fas fa-history"
+                                                        style="font-size: 3rem; margin-bottom: 1.5rem; opacity: 0.3;"></i>
+                                                    <p>등록된 연혁이 없습니다.</p>
+                                                    <% if (locals.user && user.isAdmin) { %>
+                                                        <p style="margin-top: 1rem;">오른쪽 상단 '연혁 추가' 버튼을 눌러 연혁을 등록해주세요.
+                                                        </p>
+                                                        <% } %>
+                                                </div>
+                                                <% } %>
+                    </div>
+
+                    <!-- Related Action -->
+                    <div class="related-info-section" data-aos="fade-up">
+                        <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 교회 안내 보기
+                        </h4>
+                        <div class="church-info-links">
+                            <a href="/church/philosophy" class="btn btn-outline">교회 소개</a>
+                            <a href="/church/pastor" class="btn btn-outline">담임목사 소개</a>
+                            <a href="/church/worship" class="btn btn-outline">예배 안내</a>
+                            <a href="/church/location" class="btn btn-outline">오시는 길</a>
+                        </div>
+                    </div>
+        </div>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>

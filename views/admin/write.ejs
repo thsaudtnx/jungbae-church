@@ -3,54 +3,414 @@
 
 <head>
     <%- include('../partials/head') %>
+        <!-- include libraries(jQuery, library) -->
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+        <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/lang/summernote-ko-KR.min.js"></script>
+        <!-- Image Compression -->
+        <script type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+        <style>
+            .note-editor.note-frame {
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }
+
+            .note-editor .note-editing-area {
+                background-color: white;
+            }
+        </style>
 </head>
 
 <body>
-    <%- include('../partials/header') %>
+    <% if (layout !=='iframe' ) { %>
+        <%- include('../partials/header') %>
+            <% } %>
 
-        <div class="container" style="padding-top: 100px; padding-bottom: 50px;">
-            <h1 class="text-center">
-                <%= action==='create' ? '글 작성' : '글 수정' %>
-            </h1>
-            <div class="section-title"></div>
+                <div class="container"
+                    style="<%= layout === 'iframe' ? 'padding-top: 20px; padding-bottom: 20px;' : 'padding-top: 100px; padding-bottom: 50px;' %>">
+                    <style>
+                        /* Force opacity 1 for iframe mode to override head.ejs transition */
+                        <% if (layout==='iframe') {
+                            %>body {
+                                opacity: 1 !important;
+                                background: white !important;
+                            }
 
-            <form action="/admin/<%= action %>/<%= type %>" method="POST"
-                style="max-width: 800px; margin: 0 auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                            <%
+                        }
 
-                <% if (action==='update' ) { %>
-                    <input type="hidden" name="id" value="<%= item.id %>">
-                    <% } %>
+                        %>
+                    </style>
+                    <h1 class="text-center" style="<%= layout === 'iframe' ? 'display: none;' : '' %>">
+                        <%= action==='create' ? '글 작성' : '글 수정' %>
+                    </h1>
+                    <div class="section-title"></div>
 
-                        <% fields.forEach(function(field) { %>
-                            <div style="margin-bottom: 1.5rem;">
-                                <label for="<%= field.name %>"
-                                    style="display: block; margin-bottom: 0.5rem; font-weight: 500;">
-                                    <%= field.label %>
-                                </label>
+                    <form action="/admin/<%= action %>/<%= type %>?layout=<%= layout %>" method="POST"
+                        enctype="multipart/form-data" class="admin-form-container"
+                        style="<%= layout === 'iframe' ? 'max-width: 100%; box-shadow: none; padding: 0;' : 'max-width: 800px; margin: 0 auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);' %>">
 
-                                <% if (field.type==='textarea' ) { %>
-                                    <textarea id="<%= field.name %>" name="<%= field.name %>" rows="10"
-                                        style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px;"><%= item ? item[field.name] : '' %></textarea>
-                                    <% } else { %>
-                                        <input type="<%= field.type || 'text' %>" id="<%= field.name %>"
-                                            name="<%= field.name %>" value="<%= item ? item[field.name] : '' %>"
-                                            style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px;">
-                                        <% } %>
-                            </div>
-                            <% }); %>
+                        <% if (action==='update' ) { %>
+                            <input type="hidden" name="id" value="<%= item.id %>">
+                            <% } %>
 
-                                <div style="display: flex; gap: 1rem; justify-content: center;">
-                                    <a href="javascript:history.back()" class="btn btn-outline"
-                                        style="border: 1px solid #ddd; color: #666;">취소</a>
-                                    <button type="submit" class="btn btn-primary">
-                                        <%= action==='create' ? '등록' : '수정' %>
-                                    </button>
-                                </div>
-            </form>
-        </div>
+                                <script>
+                                    function handleDragOver(e, element) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        element.style.borderColor = 'var(--color-primary)';
+                                        element.style.background = '#f0f7ff';
+                                    }
 
-        <%- include('../partials/footer') %>
-            <script src="/js/main.js"></script>
+                                    function handleDragLeave(e, element) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        element.style.borderColor = '#eee';
+                                        element.style.background = '#fafafa';
+                                    }
+
+                                    async function handleDrop(e, element, fieldName) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        element.style.borderColor = '#eee';
+                                        element.style.background = '#fafafa';
+
+                                        const files = e.dataTransfer.files;
+                                        if (files && files.length > 0) {
+                                            const input = document.getElementById(fieldName);
+                                            input.files = files;
+                                            handleFileSelect(input, fieldName);
+                                        }
+                                    }
+
+                                    // Helper function for Direct Upload to Firebase
+                                    async function uploadFileDirectly(file) {
+                                        try {
+                                            const response = await fetch('/api/get-signed-url', {
+                                                method: 'POST',
+                                                headers: { 'Content-Type': 'application/json' },
+                                                body: JSON.stringify({
+                                                    fileName: file.name,
+                                                    contentType: file.type
+                                                })
+                                            });
+
+                                            if (!response.ok) throw new Error('Signed URL 발급 실패');
+                                            const { uploadUrl, publicUrl } = await response.json();
+
+                                            // PUT to Firebase Storage
+                                            const uploadResponse = await fetch(uploadUrl, {
+                                                method: 'PUT',
+                                                headers: { 
+                                                    'Content-Type': file.type,
+                                                    'x-goog-acl': 'public-read'
+                                                },
+                                                body: file
+                                            });
+
+                                            if (!uploadResponse.ok) throw new Error('Firebase 업로드 실패');
+                                            return publicUrl;
+                                        } catch (error) {
+                                            console.error('Direct upload error:', error);
+                                            throw error;
+                                        }
+                                    }
+
+                                    function handleFileSelect(input, fieldName) {
+                                        const container = document.getElementById('preview-container-' + fieldName);
+                                        const placeholder = document.getElementById('upload-placeholder-' + fieldName);
+                                        const previewList = document.getElementById('file-previews-' + fieldName);
+
+                                        if (input.files && input.files.length > 0) {
+                                            // Image Compression Options
+                                            const options = {
+                                                maxSizeMB: 1,
+                                                maxWidthOrHeight: 1200,
+                                                useWebWorker: true
+                                            };
+
+                                            placeholder.style.display = 'none';
+                                            container.style.display = 'block';
+                                            previewList.innerHTML = '';
+
+                                            // Process previews
+                                            for (let file of input.files) {
+                                                const itemWrapper = document.createElement('div');
+                                                itemWrapper.style.width = '120px';
+                                                itemWrapper.style.textAlign = 'center';
+
+                                                if (file.type.startsWith('image/')) {
+                                                    const reader = new FileReader();
+                                                    const img = document.createElement('img');
+                                                    img.style.width = '120px';
+                                                    img.style.height = '120px';
+                                                    img.style.objectFit = 'cover';
+                                                    img.style.borderRadius = '8px';
+                                                    img.style.border = '3px solid white';
+                                                    img.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+
+                                                    reader.onload = function (e) {
+                                                        img.src = e.target.result;
+                                                    }
+                                                    reader.readAsDataURL(file);
+                                                    itemWrapper.appendChild(img);
+                                                } else {
+                                                    const icon = document.createElement('i');
+                                                    icon.className = 'fas fa-file-alt';
+                                                    icon.style.fontSize = '2.5rem';
+                                                    icon.style.color = 'var(--color-primary)';
+
+                                                    const name = document.createElement('p');
+                                                    name.style.fontSize = '0.8rem';
+                                                    name.style.color = '#333';
+                                                    name.style.marginTop = '0.5rem';
+                                                    name.style.wordBreak = 'break-all';
+                                                    name.textContent = file.name;
+
+                                                    itemWrapper.appendChild(icon);
+                                                    itemWrapper.appendChild(name);
+                                                }
+                                                previewList.appendChild(itemWrapper);
+                                            }
+                                        }
+                                    }
+                                </script>
+
+                                <% fields.forEach(function(field) { %>
+                                    <div style="margin-bottom: 1.5rem;">
+                                        <label for="<%= field.name %>"
+                                            style="display: block; margin-bottom: 0.5rem; font-weight: 500;">
+                                            <%= field.label %>
+                                        </label>
+
+                                        <% if (field.type==='textarea' ) { %>
+                                            <textarea id="<%= field.name %>" name="<%= field.name %>" rows="10"
+                                                style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px;"><%- item ? item[field.name] : '' %></textarea>
+                                            <% } else if (field.type==='file' ) { %>
+                                                <div class="file-upload-container" id="drop-zone-<%= field.name %>"
+                                                    style="text-align: center; border: 2px dashed #eee; padding: 2.5rem; border-radius: 15px; background: #fafafa; transition: all 0.3s ease; cursor: pointer;"
+                                                    onclick="document.getElementById('<%= field.name %>').click()"
+                                                    ondragover="handleDragOver(event, this)"
+                                                    ondragleave="handleDragLeave(event, this)"
+                                                    ondrop="handleDrop(event, this, '<%= field.name %>')">
+
+                                                    <div id="preview-container-<%= field.name %>"
+                                                        style="<%= (item && item[field.name]) ? 'margin-bottom: 1.5rem;' : 'display:none; margin-bottom: 1.5rem;' %>">
+                                                        <div id="file-previews-<%= field.name %>"
+                                                            style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
+                                                            <% if (item && item[field.name]) { const
+                                                                files=Array.isArray(item[field.name]) ? item[field.name]
+                                                                : [item[field.name]]; files.forEach(fileUrl=> {
+                                                                if (fileUrl.match(/\.(jpg|jpeg|png|gif|webp)$/i)) { %>
+                                                                <img src="<%= fileUrl %>"
+                                                                    style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 3px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                                                                <% } else { %>
+                                                                    <div style="width: 120px; text-align: center;">
+                                                                        <i class="fas fa-file-alt"
+                                                                            style="font-size: 2.5rem; color: var(--color-primary);"></i>
+                                                                        <p
+                                                                            style="font-size: 0.8rem; color: #333; margin-top: 0.5rem; word-break: break-all;">
+                                                                            <%= fileUrl.split('/').pop().split('-').slice(1).join('-') || fileUrl.split('/').pop() %>
+                                                                        </p>
+                                                                    </div>
+                                                                    <% } }); } %>
+                                                        </div>
+
+                                                        <p
+                                                            style="font-size: 0.85rem; color: var(--color-primary); margin-top: 1.5rem; font-weight: 500;">
+                                                            <i class="fas fa-sync-alt"></i> 클릭하여 파일 변경
+                                                        </p>
+                                                    </div>
+
+                                                    <div id="upload-placeholder-<%= field.name %>"
+                                                        style="<%= (item && item[field.name]) ? 'display:none;' : 'display:flex;' %> flex-direction: column; align-items: center; justify-content: center;">
+                                                        <div
+                                                            style="width: 70px; height: 70px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.2rem; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                                                            <i class="fas fa-cloud-upload-alt"
+                                                                style="font-size: 2rem; color: var(--color-primary);"></i>
+                                                        </div>
+                                                        <p
+                                                            style="color: #444; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">
+                                                            파일을 선택해 주세요</p>
+                                                        <p
+                                                            style="color: #888; font-size: 0.9rem; margin-bottom: 1.5rem;">
+                                                            <%= field.multiple ? '여러 개의 이미지 또는 파일을 선택할 수 있습니다'
+                                                                : '이미지 또는 PDF 파일을 업로드할 수 있습니다' %>
+                                                        </p>
+                                                        <span class="btn btn-outline"
+                                                            style="border-color: var(--color-primary); color: var(--color-primary); background: #fff; pointer-events: none;">
+                                                            내 컴퓨터에서 찾기
+                                                        </span>
+                                                    </div>
+
+                                                    <input type="file" id="<%= field.name %>" name="<%= field.name %>"
+                                                        style="display: none;" <%=field.multiple ? 'multiple' : '' %>
+                                                    onchange="handleFileSelect(this, '<%= field.name %>')"
+                                                        onclick="event.stopPropagation()">
+                                                    <!-- These hidden inputs will hold the final URLs -->
+                                                    <div id="hidden-urls-<%= field.name %>">
+                                                        <% if (item && item[field.name]) { 
+                                                            const existingFiles = Array.isArray(item[field.name]) ? item[field.name] : [item[field.name]];
+                                                            existingFiles.forEach(url => { %>
+                                                                <input type="hidden" name="<%= field.name %>" value="<%= url %>">
+                                                            <% });
+                                                        } %>
+                                                    </div>
+                                                </div>
+
+                                                <% } else { %>
+                                                    <input type="<%= field.type || 'text' %>" id="<%= field.name %>"
+                                                        name="<%= field.name %>"
+                                                        value="<%= item ? item[field.name] : '' %>"
+                                                        style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px;">
+                                                    <% } %>
+                                    </div>
+                                    <% }); %>
+
+                                        <div
+                                            style="display: flex; gap: 1rem; justify-content: center; margin-top: 2.5rem;">
+                                            <% if (layout !=='iframe' ) { %>
+                                                <a href="javascript:history.back()" class="btn btn-outline"
+                                                    style="display: flex; align-items: center; gap: 0.5rem; border: 1px solid #ced4da; color: #495057; background: #fff; transition: all 0.2s;">
+                                                    <i class="fas fa-arrow-left"></i> 취소 및 목록으로
+                                                </a>
+                                                <% } %>
+                                                    <button type="submit" id="submit-btn" class="btn btn-primary"
+                                                        style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 2.5rem; width: <%= layout === 'iframe' ? '100%' : 'auto' %>; justify-content: center;">
+                                                        <i class="fas fa-check"></i>
+                                                        <span id="btn-text text-white"><%= action==='create' ? '내용 등록' : '수정 완료' %></span>
+                                                    </button>
+                                        </div>
+                    </form>
+                </div>
+
+                <!-- Upload Progress Overlay -->
+                <div id="upload-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+                    <div class="spinner-border text-primary" role="status" style="width: 3.5rem; height: 3.5rem; margin-bottom: 1.5rem; border-width: 0.25em;">
+                    </div>
+                    <h3 id="upload-status-text" style="font-weight: 700; color: #333; margin-bottom: 0.5rem;">파일을 업로드 중입니다...</h3>
+                    <p style="color: #666; font-size: 1.1rem;">대용량 파일의 경우 수 분이 소요될 수 있습니다. 창을 닫지 마세요.</p>
+                </div>
+
+                <% if (layout !=='iframe' ) { %>
+                    <%- include('../partials/footer') %>
+                        <% } %>
+                            <script src="/js/main.js"></script>
+                            <script>
+                                $(document).ready(function () {
+                                    const $form = $('.admin-form-container');
+                                    const $btn = $('#submit-btn');
+                                    const $overlay = $('#upload-overlay');
+                                    const $statusText = $('#upload-status-text');
+
+                                    $form.on('submit', async function(e) {
+                                        e.preventDefault();
+                                        
+                                        $btn.prop('disabled', true).css('opacity', '0.7');
+                                        $overlay.css('display', 'flex');
+                                        
+                                        try {
+                                            const fileFields = <%- JSON.stringify(fields.filter(f => f.type === 'file')) %>;
+                                            
+                                            for (const field of fileFields) {
+                                                const input = document.getElementById(field.name);
+                                                const hiddenContainer = document.getElementById('hidden-urls-' + field.name);
+                                                
+                                                if (input.files && input.files.length > 0) {
+                                                    // If new files selected and NOT multiple, clear previous hidden URLs
+                                                    if (!field.multiple) {
+                                                        hiddenContainer.innerHTML = '';
+                                                    }
+                                                    
+                                                    for (let i = 0; i < input.files.length; i++) {
+                                                        const file = input.files[i];
+                                                        $statusText.text(`${field.label} 업로드 중 (${i+1}/${input.files.length})...`);
+                                                        
+                                                        let fileToUpload = file;
+                                                        // Compress if it's a large image
+                                                        if (file.type.startsWith('image/') && file.size > 1024 * 1024) {
+                                                            try {
+                                                                const options = { maxSizeMB: 1, maxWidthOrHeight: 1200, useWebWorker: true };
+                                                                const compressedFile = await imageCompression(file, options);
+                                                                fileToUpload = new File([compressedFile], file.name, { type: file.type });
+                                                            } catch (err) { console.error('Compression error:', err); }
+                                                        }
+
+                                                        const publicUrl = await uploadFileDirectly(fileToUpload);
+                                                        
+                                                        const hiddenInput = document.createElement('input');
+                                                        hiddenInput.type = 'hidden';
+                                                        hiddenInput.name = field.name;
+                                                        hiddenInput.value = publicUrl;
+                                                        hiddenContainer.appendChild(hiddenInput);
+                                                    }
+                                                    
+                                                    // Disable the file input so it's not submitted as a file (avoiding 413)
+                                                    input.disabled = true;
+                                                }
+                                            }
+
+                                            $statusText.text('저장 중입니다...');
+                                            
+                                            // Final form submission
+                                            this.submit();
+                                            
+                                        } catch (error) {
+                                            console.error('Submit error:', error);
+                                            alert('업로드 중 오류가 발생했습니다: ' + error.message);
+                                            $btn.prop('disabled', false).css('opacity', '1');
+                                            $overlay.css('display', 'none');
+                                        }
+                                    });
+
+                                    $('textarea').summernote({
+                                        placeholder: '내용을 입력해주세요...',
+                                        tabsize: 2,
+                                        height: 400,
+                                        lang: 'ko-KR',
+                                        toolbar: [
+                                            ['style', ['style']],
+                                            ['font', ['bold', 'underline', 'clear']],
+                                            ['color', ['color']],
+                                            ['para', ['ul', 'ol', 'paragraph']],
+                                            ['table', ['table']],
+                                            ['insert', ['link', 'picture', 'video']],
+                                            ['view', ['fullscreen', 'codeview', 'help']]
+                                        ],
+                                        callbacks: {
+                                            onImageUpload: async function(files) {
+                                                const $editor = $(this);
+                                                $overlay.css('display', 'flex');
+                                                $statusText.text('에디터 이미지를 업로드 중입니다...');
+
+                                                try {
+                                                    const file = files[0];
+                                                    let fileToUpload = file;
+                                                    
+                                                    // Image Compression for editor
+                                                    if (file.size > 1024 * 1024) {
+                                                        const options = { maxSizeMB: 1, maxWidthOrHeight: 1200, useWebWorker: true };
+                                                        const compressedFile = await imageCompression(file, options);
+                                                        fileToUpload = new File([compressedFile], file.name, { type: file.type });
+                                                    }
+
+                                                    const publicUrl = await uploadFileDirectly(fileToUpload);
+                                                    $editor.summernote('insertImage', publicUrl);
+                                                } catch (err) {
+                                                    console.error('Summernote upload error:', err);
+                                                    alert('이미지 업로드 실패');
+                                                } finally {
+                                                    $overlay.css('display', 'none');
+                                                }
+                                            }
+                                        }
+                                    });
+                                });
+                            </script>
 </body>
 
 </html>

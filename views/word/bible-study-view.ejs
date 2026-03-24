@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <%- include('../partials/head') %>
+        <style>
+            .video-container {
+                position: relative;
+                width: 100%;
+                aspect-ratio: 16 / 9;
+                border-radius: 20px;
+                overflow: hidden;
+                box-shadow: var(--shadow-medium);
+                margin-bottom: 3rem;
+                background: black;
+            }
+
+            .meditation-header {
+                margin-bottom: 3rem;
+            }
+
+            .meditation-date {
+                display: inline-block;
+                padding: 6px 18px;
+                background: rgba(0, 69, 140, 0.05);
+                color: var(--color-primary);
+                border-radius: 50px;
+                font-size: 0.95rem;
+                font-weight: 700;
+                margin-bottom: 1.5rem;
+            }
+
+            .meditation-title {
+                font-size: 2.5rem;
+                font-weight: 800;
+                color: var(--color-text);
+                line-height: 1.3;
+                margin-bottom: 2rem;
+            }
+
+            .content-box {
+                background: white;
+                padding: 3.5rem;
+                border-radius: 30px;
+                box-shadow: var(--shadow-soft);
+                border: 1px solid var(--glass-border);
+                line-height: 2;
+                font-size: 1.15rem;
+                color: var(--color-text);
+                margin-bottom: 5rem;
+                white-space: pre-wrap;
+            }
+
+            .recent-list-card {
+                background: white;
+                border-radius: 20px;
+                padding: 2rem;
+                box-shadow: var(--shadow-soft);
+                border: 1px solid var(--glass-border);
+                position: sticky;
+                top: 100px;
+            }
+
+            .recent-item {
+                display: flex;
+                gap: 15px;
+                padding: 1rem 0;
+                border-bottom: 1px solid #f8f9fa;
+                text-decoration: none;
+                transition: transform 0.2s;
+            }
+
+            .recent-item:last-child {
+                border-bottom: none;
+            }
+
+            .recent-item:hover {
+                transform: translateX(5px);
+            }
+
+            .recent-thumb {
+                width: 80px;
+                height: 60px;
+                border-radius: 8px;
+                object-fit: cover;
+                background: #f1f3f5;
+            }
+
+            .recent-info h4 {
+                font-size: 0.95rem;
+                color: var(--color-text);
+                margin-bottom: 4px;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                font-weight: 600;
+            }
+
+            .recent-info span {
+                font-size: 0.8rem;
+                color: #999;
+            }
+
+            @media (max-width: 968px) {
+                .meditation-title {
+                    font-size: 1.8rem;
+                }
+
+                .content-box {
+                    padding: 2rem;
+                    font-size: 1.05rem;
+                }
+            }
+        </style>
+</head>
+
+<body>
+    <%- include('../partials/header') %>
+
+        <section class="page-header">
+            <div class="container">
+                <h1 data-aos-delay="100">수요 성경공부</h1>
+                <ul class="breadcrumb" data-aos-delay="300">
+                    <li><a href="/">홈</a></li>
+                    <li>말씀</li>
+                    <li><a href="/word/bible-study">수요 성경공부</a></li>
+                    <li class="active">상세보기</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="container" style="padding-bottom: var(--spacing-xl);">
+            <div style="display: flex; flex-wrap: wrap; gap: 4rem;">
+
+                <!-- Main Content -->
+                <div style="flex: 1; min-width: 320px;">
+                    <div class="meditation-header">
+                        <span class="meditation-date">
+                            <%= study.date %> 수요 성경공부
+                        </span>
+                        <h1 class="meditation-title">
+                            <%= study.title %>
+                        </h1>
+
+                        <% if (locals.user && user.isAdmin) { %>
+                            <div style="margin-bottom: 2rem; display: flex; gap: 10px;">
+                                <a href="#"
+                                    onclick="openAdminModal('/admin/edit/bibleStudies/<%= study.id %>', '성경공부 수정')"
+                                    class="btn btn-outline" style="font-size: 0.85rem; padding: 8px 18px;">수정</a>
+                                <a href="/admin/delete/bibleStudies/<%= study.id %>"
+                                    onclick="return confirm('정말 삭제하시겠습니까?')" class="btn btn-outline"
+                                    style="font-size: 0.85rem; padding: 8px 18px; color: #e74c3c; border-color: #eee;">삭제</a>
+                            </div>
+                            <% } %>
+                    </div>
+
+                    <% if (study.videoId) { %>
+                        <div class="video-container">
+                            <iframe width="100%" height="100%"
+                                src="https://www.youtube.com/embed/<%= study.videoId %>?rel=0" frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen></iframe>
+                        </div>
+                        <% } %>
+
+                            <div class="content-box">
+                                <%- study.content %>
+                            </div>
+
+                            <div style="text-align: center;" data-aos="fade-up">
+                                <a href="/word/bible-study" class="btn btn-outline" style="padding: 1rem 3rem;">목록으로
+                                    돌아가기</a>
+                            </div>
+                </div>
+
+            </div>
+
+            <%- include('../partials/recent-posts-table', { prevItem, nextItem, basePath: 'word/bible-study' }) %>
+
+                <!-- Related Action -->
+                <div class="related-info-section" data-aos="fade-up" style="margin-top: 8rem;">
+                    <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 말씀 안내 보기</h4>
+                    <div class="word-info-links">
+                        <a href="/word/sermons" class="btn btn-outline">주일 설교</a>
+                        <a href="/word/meditation" class="btn btn-outline">새벽 묵상</a>
+                        <a href="/word/diary" class="btn btn-outline">목양 일기</a>
+                    </div>
+                </div>
+        </div>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>
