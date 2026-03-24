@@ -86,6 +86,9 @@ async function getSignedUploadUrl(fileName: string, contentType: string): Promis
         action: 'write',
         expires: Date.now() + 15 * 60 * 1000, // 15 minutes
         contentType: contentType,
+        extensionHeaders: {
+            'x-goog-acl': 'public-read'
+        }
     });
 
     const publicUrl = `https://storage.googleapis.com/${bucket.name}/${destination}`;

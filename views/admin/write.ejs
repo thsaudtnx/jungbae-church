@@ -105,7 +105,10 @@
                                             // PUT to Firebase Storage
                                             const uploadResponse = await fetch(uploadUrl, {
                                                 method: 'PUT',
-                                                headers: { 'Content-Type': file.type },
+                                                headers: { 
+                                                    'Content-Type': file.type,
+                                                    'x-goog-acl': 'public-read'
+                                                },
                                                 body: file
                                             });
 
