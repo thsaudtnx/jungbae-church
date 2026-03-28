@@ -79,6 +79,14 @@ ul {
 }
 
 /* Typography Utilities */
+.sermon-content p,
+.meditation-content p,
+.notice-detail p,
+.diary-detail p {
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
 h1,
 h2,
 h3,
