@@ -1,0 +1,238 @@
+<!-- Admin Modal Partial -->
+<div id="admin-modal" class="admin-modal" onclick="closeAdminModal()">
+    <div class="admin-modal-content" onclick="event.stopPropagation()">
+        <div class="admin-modal-header">
+            <h3 id="admin-modal-title">관리자 모드</h3>
+            <div class="header-actions">
+                <button class="close-btn" onclick="closeAdminModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="admin-modal-body">
+            <div class="loader-container" id="admin-modal-loader">
+                <div class="spinner"></div>
+            </div>
+            <iframe id="admin-frame" src="" frameborder="0" onload="hideAdminLoader()"></iframe>
+        </div>
+    </div>
+</div>
+
+<style>
+    .admin-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .admin-modal.active {
+        display: flex;
+        opacity: 1;
+    }
+
+    .admin-modal-content {
+        width: 100%;
+        max-width: 950px;
+        height: 85vh;
+        max-height: 900px;
+        background: #ffffff;
+        border-radius: 24px;
+        box-shadow:
+            0 20px 50px rgba(0, 0, 0, 0.3),
+            0 0 0 1px rgba(255, 255, 255, 0.1);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transform: scale(0.95) translateY(10px);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .admin-modal.active .admin-modal-content {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+
+    .admin-modal-header {
+        padding: 1.2rem 1.5rem;
+        background: rgba(255, 255, 255, 0.95);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        backdrop-filter: blur(10px);
+        z-index: 10;
+    }
+
+    .admin-modal-header h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .admin-modal-header h3::before {
+        content: '';
+        display: block;
+        width: 4px;
+        height: 16px;
+        background: var(--color-primary, #4e54c8);
+        border-radius: 2px;
+    }
+
+    .close-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #f5f5f7;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #666;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+    }
+
+    .close-btn:hover {
+        background: #e5e5e7;
+        color: #000;
+        transform: rotate(90deg);
+    }
+
+    .admin-modal-body {
+        flex: 1;
+        position: relative;
+        background: #fff;
+        overflow: hidden;
+    }
+
+    #admin-frame {
+        width: 100%;
+        height: 100%;
+        border: none;
+        display: block;
+        background: #fff;
+        /* Ensure iframe has background */
+    }
+
+    .loader-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 20;
+        transition: opacity 0.3s ease;
+    }
+
+    .loader-container.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .spinner {
+        width: 48px;
+        height: 48px;
+        border: 3px solid rgba(78, 84, 200, 0.1);
+        border-top: 3px solid var(--color-primary, #4e54c8);
+        border-radius: 50%;
+        animation: spin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .admin-modal {
+            padding: 0;
+        }
+
+        .admin-modal-content {
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
+            max-height: none;
+        }
+    }
+</style>
+
+<script>
+    function openAdminModal(url, title) {
+        const modal = document.getElementById('admin-modal');
+        const frame = document.getElementById('admin-frame');
+        const modalTitle = document.getElementById('admin-modal-title');
+        const loader = document.getElementById('admin-modal-loader');
+
+        // Add layout=iframe param
+        const separator = url.includes('?') ? '&' : '?';
+        const modalUrl = url + separator + 'layout=iframe';
+
+        modalTitle.innerText = title || '관리자 모드';
+
+        // Show loader first
+        loader.classList.remove('hidden');
+
+        // Set src
+        frame.src = modalUrl;
+
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        // Safety timeout in case onload doesn't fire (e.g. cached or fast load)
+        setTimeout(() => {
+            hideAdminLoader();
+        }, 2000);
+    }
+
+    function closeAdminModal() {
+        const modal = document.getElementById('admin-modal');
+        const frame = document.getElementById('admin-frame');
+
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+
+        // Reset src after animation to stop video/audio/memory usage
+        setTimeout(() => {
+            frame.src = 'about:blank';
+        }, 400);
+    }
+
+    function hideAdminLoader() {
+        // Delay slightly to ensure render
+        setTimeout(() => {
+            document.getElementById('admin-modal-loader').classList.add('hidden');
+        }, 100);
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && document.getElementById('admin-modal').classList.contains('active')) {
+            closeAdminModal();
+        }
+    });
+</script>

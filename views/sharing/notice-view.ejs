@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <%- include('../partials/head') %>
+        <style>
+            .notice-view {
+                background: white;
+                padding: 3rem;
+                border-radius: 15px;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+                margin-top: 2rem;
+            }
+
+            .notice-header {
+                border-bottom: 2px solid #eee;
+                padding-bottom: 1.5rem;
+                margin-bottom: 2rem;
+            }
+
+            .notice-title {
+                font-size: 1.8rem;
+                font-weight: 700;
+                color: var(--color-text);
+                margin-bottom: 0.5rem;
+            }
+
+            .notice-meta {
+                color: #888;
+                font-size: 0.95rem;
+            }
+
+            .notice-content {
+                font-size: 1.1rem;
+                line-height: 1.8;
+                color: #444;
+                min-height: 300px;
+            }
+
+            .back-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                color: var(--color-primary);
+                text-decoration: none;
+                font-weight: 500;
+                margin-bottom: 2rem;
+            }
+
+            .back-btn:hover {
+                text-decoration: underline;
+            }
+
+            @media (max-width: 768px) {
+                .container {
+                    padding-top: 85px !important;
+                }
+
+                .notice-view {
+                    padding: 1.5rem 1rem !important;
+                }
+
+                .notice-title {
+                    font-size: 1.4rem !important;
+                }
+
+                .notice-meta {
+                    font-size: 0.85rem !important;
+                }
+
+                .notice-content {
+                    font-size: 1rem !important;
+                    line-height: 1.7;
+                    min-height: 200px;
+                }
+
+                .btn-outline,
+                .btn-primary {
+                    padding: 8px 18px !important;
+                    font-size: 0.85rem !important;
+                }
+            }
+        </style>
+</head>
+
+<body>
+    <%- include('../partials/header') %>
+
+        <div class="container" style="padding-top: 100px; padding-bottom: 80px;">
+            <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+                <a href="/sharing/notices" class="btn btn-outline" style="border-radius: 50px; padding: 10px 25px;">
+                    <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> 목록으로
+                </a>
+                <% if (locals.user && user.isAdmin) { %>
+                    <a href="/admin/edit/notices/<%= notice.id %>" class="btn btn-primary"
+                        style="border-radius: 50px; padding: 10px 25px;">
+                        <i class="fas fa-edit" style="margin-right: 8px;"></i> 수정하기
+                    </a>
+                    <% } %>
+            </div>
+
+            <div class="notice-view">
+                <div class="notice-header">
+                    <h1 class="notice-title">
+                        <%= notice.title %>
+                    </h1>
+                    <div class="notice-meta">
+                        <i class="far fa-calendar-alt"></i>
+                        <%= notice.date %>
+                    </div>
+                    <% if (notice.file) { let fileName='첨부파일' ; try { const urlObj=new URL(notice.file); const
+                        pathName=urlObj.pathname.split('/').pop(); let decoded=decodeURIComponent(pathName); if
+                        (decoded.includes('uploads/')) { decoded=decoded.split('uploads/')[1]; } const
+                        timestampRegex=/^\d+-/; if (timestampRegex.test(decoded)) {
+                        decoded=decoded.replace(timestampRegex, '' ); } fileName=decoded; } catch (e) { fileName='첨부파일'
+                        ; } %>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee;">
+                            <a href="<%= notice.file %>" target="_blank" class="btn btn-outline"
+                                style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                <i class="fas fa-paperclip"></i> 첨부파일 다운로드 (<%= fileName %>)
+                            </a>
+                        </div>
+                        <% } %>
+                </div>
+
+                <div class="notice-content">
+                    <%- notice.content %>
+                </div>
+
+                <div style="margin-top: 3rem; text-align: center; border-top: 1px solid #eee; padding-top: 2rem;">
+                    <a href="/sharing/notices" class="btn btn-outline" style="font-size: 0.9rem;">
+                        <i class="fas fa-list" style="margin-right: 8px;"></i> 목록으로
+                    </a>
+                </div>
+            </div>
+
+            <div class="related-info-section" data-aos="fade-up">
+                <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 나눔 안내 보기</h4>
+                <div class="sharing-info-links">
+                    <a href="/sharing/bulletin" class="btn btn-outline">주보 안내</a>
+                    <a href="/sharing/gallery" class="btn btn-outline">교회 앨범</a>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>
