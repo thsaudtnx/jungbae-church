@@ -438,7 +438,7 @@
                                     <div class="notice-box"
                                         style="background: #f8f9fa; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-soft); border: 1px solid rgba(0,0,0,0.05);">
                                         <% latestNotices.forEach(function(notice, index) { %>
-                                            <a href="<%= notice.file || '#' %>" target="_blank" class="notice-item"
+                                            <a href="/sharing/notices/<%= notice.id %>" class="notice-item"
                                                 style="display: block; padding: 1.25rem 1.5rem; text-decoration: none; color: inherit; border-bottom: 1px solid rgba(0,0,0,0.05);">
                                                 <h4
                                                     style="font-size: 1rem; margin-bottom: 0.3rem; color: var(--color-text);">
@@ -469,7 +469,7 @@
                                                     style="color: var(--color-primary); font-size: 0.9rem;">전체보기
                                                     →</a>
                                             </div>
-                                            <a href="<%= latestBulletin.file %>" target="_blank" class="bulletin-box"
+                                            <a href="/sharing/bulletin/<%= latestBulletin.id %>" class="bulletin-box"
                                                 style="display: block; background: #f8f9fa; border-radius: 16px; padding: 2.5rem 2rem; 
                                                text-align: center; text-decoration: none; box-shadow: var(--shadow-soft); border: 1px solid rgba(0,0,0,0.05);
                                                transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);"

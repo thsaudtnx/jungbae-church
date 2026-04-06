@@ -122,7 +122,7 @@
                   <% notices.forEach(function(item) { %>
                     <tr>
                       <td>
-                        <a href="<%= item.file || '#' %>" target="_blank" class="board-title">
+                        <a href="/sharing/notices/<%= item.id %>" class="board-title">
                           <%= item.title %>
                           <% if (item.file) { %>
                             <i class="fas fa-external-link-alt" style="font-size: 0.8rem; margin-left: 4px; color: #94a3b8;"></i>

@@ -59,33 +59,7 @@
                 opacity: 0.8;
             }
 
-            .manuscript-container {
-                max-width: 800px;
-                margin: 0 auto;
-            }
-
-            .manuscript-paper {
-                background: #fdfdfd;
-                padding: 4rem;
-                border-radius: 20px;
-                box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.01), 0 5px 15px rgba(0, 0, 0, 0.02);
-                border: 1px solid #f1f5f9;
-                position: relative;
-            }
-
-            .manuscript-paper::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 6px;
-                background: var(--color-primary);
-                opacity: 0.1;
-                border-radius: 20px 20px 0 0;
-            }
-
-            .manuscript-body {
+            .sharing-body {
                 font-size: 1.15rem;
                 line-height: 2.1;
                 color: #334155;
@@ -148,11 +122,7 @@
                     font-size: 1.75rem;
                 }
 
-                .manuscript-paper {
-                    padding: 2.5rem 1.5rem;
-                }
-
-                .manuscript-body {
+                .sharing-body {
                     font-size: 1.05rem !important;
                     line-height: 1.8;
                 }
@@ -181,11 +151,11 @@
     <%- include('../partials/header') %>
         <section class="page-header">
             <div class="container">
-                <h1 data-aos-delay="100">공지 사항</h1>
+                <h1 data-aos-delay="100">주보 안내</h1>
                 <ul class="breadcrumb" data-aos-delay="300">
                     <li><a href="/">홈</a></li>
                     <li>나눔</li>
-                    <li><a href="/sharing/notices">공지 사항</a></li>
+                    <li><a href="/sharing/bulletin">주보 안내</a></li>
                     <li class="active">상세보기</li>
                 </ul>
             </div>
@@ -194,11 +164,11 @@
         <div class="container" style="padding-bottom: 80px;">
             <div style="max-width: 900px; margin: 0 auto;">
                 <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
-                    <a href="/sharing/notices" class="btn btn-list-back">
+                    <a href="/sharing/bulletin" class="btn btn-list-back">
                         <i class="fas fa-chevron-left"></i> 목록으로
                     </a>
                     <% if (locals.user && user.isAdmin) { %>
-                        <a href="/admin/edit/notices/<%= notice.id %>" class="btn btn-primary"
+                        <a href="/admin/edit/bulletins/<%= bulletin.id %>" class="btn btn-primary"
                             style="border-radius: 50px; padding: 10px 25px;">
                             <i class="fas fa-edit" style="margin-right: 8px;"></i> 수정하기
                         </a>
@@ -209,35 +179,27 @@
                     <div class="sharing-content-area">
                         <div class="notice-header">
                             <h1 class="notice-title">
-                                <%= notice.title %>
+                                <%= bulletin.title %>
                             </h1>
                             <div class="notice-meta">
                                 <i class="far fa-calendar-alt"></i>
-                                <%= notice.date %>
+                                <%= bulletin.date %>
                             </div>
-                            <% if (notice.file) { let fileName='첨부파일' ; try { const urlObj=new URL(notice.file); const pathName=urlObj.pathname.split('/').pop(); let decoded=decodeURIComponent(pathName); if (decoded.includes('uploads/')) { decoded=decoded.split('uploads/')[1]; } const timestampRegex=/^\d+-/; if (timestampRegex.test(decoded)) { decoded=decoded.replace(timestampRegex, '' ); } fileName=decoded; } catch (e) { fileName='첨부파일' ; } %>
+                            <% if (bulletin.file) { let fileName='첨부파일' ; try { const urlObj=new URL(bulletin.file); const pathName=urlObj.pathname.split('/').pop(); let decoded=decodeURIComponent(pathName); if (decoded.includes('uploads/')) { decoded=decoded.split('uploads/')[1]; } const timestampRegex=/^\d+-/; if (timestampRegex.test(decoded)) { decoded=decoded.replace(timestampRegex, '' ); } fileName=decoded; } catch (e) { fileName='첨부파일' ; } %>
                                 <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee;">
-                                    <a href="<%= notice.file %>" target="_blank" class="btn btn-outline" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                    <a href="<%= bulletin.file %>" target="_blank" class="btn btn-outline" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
                                         <i class="fas fa-paperclip"></i> 첨부파일 다운로드 (<%= fileName %>)
                                     </a>
                                 </div>
                             <% } %>
                         </div>
 
-                        <div class="manuscript-container">
-                            <% if (notice.content && notice.content.trim() !== '<p><br></p>') { %>
-                                <div class="manuscript-paper" style="margin-bottom: 3rem;">
-                                    <div class="manuscript-body">
-                                        <%- notice.content %>
-                                    </div>
-                                </div>
-                            <% } %>
-                            
-                            <% if (notice.file) { 
+                        <div class="sharing-body">
+                            <% if (bulletin.file) { 
                                 let isImage = false;
                                 let isPdf = false;
                                 try {
-                                    const urlObj = new URL(notice.file);
+                                    const urlObj = new URL(bulletin.file);
                                     const pathName = decodeURIComponent(urlObj.pathname).toLowerCase();
                                     if (pathName.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
                                         isImage = true;
@@ -245,7 +207,7 @@
                                         isPdf = true;
                                     }
                                 } catch (e) {
-                                    const lowerFile = notice.file.toLowerCase();
+                                    const lowerFile = bulletin.file.toLowerCase();
                                     if (lowerFile.includes('.jpg') || lowerFile.includes('.jpeg') || lowerFile.includes('.png') || lowerFile.includes('.gif') || lowerFile.includes('.webp')) {
                                         isImage = true;
                                     } else if (lowerFile.includes('.pdf')) {
@@ -254,11 +216,11 @@
                                 }
                             %>
                                 <% if (isImage || isPdf) { %>
-                                    <div style="text-align: center; width: 100%; margin-top: 2rem;">
+                                    <div style="margin-top: 3rem; text-align: center; width: 100%;">
                                         <% if (isImage) { %>
-                                            <img src="<%= notice.file %>" alt="첨부 이미지" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                                            <img src="<%= bulletin.file %>" alt="주보 이미지" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
                                         <% } else if (isPdf) { %>
-                                            <iframe src="<%= notice.file %>" style="width: 100%; height: 800px; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" allowfullscreen title="PDF 문서"></iframe>
+                                            <iframe src="<%= bulletin.file %>" style="width: 100%; height: 800px; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" allowfullscreen title="PDF 문서"></iframe>
                                         <% } %>
                                     </div>
                                 <% } %>
@@ -266,7 +228,7 @@
                         </div>
 
                         <div style="margin-top: 4rem; text-align: center;">
-                            <a href="/sharing/notices" class="btn btn-outline-soft">
+                            <a href="/sharing/bulletin" class="btn btn-outline-soft">
                                 <i class="fas fa-th-list"></i> 목록으로 돌아가기
                             </a>
                         </div>
@@ -276,7 +238,7 @@
                 <div class="related-info-section" data-aos="fade-up" style="margin-top: 5rem;">
                     <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 나눔 안내 보기</h4>
                     <div class="sharing-info-links">
-                        <a href="/sharing/bulletin" class="btn btn-outline">주보 안내</a>
+                        <a href="/sharing/notices" class="btn btn-outline">공지 사항</a>
                         <a href="/sharing/gallery" class="btn btn-outline">교회 앨범</a>
                     </div>
                 </div>

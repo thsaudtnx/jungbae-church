@@ -778,6 +778,22 @@ app.get('/sharing/bulletin', async (req, res) => {
     });
 });
 
+app.get('/sharing/bulletin/:id', async (req, res) => {
+    const bulletin = await getItem('bulletins', req.params.id);
+    if (!bulletin) return res.status(404).send('Bulletin not found');
+
+    const allBulletins = await getCollection('bulletins');
+    const recentItems = allBulletins.slice(0, 10);
+
+    res.render('sharing/bulletin-view', {
+        title: (bulletin as any).title + ' - 정배교회',
+        page: 'sharing-bulletin',
+        bulletin,
+        recentItems
+    });
+});
+
+
 app.get('/sharing/gallery', async (req, res) => {
     let allGalleryItems = await getCollection('galleryItems');
 
