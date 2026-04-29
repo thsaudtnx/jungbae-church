@@ -354,6 +354,62 @@
                                                 }
                                             }
 
+                                            // 본문 내에 base64로 삽입된 이미지가 있는지 확인하고 변환 (Vercel Payload Limit 방지)
+                                            const $summernote = $('textarea');
+                                            if ($summernote.length > 0) {
+                                                const content = $summernote.summernote('code');
+                                                const tempDiv = document.createElement('div');
+                                                tempDiv.innerHTML = content;
+                                                const images = tempDiv.getElementsByTagName('img');
+                                                let contentChanged = false;
+
+                                                for (let i = 0; i < images.length; i++) {
+                                                    const img = images[i];
+                                                    const src = img.getAttribute('src');
+                                                    
+                                                    // base64로 인코딩된 이미지만 처리
+                                                    if (src && src.startsWith('data:image/')) {
+                                                        $statusText.text(`본문 이미지 변환 중 (${i+1}/${images.length})...`);
+                                                        try {
+                                                            const arr = src.split(',');
+                                                            const mimeMatch = arr[0].match(/:(.*?);/);
+                                                            if (mimeMatch && arr.length > 1) {
+                                                                const mime = mimeMatch[1];
+                                                                const bstr = atob(arr[1]);
+                                                                let n = bstr.length;
+                                                                const u8arr = new Uint8Array(n);
+                                                                while (n--) {
+                                                                    u8arr[n] = bstr.charCodeAt(n);
+                                                                }
+                                                                const ext = mime.split('/')[1] || 'png';
+                                                                let file = new File([u8arr], `pasted-${Date.now()}-${i}.${ext}`, { type: mime });
+                                                                
+                                                                // 압축
+                                                                if (file.size > 1024 * 1024) {
+                                                                    try {
+                                                                        const options = { maxSizeMB: 1, maxWidthOrHeight: 1200, useWebWorker: true };
+                                                                        const compressedFile = await imageCompression(file, options);
+                                                                        file = new File([compressedFile], file.name, { type: file.type });
+                                                                    } catch (err) { console.error('Compression error:', err); }
+                                                                }
+                                                                
+                                                                const publicUrl = await uploadFileDirectly(file);
+                                                                img.setAttribute('src', publicUrl);
+                                                                contentChanged = true;
+                                                            }
+                                                        } catch (e) {
+                                                            console.error('Base64 image conversion error:', e);
+                                                        }
+                                                    }
+                                                }
+                                                
+                                                if (contentChanged) {
+                                                    $summernote.summernote('code', tempDiv.innerHTML);
+                                                    // textarea value를 강제로 업데이트 (this.submit() 호출 시 반영되도록)
+                                                    $summernote.val(tempDiv.innerHTML);
+                                                }
+                                            }
+
                                             $statusText.text('저장 중입니다...');
                                             
                                             // Final form submission
