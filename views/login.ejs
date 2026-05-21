@@ -3,44 +3,203 @@
 
 <head>
     <%- include('partials/head') %>
+        <style>
+            .login-page-wrapper {
+                min-height: calc(100vh - var(--header-height));
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+                padding: 2rem;
+            }
+
+            .login-card {
+                width: 100%;
+                max-width: 440px;
+                background: #ffffff;
+                border-radius: 32px;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+                padding: 3.5rem 2.5rem;
+                border: 1px solid rgba(255, 255, 255, 1);
+                animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .login-header {
+                text-align: center;
+                margin-bottom: 3rem;
+            }
+
+            .login-logo {
+                margin-bottom: 1.5rem;
+            }
+
+            .login-logo img {
+                height: 60px;
+            }
+
+            .login-header h1 {
+                font-size: 2rem;
+                font-weight: 800;
+                color: var(--color-primary);
+                margin-bottom: 0.8rem;
+                letter-spacing: -0.03em;
+            }
+
+            .login-header p {
+                color: #64748b;
+                font-size: 1rem;
+                line-height: 1.5;
+            }
+
+            .form-group {
+                margin-bottom: 1.8rem;
+            }
+
+            .form-group label {
+                display: block;
+                font-size: 0.95rem;
+                font-weight: 700;
+                color: #1a1a1a;
+                margin-bottom: 0.8rem;
+                margin-left: 4px;
+            }
+
+            .password-input-wrapper {
+                position: relative;
+            }
+
+            .login-card input {
+                width: 100%;
+                height: 60px;
+                padding: 0 1.5rem;
+                background: #f8fafc;
+                border: 2px solid #f1f5f9;
+                border-radius: 18px;
+                font-size: 1.1rem;
+                font-family: inherit;
+                transition: all 0.3s ease;
+                color: #1e293b;
+            }
+
+            .login-card input:focus {
+                outline: none;
+                border-color: var(--color-primary);
+                background: #fff;
+                box-shadow: 0 0 0 4px rgba(0, 69, 140, 0.1);
+            }
+
+            .toggle-password {
+                position: absolute;
+                right: 18px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                color: #94a3b8;
+                cursor: pointer;
+                padding: 8px;
+                font-size: 1.2rem;
+            }
+
+            .submit-btn {
+                width: 100%;
+                height: 64px;
+                background: var(--color-primary);
+                color: white;
+                border: none;
+                border-radius: 20px;
+                font-size: 1.15rem;
+                font-weight: 700;
+                cursor: pointer;
+                transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+                box-shadow: 0 10px 20px rgba(0, 69, 140, 0.15);
+                margin-top: 1rem;
+            }
+
+            .submit-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 15px 30px rgba(0, 69, 140, 0.25);
+                background: #003a75;
+            }
+
+            .login-footer {
+                margin-top: 3.5rem;
+                text-align: center;
+                border-top: 1px solid #f1f5f9;
+                padding-top: 1.5rem;
+                color: #94a3b8;
+                font-size: 0.9rem;
+            }
+
+            @media (max-width: 480px) {
+                .login-card {
+                    padding: 2.5rem 1.5rem;
+                    border-radius: 24px;
+                }
+            }
+        </style>
 </head>
 
 <body>
     <%- include('partials/header') %>
 
-        <div class="container"
-            style="padding-top: 100px; padding-bottom: 50px; min-height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-            <h1 class="text-center">관리자 로그인</h1>
-            <div class="section-title"></div>
-
-            <form action="/login" method="POST"
-                style="width: 100%; max-width: 400px; padding: 2rem; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                <div style="margin-bottom: 1.5rem;">
-                    <label for="password" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">비밀번호</label>
-                    <input type="password" id="password" name="password" required
-                        style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px;">
-                    <div style="margin-top: 0.5rem;">
-                        <input type="checkbox" id="show-password" onclick="togglePassword()">
-                        <label for="show-password" style="font-size: 0.9rem; color: #666;">운영자 분들은 비밀번호를 확인하세요</label>
+        <div class="login-page-wrapper">
+            <div class="login-card">
+                <div class="login-header">
+                    <div class="login-logo">
+                        <img src="/images/main-logo.png" alt="정배교회 로고">
                     </div>
+                    <h1>관리자 로그인</h1>
+                    <p>보안을 위해 비밀번호를 입력해 주세요.</p>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">로그인</button>
-            </form>
+
+                <form action="/login" method="POST">
+                    <div class="form-group">
+                        <label for="password">비밀번호</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="password" name="password" required autofocus
+                                placeholder="••••••••">
+                            <button type="button" class="toggle-password" onclick="togglePassword()">
+                                <i id="eye-icon" class="far fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn">로그인</button>
+                </form>
+
+                <div class="login-footer">
+                    <p>&copy; 2026 정배교회. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+
+        <%- include('partials/footer') %>
 
             <script>
                 function togglePassword() {
                     var x = document.getElementById("password");
+                    var icon = document.getElementById("eye-icon");
                     if (x.type === "password") {
                         x.type = "text";
+                        icon.className = 'far fa-eye-slash';
                     } else {
                         x.type = "password";
+                        icon.className = 'far fa-eye';
                     }
                 }
             </script>
-        </div>
-
-        <%- include('partials/footer') %>
-            <script src="/js/main.js"></script>
 </body>
 
 </html>

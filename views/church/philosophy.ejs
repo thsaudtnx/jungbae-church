@@ -3,30 +3,74 @@
 
 <head>
     <%- include('../partials/head') %>
+        <style>
+            @media (max-width: 768px) {
+                .philosophy-content {
+                    font-size: 0.95rem !important;
+                    padding: 0 0.5rem;
+                }
+
+                .content-wrapper {
+                    padding-bottom: 3rem !important;
+                }
+
+                .btn-outline {
+                    padding: 10px 20px !important;
+                    font-size: 0.85rem !important;
+                }
+
+                h4 {
+                    font-size: 1rem !important;
+                    margin-top: 3rem !important;
+                }
+            }
+        </style>
 </head>
 
 <body>
     <%- include('../partials/header') %>
 
-        <div class="container" style="padding-top: 100px; padding-bottom: 50px;">
-            <h1 class="text-center">
-                <%= typeof philosophy !=='undefined' ? philosophy.title : '목회철학' %>
-            </h1>
-            <div class="section-title"></div>
+        <section class="page-header" data-aos="fade">
+            <div class="container">
+                <h1 data-aos="fade-up" data-aos-delay="100">교회 소개</h1>
+                <ul class="breadcrumb" data-aos="fade-up" data-aos-delay="300">
+                    <li><a href="/">홈</a></li>
+                    <li>교회</li>
+                    <li class="active">교회 소개</li>
+                </ul>
+            </div>
+        </section>
 
+        <div class="container" style="padding-bottom: var(--spacing-xl);">
             <% if (locals.user && user.isAdmin) { %>
-                <div style="text-align: right; margin-bottom: 1rem;">
+                <div style="text-align: right; margin-bottom: 2rem;">
                     <% if (typeof philosophy !=='undefined' && philosophy.id) { %>
-                        <a href="/admin/edit/philosophies/<%= philosophy.id %>" class="btn btn-primary">수정하기</a>
+                        <a href="#"
+                            onclick="openAdminModal('/admin/edit/philosophies/<%= philosophy.id %>', '교회 소개 수정')"
+                            class="btn btn-primary">수정하기</a>
                         <% } else { %>
-                            <a href="/admin/write/philosophies" class="btn btn-primary">작성하기</a>
+                            <a href="#" onclick="openAdminModal('/admin/write/philosophies', '교회 소개 작성')"
+                                class="btn btn-primary">작성하기</a>
                             <% } %>
                 </div>
                 <% } %>
 
-                    <div
-                        style="max-width: 800px; margin: 0 auto; line-height: 1.8; font-size: 1.1rem; white-space: pre-wrap;">
-                        <%= typeof philosophy !=='undefined' ? philosophy.content : '내용이 없습니다.' %>
+                    <div class="content-wrapper">
+                        <div class="philosophy-content" data-aos="fade-up">
+                            <%- typeof philosophy !=='undefined' ? philosophy.content
+                                : '<p class="text-center" style="color:#aaa;">내용이 없습니다.</p>' %>
+                        </div>
+
+                        <!-- Related Action -->
+                        <div class="related-info-section" data-aos="fade-up">
+                            <h4 style="margin-bottom: 1.5rem; color: var(--color-text-light);">다른 교회 안내 보기</h4>
+                            <div class="church-info-links">
+                                <a href="/church/history" class="btn btn-outline">교회 연혁</a>
+                                <a href="/church/pastor" class="btn btn-outline">담임목사 소개</a>
+                                <a href="/church/worship" class="btn btn-outline">예배 안내</a>
+                                <a href="/church/location" class="btn btn-outline">오시는 길</a>
+                            </div>
+                        </div>
                     </div>
         </div>
 

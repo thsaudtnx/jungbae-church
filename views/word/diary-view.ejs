@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <%- include('../partials/head') %>
+        <style>
+            .diary-detail {
+                background: white;
+                padding: 3rem;
+                border-radius: 15px;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+                margin-top: 2rem;
+            }
+
+            .diary-meta {
+                color: var(--color-text-light);
+                font-size: 1.1rem;
+                margin-bottom: 2rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid #eee;
+            }
+
+            .diary-content {
+                font-size: 1.15rem;
+                line-height: 2;
+                color: #2c3e50;
+                background: #fff;
+                padding: 3rem;
+                border: 1px solid #e1e8ed;
+                border-radius: 4px;
+                box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.02);
+                position: relative;
+            }
+
+            .back-btn {
+                margin-top: 2rem;
+                display: inline-block;
+            }
+
+            @media (max-width: 768px) {
+                .container {
+                    padding-top: 85px !important;
+                }
+
+                .diary-detail {
+                    padding: 1.5rem 1rem !important;
+                }
+
+                .diary-detail h2 {
+                    font-size: 1.4rem !important;
+                }
+
+                .diary-meta {
+                    font-size: 0.9rem !important;
+                    margin-bottom: 1.5rem;
+                }
+
+                .diary-content {
+                    padding: 1.5rem 1rem !important;
+                    font-size: 1rem !important;
+                    line-height: 1.7;
+                }
+
+                .btn-outline,
+                .btn-primary {
+                    padding: 8px 18px !important;
+                    font-size: 0.85rem !important;
+                }
+            }
+        </style>
+</head>
+
+<body>
+    <%- include('../partials/header') %>
+
+        <section class="page-header">
+            <div class="container">
+                <h1 data-aos-delay="100">목양 일기</h1>
+                <ul class="breadcrumb" data-aos-delay="300">
+                    <li><a href="/">홈</a></li>
+                    <li>말씀</li>
+                    <li><a href="/word/diary">목양 일기</a></li>
+                    <li class="active">상세보기</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="container" style="padding-bottom: 80px;">
+            <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+                <a href="/word/diary" class="btn btn-outline" style="border-radius: 50px; padding: 10px 25px;">
+                    <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> 목록으로
+                </a>
+                <% if (locals.user && user.isAdmin) { %>
+                    <a href="/admin/edit/diaries/<%= diary.id %>" class="btn btn-primary"
+                        style="border-radius: 50px; padding: 10px 25px;">
+                        <i class="fas fa-edit" style="margin-right: 8px;"></i> 수정하기
+                    </a>
+                    <% } %>
+            </div>
+
+            <div class="diary-detail">
+                <h2 style="color: var(--color-text); margin-bottom: 0.5rem;">
+                    <%= diary.title %>
+                </h2>
+                <div class="diary-meta">
+                    <i class="far fa-calendar-alt"></i>
+                    <%= diary.date %>
+                </div>
+
+                <div class="diary-content">
+                    <%- diary.content %>
+                </div>
+
+                <div style="margin-top: 3rem; text-align: center;">
+                    <a href="/word/diary" class="btn btn-outline" style="font-size: 0.9rem;">
+                        <i class="fas fa-list" style="margin-right: 8px;"></i> 목록으로
+                    </a>
+                </div>
+            </div>
+
+            <%- include('../partials/recent-posts-table', { prevItem, nextItem, basePath: 'word/diary' }) %>
+
+                <!-- Related Action -->
+                <div class="related-info-section" data-aos="fade-up" style="margin-top: 5rem;">
+                    <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 말씀 안내 보기</h4>
+                    <div class="word-info-links">
+                        <a href="/word/sermons" class="btn btn-outline">주일 설교</a>
+                        <a href="/word/meditation" class="btn btn-outline">새벽 묵상</a>
+                        <a href="/word/bible-study" class="btn btn-outline">수요 성경공부</a>
+                    </div>
+                </div>
+        </div>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>

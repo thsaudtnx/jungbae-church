@@ -4,38 +4,92 @@
       <img src="/images/main-logo.png" alt="정배교회 로고">
     </a>
 
-    <nav>
-      <ul class="nav-menu" id="nav-menu">
-        <li class="nav-item">
-          <a href="/church/philosophy" class="nav-link">교회</a>
-          <ul class="dropdown">
-            <li><a href="/church/philosophy">목회철학</a></li>
-            <li><a href="/church/pastor">담임목사 소개</a></li>
-            <li><a href="/church/worship">예배 안내</a></li>
-            <li><a href="/church/location">찾아오시는 길</a></li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a href="/word/sermons" class="nav-link">말씀</a>
-          <ul class="dropdown">
-            <li><a href="/word/sermons">주일설교</a></li>
-            <li><a href="/word/meditation">새벽묵상</a></li>
-            <li><a href="/word/diary">목회일기</a></li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a href="/sharing/notices" class="nav-link">나눔</a>
-          <ul class="dropdown">
-            <li><a href="/sharing/notices">공지사항</a></li>
-            <li><a href="/sharing/bulletin">주보</a></li>
-            <li><a href="/sharing/gallery">교회앨범</a></li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
+    <div style="display: flex; align-items: center; margin-left: auto;">
+      <div id="live-banner" style="display: none;">
+        <a href="https://www.youtube.com/@jeongBaeChurch" target="_blank" class="live-indicator">
+          <span class="live-dot"></span>
+          LIVE 방송 중
+        </a>
+      </div>
 
-    <div class="menu-toggle" id="mobile-menu">
-      <i class="fas fa-bars"></i>
+      <nav>
+        <ul class="nav-menu" id="nav-menu">
+          <li class="nav-item">
+            <a href="/church/philosophy" class="nav-link">교회</a>
+            <ul class="dropdown">
+              <li><a href="/church/philosophy">교회 소개</a></li>
+              <li><a href="/church/history">교회 연혁</a></li>
+              <li><a href="/church/pastor">담임목사</a></li>
+              <li><a href="/church/worship">예배 안내</a></li>
+              <li><a href="/church/location">오시는 길</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="/word/sermons" class="nav-link">말씀</a>
+            <ul class="dropdown">
+              <li><a href="/word/sermons">주일 설교</a></li>
+              <li><a href="/word/meditation">새벽 묵상</a></li>
+              <li><a href="/word/bible-study">수요 성경공부</a></li>
+              <li><a href="/word/diary">목양 일기</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="/sharing/notices" class="nav-link">나눔</a>
+            <ul class="dropdown">
+              <li><a href="/sharing/notices">공지 사항</a></li>
+              <li><a href="/sharing/bulletin">주보</a></li>
+              <li><a href="/sharing/gallery">교회 앨범</a></li>
+            </ul>
+          </li>
+          <li class="nav-item search-btn-container" style="margin-left: 15px; display: flex; align-items: center;">
+            <a href="/search" class="nav-link" title="검색" style="padding: 0 5px;">
+              <i class="fas fa-search"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="menu-toggle" id="mobile-menu" style="margin-left: 15px;">
+        <i class="fas fa-bars"></i>
+      </div>
     </div>
   </div>
 </header>
+<%- include('../partials/admin-modal') %>
+
+  <script>
+    // Live Indicator Logic (Based on KST - Korean Standard Time)
+    function checkLiveStatus() {
+      // Create a date object for the current time
+      const now = new Date();
+
+      // Calculate KST (UTC+9)
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const kstTime = new Date(utc + (3600000 * 9));
+
+      const day = kstTime.getDay(); // 0 is Sunday
+      const hours = kstTime.getHours();
+      const minutes = kstTime.getMinutes();
+      const timeVal = hours * 100 + minutes;
+
+      let isLive = false;
+
+      // Sunday Worship: 08:50 ~ 12:30, 13:20 ~ 15:00
+      if (day === 0) {
+        if ((timeVal >= 850 && timeVal <= 1230) || (timeVal >= 1320 && timeVal <= 1500)) {
+          isLive = true;
+        }
+      }
+      // Wednesday Worship: 19:20 ~ 21:00
+      if (day === 3) {
+        if (timeVal >= 1920 && timeVal <= 2100) {
+          isLive = true;
+        }
+      }
+
+      document.getElementById('live-banner').style.display = isLive ? 'block' : 'none';
+    }
+
+    checkLiveStatus();
+    setInterval(checkLiveStatus, 60000); // Check every minute
+  </script>
