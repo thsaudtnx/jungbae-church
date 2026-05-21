@@ -108,12 +108,24 @@
         </section>
 
         <div class="container" style="padding-bottom: var(--spacing-xl);">
-            <% if (locals.user && user.isAdmin) { %>
-                <div style="text-align: right; margin-bottom: 2.5rem;">
-                    <a href="#" onclick="openAdminModal('/admin/write/sermons', '설교 등록')" class="btn btn-primary">설교
-                        등록</a>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+                <div class="search-container" style="flex: 1; max-width: 400px; min-width: 250px;">
+                    <form action="" method="GET" style="display: flex; width: 100%; position: relative;">
+                        <% if (locals.currentYear && locals.currentYear !== 'all') { %>
+                            <input type="hidden" name="year" value="<%= currentYear %>">
+                        <% } %>
+                        <input type="text" name="q" placeholder="검색어를 입력하세요" value="<%= locals.searchQuery || '' %>" style="width: 100%; padding: 12px 20px; border-radius: 30px; border: 1px solid #e2e8f0; font-size: 0.95rem; outline: none; transition: all 0.3s ease; padding-right: 50px;">
+                        <button type="submit" style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); background: var(--color-primary); color: white; border: none; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease;">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
                 </div>
+                <% if (locals.user && user.isAdmin) { %>
+                    <div style="text-align: right;">
+                        <a href="#" onclick="openAdminModal('/admin/write/sermons', '설교 등록')" class="btn btn-primary">설교 등록</a>
+                    </div>
                 <% } %>
+            </div>
 
                     <div class="board-table-wrapper">
                         <table class="board-table transition-all" data-aos="fade-up">

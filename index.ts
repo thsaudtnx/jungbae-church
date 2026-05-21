@@ -544,6 +544,17 @@ app.get('/word/sermons', async (req, res) => {
     // Sort by date (descending)
     allSermons.sort((a, b) => (a.date < b.date ? 1 : -1));
 
+    // Search Filter
+    const query = req.query.q as string;
+    if (query) {
+        const lowerQuery = query.toLowerCase();
+        allSermons = allSermons.filter((s: any) => 
+            (s.title && s.title.toLowerCase().includes(lowerQuery)) ||
+            (s.preacher && s.preacher.toLowerCase().includes(lowerQuery)) ||
+            (s.content && s.content.toLowerCase().includes(lowerQuery))
+        );
+    }
+
     // Year Filter
     const year = req.query.year as string;
     if (year) {
@@ -574,7 +585,8 @@ app.get('/word/sermons', async (req, res) => {
         totalPages,
         totalSermons: allSermons.length,
         currentYear: year || 'all',
-        availableYears
+        availableYears,
+        searchQuery: query || ''
     });
 });
 app.get('/word/sermons/:id', async (req, res) => {
@@ -612,6 +624,16 @@ app.get('/word/meditation', async (req, res) => {
     // Sort by date (descending)
     allMeditations.sort((a, b) => (a.date < b.date ? 1 : -1));
 
+    // Search Filter
+    const query = req.query.q as string;
+    if (query) {
+        const lowerQuery = query.toLowerCase();
+        allMeditations = allMeditations.filter((m: any) => 
+            (m.title && m.title.toLowerCase().includes(lowerQuery)) ||
+            (m.summary && m.summary.toLowerCase().includes(lowerQuery))
+        );
+    }
+
     const page = parseInt(req.query.page as string) || 1;
     const itemsPerPage = 15;
     const totalPages = Math.ceil(allMeditations.length / itemsPerPage);
@@ -625,7 +647,8 @@ app.get('/word/meditation', async (req, res) => {
         meditations,
         currentPage: page,
         totalPages,
-        totalMeditations: allMeditations.length
+        totalMeditations: allMeditations.length,
+        searchQuery: query || ''
     });
 });
 app.get('/word/meditation/:id', async (req, res) => {
