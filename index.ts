@@ -237,6 +237,7 @@ const SCHEMAS: any = {
     galleryItems: [
         { name: 'title', label: '제목' },
         { name: 'date', label: '날짜', type: 'date' },
+        { name: 'description', label: '앨범 설명', type: 'textarea' },
         { name: 'images', label: '이미지 선택(여러 개 가능)', type: 'file', multiple: true }
     ],
     philosophies: [

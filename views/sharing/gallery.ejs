@@ -75,11 +75,60 @@
 
       .gallery-date {
         color: var(--color-text-light);
-        margin-bottom: 1.5rem;
+        margin-bottom: 0.8rem;
         font-size: 0.95rem;
         display: flex;
         align-items: center;
         gap: 6px;
+      }
+
+      .gallery-description {
+        color: var(--color-text-light);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        word-break: keep-all;
+      }
+
+      /* Lightbox description */
+      .lightbox-description {
+        color: #aaa;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-top: 0.5rem;
+        max-width: 600px;
+        word-break: keep-all;
+      }
+
+      /* Swipe indicator dots */
+      .lightbox-dots {
+        display: none;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .lightbox-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.3);
+        transition: all 0.3s ease;
+      }
+
+      .lightbox-dot.active {
+        background: white;
+        transform: scale(1.3);
+      }
+
+      @media (max-width: 768px) {
+        .lightbox-dots {
+          display: flex;
+        }
       }
 
       .gallery-admin-footer {
@@ -141,6 +190,7 @@
               <% galleryItems.forEach(function(item) { const images=Array.isArray(item.images) ? item.images :
                 (item.images ? [item.images] : (item.image ? [item.image] : [])); %>
                 <div class="gallery-card" data-aos="fade-up" data-title="<%= item.title %>" data-date="<%= item.date %>"
+                  data-description="<%= item.description || '' %>"
                   data-images="<%= JSON.stringify(images) %>" onclick="openLightboxFromData(this)">
                   <div class="gallery-thumb-wrapper">
                     <% if (images.length> 0) { %>
@@ -165,6 +215,9 @@
                       <i class="far fa-calendar-alt"></i>
                       <%= item.date %>
                     </p>
+                    <% if (item.description) { %>
+                      <p class="gallery-description"><%= item.description %></p>
+                    <% } %>
                     <% if (locals.user && user.isAdmin) { %>
                       <div class="gallery-admin-footer" onclick="event.stopPropagation()">
                         <a href="#" onclick="openAdminModal('/admin/edit/galleryItems/<%= item.id %>', '앨범 수정')"
@@ -239,7 +292,9 @@
         <div class="lightbox-info">
           <h4 id="lightbox-title"></h4>
           <p id="lightbox-date"></p>
+          <p id="lightbox-description" class="lightbox-description"></p>
           <div id="lightbox-counter" class="lightbox-counter"></div>
+          <div id="lightbox-dots" class="lightbox-dots"></div>
         </div>
       </div>
     </div>
@@ -247,27 +302,47 @@
     <script>
       let currentImages = [];
       let currentIndex = 0;
+      let currentDescription = '';
+
+      // Touch swipe state
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let touchEndX = 0;
+      let touchEndY = 0;
+      let isSwiping = false;
 
       function openLightboxFromData(el) {
         const title = el.getAttribute('data-title');
         const date = el.getAttribute('data-date');
+        const description = el.getAttribute('data-description') || '';
         const images = JSON.parse(el.getAttribute('data-images'));
-        openLightbox(title, date, images);
+        openLightbox(title, date, description, images);
       }
 
-      function openLightbox(title, date, images) {
+      function openLightbox(title, date, description, images) {
         if (!images || images.length === 0) return;
 
         currentImages = images;
         currentIndex = 0;
+        currentDescription = description;
 
         document.getElementById('lightbox-title').innerText = title;
         document.getElementById('lightbox-date').innerText = date;
 
+        const descEl = document.getElementById('lightbox-description');
+        if (description) {
+          descEl.innerText = description;
+          descEl.style.display = 'block';
+        } else {
+          descEl.style.display = 'none';
+        }
+
+        // Build dots for mobile
+        buildDots();
         updateLightboxImage();
 
         document.getElementById('lightbox').classList.add('active');
-        document.body.style.overflow = 'hidden'; // Scroll lock
+        document.body.style.overflow = 'hidden';
       }
 
       function closeLightbox() {
@@ -283,6 +358,33 @@
         if (currentIndex < 0) currentIndex = currentImages.length - 1;
 
         updateLightboxImage();
+      }
+
+      function buildDots() {
+        const dotsContainer = document.getElementById('lightbox-dots');
+        dotsContainer.innerHTML = '';
+        if (currentImages.length <= 1) return;
+
+        // Limit visible dots to max 7 for very large galleries
+        const maxDots = Math.min(currentImages.length, 7);
+        for (let i = 0; i < currentImages.length; i++) {
+          const dot = document.createElement('span');
+          dot.className = 'lightbox-dot' + (i === 0 ? ' active' : '');
+          dot.setAttribute('data-index', i);
+          dot.onclick = function(e) {
+            e.stopPropagation();
+            currentIndex = i;
+            updateLightboxImage();
+          };
+          dotsContainer.appendChild(dot);
+        }
+      }
+
+      function updateDots() {
+        const dots = document.querySelectorAll('.lightbox-dot');
+        dots.forEach((dot, i) => {
+          dot.classList.toggle('active', i === currentIndex);
+        });
       }
 
       function updateLightboxImage() {
@@ -302,6 +404,8 @@
           counter.innerText = '';
           document.querySelectorAll('.lightbox-nav').forEach(nav => nav.style.display = 'none');
         }
+
+        updateDots();
       }
 
       // Keyboard controls
@@ -312,6 +416,55 @@
         if (e.key === 'ArrowLeft') changeImage(-1);
         if (e.key === 'ArrowRight') changeImage(1);
       });
+
+      // Touch swipe controls for mobile
+      (function() {
+        const lightbox = document.getElementById('lightbox');
+        const lightboxContent = lightbox.querySelector('.lightbox-content');
+        const SWIPE_THRESHOLD = 50;
+        const SWIPE_VERTICAL_LIMIT = 100;
+
+        lightboxContent.addEventListener('touchstart', function(e) {
+          touchStartX = e.changedTouches[0].screenX;
+          touchStartY = e.changedTouches[0].screenY;
+          isSwiping = true;
+        }, { passive: true });
+
+        lightboxContent.addEventListener('touchmove', function(e) {
+          if (!isSwiping) return;
+          touchEndX = e.changedTouches[0].screenX;
+          touchEndY = e.changedTouches[0].screenY;
+
+          // If horizontal swipe is dominant, prevent vertical scroll
+          const diffX = Math.abs(touchEndX - touchStartX);
+          const diffY = Math.abs(touchEndY - touchStartY);
+          if (diffX > diffY && diffX > 10) {
+            e.preventDefault();
+          }
+        }, { passive: false });
+
+        lightboxContent.addEventListener('touchend', function(e) {
+          if (!isSwiping) return;
+          isSwiping = false;
+
+          touchEndX = e.changedTouches[0].screenX;
+          touchEndY = e.changedTouches[0].screenY;
+
+          const diffX = touchStartX - touchEndX;
+          const diffY = Math.abs(touchStartY - touchEndY);
+
+          // Only swipe if horizontal movement is dominant
+          if (Math.abs(diffX) > SWIPE_THRESHOLD && diffY < SWIPE_VERTICAL_LIMIT) {
+            if (diffX > 0) {
+              // Swipe left → next image
+              changeImage(1);
+            } else {
+              // Swipe right → previous image
+              changeImage(-1);
+            }
+          }
+        }, { passive: true });
+      })();
     </script>
 
     <%- include("../partials/footer") %>
