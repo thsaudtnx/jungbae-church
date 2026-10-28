@@ -5,25 +5,40 @@ import fs from 'fs';
 
 dotenv.config();
 
-// Check if serviceAccountKey.json exists
-const serviceAccountPath = path.join(__dirname, 'serviceAccountKey.json');
+// Check if serviceAccountKey.json exists (check both __dirname and process.cwd())
+let serviceAccountPath = path.join(__dirname, 'serviceAccountKey.json');
+if (!fs.existsSync(serviceAccountPath)) {
+    const cwdPath = path.join(process.cwd(), 'serviceAccountKey.json');
+    if (fs.existsSync(cwdPath)) {
+        serviceAccountPath = cwdPath;
+    }
+}
 
 let db: admin.firestore.Firestore;
+let bucket: any;
 
 try {
+    const config = {
+        storageBucket: process.env.FIREBASE_STORAGE_BUCKET || 'jungbae-church.firebasestorage.app'
+    };
+
     if (fs.existsSync(serviceAccountPath)) {
         admin.initializeApp({
-            credential: admin.credential.cert(serviceAccountPath)
+            credential: admin.credential.cert(serviceAccountPath),
+            ...config
         });
         db = admin.firestore();
-        console.log("Firebase initialized from serviceAccountKey.json");
+        bucket = admin.storage().bucket();
+        console.log(`Firebase initialized from serviceAccountKey.json. Bucket: ${config.storageBucket}`);
     } else if (process.env.FIREBASE_SERVICE_ACCOUNT) {
         const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
         admin.initializeApp({
-            credential: admin.credential.cert(serviceAccount)
+            credential: admin.credential.cert(serviceAccount),
+            ...config
         });
         db = admin.firestore();
-        console.log("Firebase initialized from environment variable");
+        bucket = admin.storage().bucket();
+        console.log(`Firebase initialized from environment variable. Bucket: ${config.storageBucket}`);
     } else {
         console.warn("Warning: serviceAccountKey.json not found and FIREBASE_SERVICE_ACCOUNT env var is empty.");
     }
@@ -31,4 +46,4 @@ try {
     console.error("Error initializing Firebase:", error);
 }
 
-export { db, admin };
+export { db, admin, bucket };

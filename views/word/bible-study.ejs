@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <%- include('../partials/head') %>
+        <style>
+            .header-info-badge {
+                display: inline-block;
+                padding: 6px 15px;
+                background: rgba(0, 69, 140, 0.05);
+                color: var(--color-primary);
+                border-radius: 50px;
+                font-size: 0.9rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+            }
+
+            .meditation-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                gap: 2rem;
+                margin-top: 3rem;
+            }
+
+            .meditation-card {
+                background: white;
+                border-radius: 20px;
+                overflow: hidden;
+                box-shadow: var(--shadow-soft);
+                transition: all 0.3s ease;
+                border: 1px solid var(--glass-border);
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                text-decoration: none;
+                color: inherit;
+            }
+
+            .meditation-card:hover {
+                transform: translateY(-8px);
+                box-shadow: var(--shadow-medium);
+                border-color: var(--color-primary);
+            }
+
+            .card-thumbnail {
+                position: relative;
+                width: 100%;
+                aspect-ratio: 16 / 9;
+                background: #f8f9fa;
+                overflow: hidden;
+            }
+
+            .card-thumbnail img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.5s ease;
+            }
+
+            .meditation-card:hover .card-thumbnail img {
+                transform: scale(1.05);
+            }
+
+            .play-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.2);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 1;
+                transition: background 0.3s ease;
+            }
+
+            .play-overlay i {
+                color: white;
+                font-size: 3rem;
+                filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+            }
+
+            .card-body {
+                padding: 2rem;
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .date-badge {
+                display: inline-block;
+                padding: 4px 12px;
+                background: #f1f3f5;
+                color: #666;
+                border-radius: 50px;
+                font-size: 0.8rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+            }
+
+            .card-title {
+                font-size: 1.25rem;
+                font-weight: 700;
+                color: var(--color-text);
+                margin-bottom: 1rem;
+                line-height: 1.5;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .card-summary {
+                font-size: 0.95rem;
+                color: #666;
+                line-height: 1.7;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                margin-bottom: 1.5rem;
+            }
+
+            @media (max-width: 768px) {
+                .meditation-grid {
+                    grid-template-columns: 1fr;
+                    gap: 1.5rem;
+                }
+
+                .card-body {
+                    padding: 1.5rem;
+                }
+
+                .card-title {
+                    font-size: 1.15rem;
+                }
+            }
+        </style>
+</head>
+
+<body>
+    <%- include('../partials/header') %>
+
+        <section class="page-header" data-aos="fade">
+            <div class="container">
+                <h1 data-aos="fade-up" data-aos-delay="100">수요 성경공부</h1>
+                <ul class="breadcrumb" data-aos="fade-up" data-aos-delay="300">
+                    <li><a href="/">홈</a></li>
+                    <li>말씀</li>
+                    <li class="active">수요 성경공부</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="container" style="padding-bottom: var(--spacing-xl);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem;">
+                <div data-aos="fade-right">
+                    <span class="header-info-badge">Bible Study</span>
+                    <h2 style="font-size: 2rem; font-weight: 800; color: var(--color-text);">성경의 깊은 지혜를 <br><span
+                            style="color: var(--color-primary);">함께 나눕니다.</span></h2>
+                </div>
+                <% if (locals.user && user.isAdmin) { %>
+                    <div data-aos="fade-left">
+                        <a href="#" onclick="openAdminModal('/admin/write/bibleStudies', '성경공부 등록')"
+                            class="btn btn-primary">새 글 작성</a>
+                    </div>
+                    <% } %>
+            </div>
+
+            <div class="meditation-grid">
+                <% if (locals.bibleStudies && bibleStudies.length> 0) { %>
+                    <% bibleStudies.forEach(function(item, index) { %>
+                        <a href="/word/bible-study/<%= item.id %>" class="meditation-card" data-aos="fade-up"
+                            data-aos-delay="<%= index * 100 %>">
+                            <div class="card-thumbnail">
+                                <% if (item.videoId) { %>
+                                    <img src="https://img.youtube.com/vi/<%= item.videoId %>/maxresdefault.jpg"
+                                        alt="<%= item.title %>">
+                                    <div class="play-overlay">
+                                        <i class="fas fa-play-circle"></i>
+                                    </div>
+                                    <% } else { %>
+                                        <div
+                                            style="width:100%; height:100%; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); opacity: 0.1; display:flex; align-items:center; justify-content:center;">
+                                            <i class="fas fa-bible"
+                                                style="font-size: 4rem; color: var(--color-primary); opacity: 0.2;"></i>
+                                        </div>
+                                        <% } %>
+                            </div>
+                            <div class="card-body">
+                                <span class="date-badge">
+                                    <%= item.date %>
+                                </span>
+                                <h3 class="card-title">
+                                    <%= item.title %>
+                                </h3>
+                                <div class="card-summary">
+                                    <%= item.content ? item.content.replace(/<[^>]*>?/gm, '') : '' %>
+                                </div>
+                                <div
+                                    style="margin-top: auto; color: var(--color-primary); font-weight: 700; font-size: 0.9rem; display: flex; align-items: center;">
+                                    영상 보기 <i class="fas fa-arrow-right"
+                                        style="margin-left: 8px; font-size: 0.8rem;"></i>
+                                </div>
+                            </div>
+                        </a>
+                        <% }); %>
+                            <% } else { %>
+                                <div
+                                    style="grid-column: 1 / -1; text-align: center; padding: 10rem 0; background: white; border-radius: 30px; border: 2px dashed #eee;">
+                                    <i class="fas fa-bible"
+                                        style="font-size: 4rem; color: #eee; margin-bottom: 2rem;"></i>
+                                    <p style="color: #aaa; font-size: 1.1rem;">등록된 성경공부 영상이 없습니다.</p>
+                                </div>
+                                <% } %>
+            </div>
+
+            <!-- Related Action -->
+            <div class="related-info-section" data-aos="fade-up" style="margin-top: 5rem;">
+                <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 말씀 안내 보기</h4>
+                <div class="word-info-links">
+                    <a href="/word/sermons" class="btn btn-outline">주일 설교</a>
+                    <a href="/word/meditation" class="btn btn-outline">새벽 묵상</a>
+                    <a href="/word/diary" class="btn btn-outline">목양 일기</a>
+                </div>
+            </div>
+        </div>
+
+        <%- include('../partials/footer') %>
+            <script src="/js/main.js"></script>
+</body>
+
+</html>

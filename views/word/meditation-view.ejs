@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <%- include('../partials/head') %>
+        <style>
+            .meditation-detail-card {
+                background: white;
+                border-radius: 32px;
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+                border: 1px solid var(--glass-border);
+                overflow: hidden;
+                margin-top: 2rem;
+                position: relative;
+                z-index: 10;
+            }
+
+            .meditation-content-area {
+                padding: 4rem 3rem;
+            }
+
+            .meditation-header-inner {
+                margin-bottom: 3rem;
+                text-align: center;
+            }
+
+            .meditation-detail-title {
+                font-size: 2.5rem;
+                font-weight: 800;
+                color: var(--color-text);
+                line-height: 1.25;
+                margin-bottom: 1.5rem;
+                letter-spacing: -0.04em;
+                word-break: keep-all;
+            }
+
+            .meditation-detail-meta {
+                display: flex;
+                gap: 12px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .meta-pill {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                background: #f8fafc;
+                padding: 8px 18px;
+                border-radius: 50px;
+                border: 1px solid #f1f5f9;
+                color: #64748b;
+                font-weight: 600;
+                font-size: 0.9rem;
+            }
+
+            .meta-pill i {
+                color: var(--color-primary);
+                opacity: 0.8;
+            }
+
+            .manuscript-container {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+
+            .manuscript-paper {
+                background: #fdfdfd;
+                padding: 4rem;
+                border-radius: 20px;
+                box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.01), 0 5px 15px rgba(0, 0, 0, 0.02);
+                border: 1px solid #f1f5f9;
+                position: relative;
+            }
+
+            .manuscript-paper::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 6px;
+                background: #10b981;
+                /* Morning meditation theme color */
+                opacity: 0.1;
+                border-radius: 20px 20px 0 0;
+            }
+
+            .manuscript-body {
+                font-size: 1.25rem;
+                line-height: 2.3;
+                color: #334155;
+                word-break: keep-all;
+            }
+
+            .manuscript-footer {
+                margin-top: 4rem;
+                padding-top: 2rem;
+                border-top: 1px solid #f1f5f9;
+                text-align: center;
+                color: #cbd5e1;
+                font-size: 0.9rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .btn-list-back {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 10px 24px !important;
+                background: white !important;
+                border: 1px solid #e2e8f0 !important;
+                color: #64748b !important;
+                border-radius: 50px !important;
+                font-weight: 600 !important;
+                font-size: 0.95rem !important;
+                transition: all 0.3s ease !important;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02) !important;
+            }
+
+            .btn-list-back:hover {
+                background: #f8fafc !important;
+                border-color: #cbd5e1 !important;
+                color: var(--color-primary) !important;
+                transform: translateX(-3px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+            }
+
+            .btn-outline-soft {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                padding: 12px 28px !important;
+                background: #f8fafc !important;
+                border: 1px solid #e2e8f0 !important;
+                color: #475569 !important;
+                border-radius: 12px !important;
+                font-weight: 700 !important;
+                font-size: 0.95rem !important;
+                transition: all 0.3s ease !important;
+            }
+
+            .btn-outline-soft:hover {
+                background: #f1f5f9 !important;
+                color: var(--color-text) !important;
+                transform: translateY(-2px);
+            }
+
+            @media (max-width: 768px) {
+                .meditation-detail-card {
+                    border-radius: 20px;
+                }
+
+                .meditation-content-area {
+                    padding: 3rem 1.5rem;
+                }
+
+                .meditation-detail-title {
+                    font-size: 1.75rem;
+                }
+
+                .manuscript-paper {
+                    padding: 2.5rem 1.5rem;
+                }
+
+                .manuscript-body {
+                    font-size: 1.1rem !important;
+                    line-height: 1.8;
+                }
+            }
+        </style>
+</head>
+
+<body>
+    <%- include('../partials/header') %>
+        <section class="page-header">
+            <div class="container">
+                <h1 data-aos-delay="100">새벽 묵상</h1>
+                <ul class="breadcrumb" data-aos-delay="300">
+                    <li><a href="/">홈</a></li>
+                    <li>말씀</li>
+                    <li><a href="/word/meditation">새벽 묵상</a></li>
+                    <li class="active">상세보기</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="container" style="padding-bottom: 80px;">
+            <div style="max-width: 900px; margin: 0 auto;">
+                <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+                    <a href="/word/meditation" class="btn btn-list-back">
+                        <i class="fas fa-chevron-left"></i> 목록으로
+                    </a>
+                    <% if (locals.user && user.isAdmin) { %>
+                        <a href="/admin/edit/meditations/<%= meditation.id %>" class="btn btn-primary"
+                            style="border-radius: 50px; padding: 10px 25px;">
+                            <i class="fas fa-edit" style="margin-right: 8px;"></i> 수정하기
+                        </a>
+                        <% } %>
+                </div>
+
+                <article class="meditation-detail-card">
+                    <div class="meditation-content-area">
+                        <header class="meditation-header-inner">
+                            <h2 class="meditation-detail-title">
+                                <%= meditation.title %>
+                            </h2>
+                            <div class="meditation-detail-meta">
+                                <div class="meta-pill">
+                                    <i class="far fa-calendar-alt"></i>
+                                    <%= meditation.date %>
+                                </div>
+                                <div class="meta-pill">
+                                    <i class="fas fa-leaf"></i>
+                                    새벽 묵상
+                                </div>
+                            </div>
+                        </header>
+
+                        <div class="manuscript-container">
+                            <div class="manuscript-paper">
+                                <div class="manuscript-body">
+                                    <%- meditation.summary %>
+                                </div>
+                                <div class="manuscript-footer">
+                                    <i class="fas fa-sun"></i>
+                                    <span>오늘 하루도 말씀으로 승리하세요</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 4rem; text-align: center;">
+                            <a href="/word/meditation" class="btn btn-outline-soft">
+                                <i class="fas fa-th-list"></i> 목록으로 돌아가기
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <%- include('../partials/recent-posts-table', { prevItem, nextItem, basePath: 'word/meditation' }) %>
+
+                    <!-- Related Action -->
+                    <div class="related-info-section" data-aos="fade-up" style="margin-top: 5rem;">
+                        <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 600;">다른 말씀 안내 보기
+                        </h4>
+                        <div class="word-info-links">
+                            <a href="/word/sermons" class="btn btn-outline">주일 설교</a>
+                            <a href="/word/bible-study" class="btn btn-outline">수요 성경공부</a>
+                            <a href="/word/diary" class="btn btn-outline">목양 일기</a>
+                        </div>
+                    </div>
+            </div>
+
+            <%- include('../partials/footer') %>
+                <script src="/js/main.js"></script>
+</body>
+
+</html>
