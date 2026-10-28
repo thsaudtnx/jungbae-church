@@ -4,149 +4,143 @@
 <head>
   <%- include("../partials/head") %>
     <style>
-      .card-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 2.5rem;
-        margin-top: 3rem;
-      }
-
-      .gallery-card {
+      .board-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 2rem;
         background: white;
-        border-radius: 25px;
+        border-radius: 20px;
         overflow: hidden;
         box-shadow: var(--shadow-soft);
         border: 1px solid var(--glass-border);
-        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-        cursor: pointer;
+      }
+
+      .board-table th {
+        background: #f8f9fa;
+        padding: 1.3rem 1.2rem;
+        font-weight: 700;
+        color: var(--color-text);
+        border-bottom: 2px solid #edf2f7;
+        text-align: left;
+      }
+
+      .board-table td {
+        padding: 1.2rem;
+        border-bottom: 1px solid #edf2f7;
+        vertical-align: middle;
+      }
+
+      .board-table tr:hover {
+        background-color: #fcfdfe;
+      }
+
+      .gallery-row-cell {
         display: flex;
-        flex-direction: column;
-        text-decoration: none;
-        color: inherit;
+        align-items: center;
+        gap: 1.2rem;
       }
 
-      .gallery-card:hover {
-        transform: translateY(-8px);
-        box-shadow: var(--shadow-medium);
-        border-color: rgba(0, 69, 140, 0.2);
-      }
-
-      .gallery-thumb-wrapper {
-        height: 280px;
-        background-color: #f8fafc;
+      .gallery-row-thumb {
+        width: 72px;
+        height: 72px;
+        border-radius: 14px;
         overflow: hidden;
-        position: relative;
+        flex-shrink: 0;
+        background: #f1f5f9;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        border: 1px solid #edf2f7;
+        display: block;
       }
 
-      .gallery-thumb-wrapper img {
+      .gallery-row-thumb img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.6s ease;
+        transition: transform 0.3s ease;
       }
 
-      .gallery-card:hover .gallery-thumb-wrapper img {
+      .board-table tr:hover .gallery-row-thumb img {
         transform: scale(1.08);
       }
 
-      .image-count-badge {
-        position: absolute;
-        bottom: 15px;
-        right: 15px;
-        background: rgba(0, 0, 0, 0.65);
-        color: white;
-        padding: 6px 14px;
-        border-radius: 50px;
-        font-size: 0.85rem;
-        backdrop-filter: blur(8px);
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-
-      .gallery-content {
-        padding: 2rem;
-        display: flex;
-        flex-direction: column;
+      .gallery-row-info {
         flex: 1;
+        min-width: 0;
       }
 
-      .gallery-title {
-        margin-bottom: 0.8rem;
-        font-size: 1.25rem;
-        font-weight: 800;
-        color: var(--color-text);
-        letter-spacing: -0.02em;
-        line-height: 1.4;
-        transition: color 0.2s ease;
-      }
-
-      .gallery-card:hover .gallery-title {
+      .board-title {
+        font-weight: 700;
         color: var(--color-primary);
-      }
-
-      .gallery-date {
-        color: var(--color-text-light);
-        margin-bottom: 0.8rem;
-        font-size: 0.95rem;
-        display: flex;
+        font-size: 1.1rem;
+        display: inline-flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
+        margin-bottom: 6px;
+        text-decoration: none;
+        transition: color 0.2s ease;
+        word-break: keep-all;
+        flex-wrap: wrap;
       }
 
-      .gallery-description {
-        color: var(--color-text-light);
+      .board-title:hover {
+        color: #002d5b;
+      }
+
+      .photo-count-pill {
+        font-size: 0.78rem;
+        font-weight: 600;
+        background: rgba(0, 69, 140, 0.08);
+        color: var(--color-primary);
+        padding: 3px 9px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+
+      .board-meta {
         font-size: 0.9rem;
-        line-height: 1.6;
-        margin-bottom: 1.5rem;
+        color: #64748b;
         display: -webkit-box;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        word-break: keep-all;
+        line-height: 1.5;
       }
 
-      .gallery-view-more {
-        margin-top: auto;
+      .date-badge {
         font-size: 0.9rem;
-        color: var(--color-primary);
-        font-weight: 700;
-        display: flex;
+        color: var(--color-text-light);
+        background: var(--color-bg-alt);
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-weight: 500;
+        white-space: nowrap;
+        display: inline-flex;
         align-items: center;
         gap: 6px;
       }
 
-      .gallery-admin-footer {
-        font-size: 0.9rem;
-        border-top: 1px solid #f1f5f9;
-        padding-top: 1.2rem;
-        margin-top: 1rem;
-        display: flex;
-        gap: 15px;
-      }
-
-      .gallery-admin-footer a {
-        text-decoration: none;
-        font-weight: 600;
-        transition: opacity 0.2s;
-      }
-
-      @media (max-width: 1100px) {
-        .card-grid {
-          grid-template-columns: repeat(2, 1fr);
-          gap: 2rem;
-        }
-      }
-
-      @media (max-width: 650px) {
-        .card-grid {
-          grid-template-columns: 1fr;
-          gap: 1.5rem;
+      @media (max-width: 768px) {
+        .board-table th:nth-child(2),
+        .board-table td:nth-child(2) {
+          display: none;
         }
 
-        .gallery-thumb-wrapper {
-          height: 240px;
+        .gallery-row-thumb {
+          width: 58px;
+          height: 58px;
+          border-radius: 10px;
+        }
+
+        .board-title {
+          font-size: 0.98rem;
+        }
+
+        .board-meta {
+          font-size: 0.82rem;
         }
       }
     </style>
@@ -167,106 +161,123 @@
 
     <div class="container" style="padding-bottom: var(--spacing-xl);">
       <% if (locals.user && user.isAdmin) { %>
-        <div style="text-align: right; margin-bottom: 1rem;">
+        <div style="text-align: right; margin-bottom: 2rem;">
           <a href="#" onclick="openAdminModal('/admin/write/galleryItems', '앨범 등록')" class="btn btn-primary">앨범 등록</a>
         </div>
-        <% } %>
+      <% } %>
 
-          <div class="card-grid">
-            <% if (locals.galleryItems && galleryItems.length> 0) { %>
+      <div class="board-table-wrapper" data-aos="fade-up">
+        <table class="board-table">
+          <thead>
+            <tr>
+              <th style="width: 72%;">앨범 목록</th>
+              <th style="width: 18%; text-align: center;">날짜</th>
+              <% if (locals.user && user.isAdmin) { %>
+                <th style="width: 10%; text-align: center;">관리</th>
+              <% } %>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (locals.galleryItems && galleryItems.length > 0) { %>
               <% galleryItems.forEach(function(item) { 
                 const images = Array.isArray(item.images) ? item.images :
                   (item.images ? [item.images] : (item.image ? [item.image] : [])); 
                 const plainDesc = item.description ? item.description.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim() : '';
               %>
-                <a href="/sharing/gallery/<%= item.id %>" class="gallery-card" data-aos="fade-up">
-                  <div class="gallery-thumb-wrapper">
-                    <% if (images.length > 0) { %>
-                      <img src="<%= images[0] %>" alt="<%= item.title %>" loading="lazy">
-                      <% if (images.length > 1) { %>
-                        <div class="image-count-badge">
-                          <i class="fas fa-images"></i> <%= images.length %>장
-                        </div>
-                      <% } %>
-                    <% } else { %>
-                      <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #cbd5e1;">
-                        <i class="fas fa-image" style="font-size: 3.5rem;"></i>
+                <tr>
+                  <td>
+                    <div class="gallery-row-cell">
+                      <a href="/sharing/gallery/<%= item.id %>" class="gallery-row-thumb">
+                        <% if (images.length > 0) { %>
+                          <img src="<%= images[0] %>" alt="<%= item.title %>" loading="lazy">
+                        <% } else { %>
+                          <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #cbd5e1;">
+                            <i class="fas fa-image" style="font-size: 1.5rem;"></i>
+                          </div>
+                        <% } %>
+                      </a>
+                      <div class="gallery-row-info">
+                        <a href="/sharing/gallery/<%= item.id %>" class="board-title">
+                          <span><%= item.title %></span>
+                          <% if (images.length > 0) { %>
+                            <span class="photo-count-pill"><i class="fas fa-camera"></i> <%= images.length %>장</span>
+                          <% } %>
+                        </a>
+                        <% if (plainDesc) { %>
+                          <div class="board-meta"><%= plainDesc %></div>
+                        <% } %>
                       </div>
-                    <% } %>
-                  </div>
-                  <div class="gallery-content">
-                    <h3 class="gallery-title">
-                      <%= item.title %>
-                    </h3>
-                    <p class="gallery-date">
-                      <i class="far fa-calendar-alt"></i>
-                      <%= item.date %>
-                    </p>
-                    <% if (plainDesc) { %>
-                      <p class="gallery-description"><%= plainDesc %></p>
-                    <% } %>
-                    <div class="gallery-view-more">
-                      사진 및 내용 보기 <i class="fas fa-arrow-right" style="font-size: 0.8rem;"></i>
                     </div>
-                    <% if (locals.user && user.isAdmin) { %>
-                      <div class="gallery-admin-footer" onclick="event.preventDefault(); event.stopPropagation();">
+                  </td>
+                  <td style="text-align: center;">
+                    <span class="date-badge">
+                      <i class="far fa-calendar-alt" style="opacity: 0.7;"></i>
+                      <%= item.date %>
+                    </span>
+                  </td>
+                  <% if (locals.user && user.isAdmin) { %>
+                    <td style="text-align: center;">
+                      <div style="display: flex; gap: 10px; justify-content: center;">
                         <a href="#" onclick="openAdminModal('/admin/edit/galleryItems/<%= item.id %>', '앨범 수정')"
-                          style="color: var(--color-secondary);"><i class="fas fa-edit"></i> 수정</a>
+                          style="color: var(--color-secondary); font-size: 1.05rem;" title="수정"><i class="fas fa-edit"></i></a>
                         <a href="/admin/delete/galleryItems/<%= item.id %>" onclick="return confirm('정말 삭제하시겠습니까?')"
-                          style="color: #ef4444;"><i class="fas fa-trash-alt"></i> 삭제</a>
+                          style="color: #ef4444; font-size: 1.05rem;" title="삭제"><i class="fas fa-trash-alt"></i></a>
                       </div>
-                    <% } %>
-                  </div>
-                </a>
+                    </td>
+                  <% } %>
+                </tr>
               <% }); %>
             <% } else { %>
-              <div style="grid-column: 1 / -1; text-align: center; padding: 10rem 0; color: #94a3b8; background: white; border-radius: 30px; border: 1px dashed #cbd5e1;">
-                <i class="far fa-images" style="font-size: 4rem; margin-bottom: 2rem; display: block; opacity: 0.3;"></i>
-                <p style="font-size: 1.2rem;">등록된 사진이 없습니다.</p>
-              </div>
+              <tr>
+                <td colspan="<%= (locals.user && user.isAdmin) ? 3 : 2 %>" class="text-center" style="padding: 5rem; color: #aaa;">
+                  등록된 앨범이 없습니다.
+                </td>
+              </tr>
             <% } %>
-          </div>
+          </tbody>
+        </table>
+      </div>
 
-          <% if (locals.totalPages> 1) { %>
-            <div class="premium-pagination" style="margin-top: 5rem;">
-              <% if (currentPage> 1) { %>
-                <a href="/sharing/gallery?page=<%= currentPage - 1 %>" class="nav-btn">
-                  <i class="fas fa-chevron-left"></i>
-                </a>
-              <% } %>
-
-              <% for (let i=1; i <=totalPages; i++) { %>
-                <% if (i===currentPage) { %>
-                  <span class="active">
-                    <%= i %>
-                  </span>
-                <% } else { %>
-                  <% if (i===1 || i===totalPages || (i>= currentPage - 2 && i <= currentPage + 2)) { %>
-                    <a href="/sharing/gallery?page=<%= i %>">
-                      <%= i %>
-                    </a>
-                  <% } else if (i===currentPage - 3 || i===currentPage + 3) { %>
-                    <span style="border:none; box-shadow:none; background:none; min-width:20px;">...</span>
-                  <% } %>
-                <% } %>
-              <% } %>
-
-              <% if (currentPage < totalPages) { %>
-                <a href="/sharing/gallery?page=<%= currentPage + 1 %>" class="nav-btn">
-                  <i class="fas fa-chevron-right"></i>
-                </a>
-              <% } %>
-            </div>
+      <% if (locals.totalPages > 1) { %>
+        <div class="premium-pagination" style="margin-top: 4rem;">
+          <% if (currentPage > 1) { %>
+            <a href="/sharing/gallery?page=<%= currentPage - 1 %>" class="nav-btn">
+              <i class="fas fa-chevron-left"></i>
+            </a>
           <% } %>
 
-          <!-- Related Action -->
-          <div class="related-info-section" data-aos="fade-up" style="margin-top: 6rem;">
-            <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 700;">다른 나눔 안내 보기</h4>
-            <div class="sharing-info-links">
-              <a href="/sharing/notices" class="btn btn-outline">공지 사항</a>
-              <a href="/sharing/bulletin" class="btn btn-outline">주보 안내</a>
-            </div>
-          </div>
+          <% for (let i = 1; i <= totalPages; i++) { %>
+            <% if (i === currentPage) { %>
+              <span class="active">
+                <%= i %>
+              </span>
+            <% } else { %>
+              <% if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) { %>
+                <a href="/sharing/gallery?page=<%= i %>">
+                  <%= i %>
+                </a>
+              <% } else if (i === currentPage - 3 || i === currentPage + 3) { %>
+                <span style="border:none; box-shadow:none; background:none; min-width:20px;">...</span>
+              <% } %>
+            <% } %>
+          <% } %>
+
+          <% if (currentPage < totalPages) { %>
+            <a href="/sharing/gallery?page=<%= currentPage + 1 %>" class="nav-btn">
+              <i class="fas fa-chevron-right"></i>
+            </a>
+          <% } %>
+        </div>
+      <% } %>
+
+      <!-- Related Action -->
+      <div class="related-info-section" data-aos="fade-up" style="margin-top: 5rem;">
+        <h4 style="margin-bottom: 2rem; color: var(--color-text-light); font-weight: 700;">다른 나눔 안내 보기</h4>
+        <div class="sharing-info-links">
+          <a href="/sharing/notices" class="btn btn-outline">공지 사항</a>
+          <a href="/sharing/bulletin" class="btn btn-outline">주보 안내</a>
+        </div>
+      </div>
     </div>
 
     <%- include("../partials/footer") %>
