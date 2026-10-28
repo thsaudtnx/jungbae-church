@@ -452,7 +452,7 @@ app.get('/search', async (req, res) => {
                         id: item.id,
                         title: item.title,
                         date: item.date,
-                        link: col.id === 'galleryItems' || col.id === 'bulletins' ? col.link : `${col.link}/${item.id}`
+                        link: col.id === 'bulletins' ? col.link : `${col.link}/${item.id}`
                     }))
                 });
             }
@@ -543,7 +543,7 @@ app.get('/word/sermons', async (req, res) => {
     let allSermons = await getCollection('sermons');
 
     // Sort by date (descending)
-    allSermons.sort((a, b) => (a.date < b.date ? 1 : -1));
+    allSermons.sort((a, b) => ((b.date || '').localeCompare(a.date || '')));
 
     // Search Filter
     const query = req.query.q as string;
@@ -596,7 +596,7 @@ app.get('/word/sermons/:id', async (req, res) => {
 
     // Fetch all sermons sorted by date desc and find prev/next
     const allSermons = await getCollection('sermons');
-    allSermons.sort((a, b) => (a.date < b.date ? 1 : -1));
+    allSermons.sort((a, b) => ((b.date || '').localeCompare(a.date || '')));
     const idx = allSermons.findIndex((s: any) => s.id === req.params.id);
     const prevItem = idx < allSermons.length - 1 ? allSermons[idx + 1] : null;
     const nextItem = idx > 0 ? allSermons[idx - 1] : null;
@@ -623,7 +623,7 @@ app.get('/word/meditation', async (req, res) => {
     let allMeditations = await getCollection('meditations');
 
     // Sort by date (descending)
-    allMeditations.sort((a, b) => (a.date < b.date ? 1 : -1));
+    allMeditations.sort((a, b) => ((b.date || '').localeCompare(a.date || '')));
 
     // Search Filter
     const query = req.query.q as string;
@@ -658,7 +658,7 @@ app.get('/word/meditation/:id', async (req, res) => {
 
     // Find prev/next meditations
     const allMeditations = await getCollection('meditations');
-    allMeditations.sort((a, b) => (a.date < b.date ? 1 : -1));
+    allMeditations.sort((a, b) => ((b.date || '').localeCompare(a.date || '')));
     const idx = allMeditations.findIndex((m: any) => m.id === req.params.id);
     const prevItem = idx < allMeditations.length - 1 ? allMeditations[idx + 1] : null;
     const nextItem = idx > 0 ? allMeditations[idx - 1] : null;
@@ -685,7 +685,7 @@ app.get('/word/bible-study/:id', async (req, res) => {
     if (!study) return res.status(404).send('Bible Study not found');
 
     const allStudies = await getCollection('bibleStudies');
-    allStudies.sort((a, b) => (a.date < b.date ? 1 : -1));
+    allStudies.sort((a, b) => ((b.date || '').localeCompare(a.date || '')));
     const idx = allStudies.findIndex((s: any) => s.id === req.params.id);
     const prevItem = idx < allStudies.length - 1 ? allStudies[idx + 1] : null;
     const nextItem = idx > 0 ? allStudies[idx - 1] : null;
@@ -707,7 +707,7 @@ app.get('/word/diary', async (req, res) => {
     let allDiaries = await getCollection('diaries');
 
     // Sort by date (descending)
-    allDiaries.sort((a, b) => (a.date < b.date ? 1 : -1));
+    allDiaries.sort((a, b) => ((b.date || '').localeCompare(a.date || '')));
 
     const page = parseInt(req.query.page as string) || 1;
     const itemsPerPage = 15;
@@ -731,7 +731,7 @@ app.get('/word/diary/:id', async (req, res) => {
 
     // Find prev/next diaries
     const allDiaries = await getCollection('diaries');
-    allDiaries.sort((a, b) => (a.date < b.date ? 1 : -1));
+    allDiaries.sort((a, b) => ((b.date || '').localeCompare(a.date || '')));
     const idx = allDiaries.findIndex((d: any) => d.id === req.params.id);
     const prevItem = idx < allDiaries.length - 1 ? allDiaries[idx + 1] : null;
     const nextItem = idx > 0 ? allDiaries[idx - 1] : null;
@@ -783,7 +783,7 @@ app.get('/sharing/bulletin', async (req, res) => {
     let allBulletins = await getCollection('bulletins');
 
     // Sort by date (descending)
-    allBulletins.sort((a, b) => (a.date < b.date ? 1 : -1));
+    allBulletins.sort((a, b) => ((b.date || '').localeCompare(a.date || '')));
 
     const page = parseInt(req.query.page as string) || 1;
     const itemsPerPage = 15;
@@ -838,6 +838,25 @@ app.get('/sharing/gallery', async (req, res) => {
         currentPage: page,
         totalPages,
         totalItems: allGalleryItems.length
+    });
+});
+
+app.get('/sharing/gallery/:id', async (req, res) => {
+    const album = await getItem('galleryItems', req.params.id);
+    if (!album) return res.status(404).send('Album not found');
+
+    const allGalleryItems = await getCollection('galleryItems');
+    allGalleryItems.sort((a, b) => ((b.date || b.createdAt || '').localeCompare(a.date || a.createdAt || '')));
+    const idx = allGalleryItems.findIndex((g: any) => g.id === req.params.id);
+    const prevItem = idx < allGalleryItems.length - 1 ? allGalleryItems[idx + 1] : null;
+    const nextItem = idx > 0 ? allGalleryItems[idx - 1] : null;
+
+    res.render('sharing/gallery-view', {
+        title: (album as any).title + ' - 정배교회',
+        page: 'sharing-gallery',
+        album,
+        prevItem,
+        nextItem
     });
 });
 
@@ -924,6 +943,24 @@ app.post('/admin/create/:type', upload.any(), async (req, res) => {
     const { type } = req.params;
     const items = { ...req.body };
 
+    // Ensure date fallback if date field is present in schema but empty in request
+    if (items.date !== undefined && (!items.date || String(items.date).trim() === '')) {
+        const now = new Date();
+        const kst = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+        items.date = kst.toISOString().split('T')[0];
+    }
+
+    // If title is empty, try to extract from content/summary or set default
+    if (items.title !== undefined && (!items.title || String(items.title).trim() === '')) {
+        const rawBody = items.content || items.summary || '';
+        const plainText = rawBody.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim();
+        if (plainText) {
+            items.title = plainText.slice(0, 50);
+        } else {
+            items.title = '제목 없음';
+        }
+    }
+
     try {
         // Handle uploaded files to Firebase Storage
         if (req.files && Array.isArray(req.files)) {
@@ -961,7 +998,7 @@ app.post('/admin/create/:type', upload.any(), async (req, res) => {
             diaries: '/word/diary/:id',
             notices: '/sharing/notices/:id',
             bulletins: '/sharing/bulletin',
-            galleryItems: '/sharing/gallery',
+            galleryItems: '/sharing/gallery/:id',
             philosophies: '/church/philosophy',
             pastorProfiles: '/church/pastor',
             worshipServices: '/church/worship',
@@ -1031,7 +1068,7 @@ app.post('/admin/update/:type', upload.any(), async (req, res) => {
             diaries: '/word/diary/:id',
             notices: '/sharing/notices/:id',
             bulletins: '/sharing/bulletin',
-            galleryItems: '/sharing/gallery',
+            galleryItems: '/sharing/gallery/:id',
             philosophies: '/church/philosophy',
             pastorProfiles: '/church/pastor',
             worshipServices: '/church/worship',

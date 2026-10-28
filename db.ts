@@ -5,8 +5,14 @@ import fs from 'fs';
 
 dotenv.config();
 
-// Check if serviceAccountKey.json exists
-const serviceAccountPath = path.join(__dirname, 'serviceAccountKey.json');
+// Check if serviceAccountKey.json exists (check both __dirname and process.cwd())
+let serviceAccountPath = path.join(__dirname, 'serviceAccountKey.json');
+if (!fs.existsSync(serviceAccountPath)) {
+    const cwdPath = path.join(process.cwd(), 'serviceAccountKey.json');
+    if (fs.existsSync(cwdPath)) {
+        serviceAccountPath = cwdPath;
+    }
+}
 
 let db: admin.firestore.Firestore;
 let bucket: any;
